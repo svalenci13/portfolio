@@ -79,7 +79,7 @@ export default function Home() {
             </li>
             <li className="flex items-start text-sm">
               <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">resold everything from candy to <Link href="https://www.instagram.com/heat.ca/?hl=en" target="_blank" className="text-blue-600 underline hover:text-blue-800">shoes</Link> to <Link href="https://www.ebay.ca/usr/sebavale99" target="_blank" className="text-blue-600 underline hover:text-blue-800">electronics</Link> to <Link href="https://www.ebay.ca/usr/sebavale99" target="_blank" className="text-blue-600 underline hover:text-blue-800">collectibles</Link></span>
+              <span className="flex-1">resold everything from candy to <Link href="https://www.instagram.com/heat.ca/?hl=en" target="_blank" className="text-blue-600 underline hover:text-blue-800">shoes</Link> to <Link href="https://www.kijiji.ca/o-profile/1004568164/reviews" target="_blank" className="text-blue-600 underline hover:text-blue-800">electronics</Link> to <Link href="https://www.ebay.ca/usr/sebavale99" target="_blank" className="text-blue-600 underline hover:text-blue-800">collectibles</Link></span>
             </li>
           </ul>
         </section>
@@ -100,7 +100,7 @@ export default function Home() {
             </li>
             <li className="flex items-start text-sm">
               <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1"><Link href="https://github.com/yourusername/portfolio-website" target="_blank" className="text-blue-600 underline hover:text-blue-800">this website</Link></span>
+              <span className="flex-1"><Link href="https://www.sebo.fyi/" target="_blank" className="text-blue-600 underline hover:text-blue-800">this website</Link></span>
             </li>
           </ul>
           <p className="text-sm text-gray-600 italic mt-4">
@@ -132,7 +132,7 @@ export default function Home() {
                 title: "HOW I GOT HERE",
                 content: [
                   "I had a 68% average in grade 11 thought I wasn't going to go to uni, got deferred from my dream program, failed in getting my first co-op, almost failed my third semester, didn't get a lot of co-ops I wanted",
-                  "But regardless I just kept trying and think that's all that matters"
+                  "But regardless I just kept trying and I think that's all that matters"
                 ]
               },
               {
@@ -229,7 +229,7 @@ export default function Home() {
       <footer className="border-t border-gray-200 py-6">
         <div className="max-w-2xl mx-auto px-6 text-center">
           <p className="text-xs text-gray-500">
-            © 2024 Sebastian Valencia. All rights reserved.
+            © 2025 Sebastian Valencia. All rights reserved.
           </p>
         </div>
       </footer>

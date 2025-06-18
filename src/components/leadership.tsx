@@ -26,7 +26,7 @@ export function Leadership() {
             </div>
             <p className="text-sm text-gray-600 mb-2">Logistics Lead</p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              restarted <Link href="https://www.techplusuw.com/" target="_blank" className="text-blue-600 underline hover:text-blue-800">mentorship program</Link> that helped me in first year, reaching 200+ students from diverse backgrounds
+              restarted <Link href="https://www.techplusuw.com/" target="_blank" className="text-blue-600 underline hover:text-blue-800">mentorship program</Link> that helped me in first year, had 200+ students from diverse backgrounds
             </p>
           </div>
         </div>

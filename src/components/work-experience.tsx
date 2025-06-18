@@ -106,7 +106,7 @@ export function WorkExperience() {
             </div>
             <p className="text-sm text-gray-600 mb-2">Full Stack Developer Co-op</p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              worked on internal search tools used by 500+ users; asked to stay part time
+              worked on internal search tools used by 500+ users, was asked to stay part time
             </p>
           </div>
         </div>
@@ -129,7 +129,7 @@ export function WorkExperience() {
             </div>
             <p className="text-sm text-gray-600 mb-2">Data Analyst Co-op</p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              made first automated reporting system for IT technicians; they thanked me with samosas
+              made first automated reporting system for IT technicians, they thanked me with samosas
             </p>
           </div>
         </div>

@@ -54,7 +54,7 @@ export default function Blog() {
       <footer className="border-t border-gray-200 py-6">
         <div className="max-w-2xl mx-auto px-6 text-center">
           <p className="text-xs text-gray-500">
-            © 2024 Sebastian Valencia. All rights reserved.
+            © 2025 Sebastian Valencia. All rights reserved.
           </p>
         </div>
       </footer>
