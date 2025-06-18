@@ -1,0 +1,194 @@
+"use client"
+
+import Link from "next/link"
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+
+type Project = {
+  title: string
+  description: string
+  category: string
+  link: string
+  emoji?: string
+  image?: string
+  tags: string[]
+}
+
+const projects: Project[] = [
+  {
+    title: "Building Best Value Soccer Team",
+    description: "Using integer programming and operations research to select the optimal 11-player lineup from Europe's top leagues within budget constraints",
+    category: "Data Science", 
+    link: "/projects/soccer-optimization",
+    image: "/logos/wide.jpeg",
+    tags: ["Python", "Gurobi", "Operations Research"]
+  },
+  {
+    title: "Graphic Design & Video Portfolio",
+    description: "Collection of my creative work including logos, branding, video editing, and visual storytelling projects",
+    category: "Creative",
+    link: "/creative-portfolio",
+    emoji: "🎨",
+    tags: ["Design", "Video", "Branding"]
+  },
+  {
+    title: "Portfolio Website",
+    description: "This website you're currently viewing - built with Next.js and modern web technologies",
+    category: "Development",
+    link: "https://www.sebo.fyi/", 
+    emoji: "💻",
+    tags: ["Next.js", "TypeScript", "TailwindCSS"]
+  }
+]
+
+export function ProjectsCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+
+  const nextProject = () => {
+    setCurrentIndex((prev) => (prev + 1) % projects.length)
+  }
+
+  const prevProject = () => {
+    setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length)
+  }
+
+  const goToProject = (index: number) => {
+    setCurrentIndex(index)
+    setIsAutoPlaying(false) // Stop auto-play when user manually navigates
+  }
+
+  // Auto-rotation effect
+  useEffect(() => {
+    if (!isAutoPlaying) return
+
+    const interval = setInterval(() => {
+      nextProject()
+    }, 4000) // Change project every 4 seconds
+
+    return () => clearInterval(interval)
+  }, [currentIndex, isAutoPlaying])
+
+  // Pause auto-play on hover, resume on mouse leave
+  const handleMouseEnter = () => setIsAutoPlaying(false)
+  const handleMouseLeave = () => setIsAutoPlaying(true)
+
+  return (
+    <div className="mb-10">
+      <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
+        FEATURED PROJECTS:
+      </h2>
+      
+      {/* Main Carousel */}
+      <div 
+        className="relative overflow-hidden bg-gray-50 border border-gray-200 rounded-lg"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div 
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {projects.map((project, index) => (
+            <div key={index} className="w-full flex-shrink-0 p-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Project Visual */}
+                <div className="md:w-1/3">
+                  <div className="aspect-video bg-white border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                    {project.image ? (
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-6xl">
+                        {project.emoji}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Project Info */}
+                <div className="md:w-2/3 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-mono uppercase tracking-wide text-gray-500 bg-white px-2 py-1 rounded border">
+                        {project.category}
+                      </span>
+                    </div>
+                    <h3 className="font-mono text-lg font-semibold mb-3 text-black">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-4 leading-relaxed">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.tags.map((tag, tagIndex) => (
+                        <span 
+                          key={tagIndex}
+                          className="text-xs font-mono text-gray-600 bg-white px-2 py-1 rounded border"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Link
+                      href={project.link}
+                      target="_blank"
+                      className="inline-flex items-center text-sm font-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
+                    >
+                      VIEW PROJECT →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Navigation Buttons */}
+        <button
+          onClick={() => {
+            prevProject()
+            setIsAutoPlaying(false)
+          }}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 transition-colors"
+          aria-label="Previous project"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => {
+            nextProject()
+            setIsAutoPlaying(false)
+          }}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 transition-colors"
+          aria-label="Next project"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Dots Indicator */}
+      <div className="flex justify-center gap-2 mt-4">
+        {projects.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToProject(index)}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              index === currentIndex ? 'bg-black' : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+            aria-label={`Go to project ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+} 

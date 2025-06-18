@@ -7,6 +7,7 @@ import { BlinkingDot } from "@/components/blinking-dot"
 import { WorkExperience } from "@/components/work-experience"
 import { Leadership } from "@/components/leadership"
 import { SpotifyNowPlaying } from "@/components/spotify-now-playing"
+import { ProjectsCarousel } from "@/components/projects-carousel"
 
 export default function Home() {
   const [openSections, setOpenSections] = useState<{ [key: number]: boolean }>({})
@@ -190,6 +191,9 @@ export default function Home() {
 
         {/* Leadership */}
         <Leadership />
+
+        {/* Featured Projects */}
+        <ProjectsCarousel />
 
         {/* Currently Listening - Spotify */}
         <section className="mb-10">
