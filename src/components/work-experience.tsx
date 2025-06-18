@@ -54,7 +54,7 @@ export function WorkExperience() {
                 helped every data team from product, marketing, compliance & enterprise; scored 12 weekly shout-outs.
               </p>
               <p className="text-sm text-gray-700 leading-relaxed">
-                found a knack for product analytics/ds (metric definition → tracking → A/B testing → etc.)
+                found a knack for product analytics/ds
               </p>
             </div>
           </div>

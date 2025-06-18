@@ -18,8 +18,8 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Sebastian Valencia",
-  description: "Data analyst and aspiring software engineer from Toronto. Building things and making an impact.",
+  title: "sebo",
+  description: "portfolio",
   keywords: ["Sebastian Valencia", "portfolio", "data analyst", "software engineer", "Toronto", "UWaterloo"],
   authors: [{ name: "Sebastian Valencia" }],
   creator: "Sebastian Valencia",
@@ -31,22 +31,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://sebo.fyi',
-    title: 'Sebastian Valencia',
-    description: 'Data analyst and aspiring software engineer from Toronto. Building things and making an impact.',
-    siteName: 'Sebastian Valencia',
+    title: 'sebo',
+    description: 'portfolio',
+    siteName: 'sebo',
     images: [
       {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Sebastian Valencia - Portfolio',
+        alt: 'sebo',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sebastian Valencia',
-    description: 'Data analyst and aspiring software engineer from Toronto. Building things and making an impact.',
+    title: 'sebo',
+    description: 'portfolio',
     images: ['/og-image.svg'],
     creator: '@sebo1738',
   },
