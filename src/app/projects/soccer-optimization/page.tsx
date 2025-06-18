@@ -216,7 +216,7 @@ export default function SoccerOptimization() {
                   </div>
                   <div className="text-gray-600 text-xs border-t pt-2 space-y-1">
                     <div><strong>I<sub>i</sub></strong> = performance index of player i (explained in detail below)</div>
-                    <div><strong>x<sub>i</sub></strong> = 1 if we select player i, 0 if we don't</div>
+                    <div><strong>x<sub>i</sub></strong> = 1 if we select player i, 0 if we don&apos;t</div>
                     <div><strong>n</strong> = 2,500+ players in our dataset</div>
                   </div>
                 </div>
