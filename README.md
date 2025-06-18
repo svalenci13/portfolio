@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sebastian Valencia - Portfolio
+
+A modern, minimalist portfolio website built with Next.js, TypeScript, Tailwind CSS, and shadcn/ui components.
+
+## Features
+
+- 🎨 **Modern Design**: Clean, minimalist aesthetic inspired by dris.one
+- ⚡ **Next.js 15**: Latest React framework with App Router
+- 🎯 **TypeScript**: Full type safety
+- 🎨 **Tailwind CSS**: Utility-first styling
+- 🧩 **shadcn/ui**: Beautiful, accessible components
+- 📱 **Responsive**: Mobile-first design
+- ✨ **Animations**: Smooth interactions and micro-animations
+- 🚀 **Performance**: Optimized for speed and Core Web Vitals
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Components**: shadcn/ui
+- **Icons**: Lucide React
+- **Fonts**: Inter (body), JetBrains Mono (headings), Playfair Display (logo)
+- **Deployment**: Vercel
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Open your browser** and navigate to [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── globals.css     # Global styles
+│   ├── layout.tsx      # Root layout
+│   └── page.tsx        # Home page
+├── components/         # React components
+│   ├── ui/             # shadcn/ui components
+│   ├── blinking-dot.tsx
+│   ├── work-experience.tsx
+│   └── project-list.tsx
+└── lib/
+    └── utils.ts        # Utility functions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Customization
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Personal Information
+Update the personal details in `src/app/page.tsx`:
+- Name and introduction
+- Work experience in `src/components/work-experience.tsx`
+- Projects in `src/components/project-list.tsx`
+- Contact links in the header
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Styling
+- Colors and theme: `tailwind.config.ts`
+- Global styles: `src/app/globals.css`
+- Component-specific styles: Tailwind classes in components
 
-## Learn More
+### Adding Components
+Use shadcn/ui to add new components:
+```bash
+npx shadcn@latest add [component-name]
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Vercel (Recommended)
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Deploy automatically on every push
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Other Platforms
+The project can be deployed to any platform that supports Next.js:
+- Netlify
+- Railway
+- AWS Amplify
+- DigitalOcean App Platform
 
-## Deploy on Vercel
+## Performance
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This portfolio is optimized for:
+- ⚡ Fast loading times
+- 📱 Mobile performance
+- 🔍 SEO optimization
+- ♿ Accessibility standards
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT License - feel free to use this as a template for your own portfolio!
+
+---
+
+Built with ❤️ using modern web technologies
