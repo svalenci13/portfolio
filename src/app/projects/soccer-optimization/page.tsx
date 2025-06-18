@@ -46,7 +46,7 @@ export default function SoccerOptimization() {
           </h1>
           <p className="text-base mb-6 leading-relaxed text-gray-700">
             What does it take to build a professional soccer team that wins titles? 
-            Using data from 2,500 players across Europe's top 5 leagues, an algorithm was built
+            Using data from 2,500 players across Europe&apos;s top 5 leagues, an algorithm was built
             to create the optimal starting lineup within budget constraints.
           </p>
           
@@ -73,7 +73,7 @@ export default function SoccerOptimization() {
               The Premier League has seen 51 different teams since its start, but only 7 have won titles. 
               Why is success so rare? Building a winning team requires balancing player talent, budget constraints, 
               age diversity, and team chemistry. Our team tackled this challenge by creating an optimization algorithm that selects 
-              the optimal 11-player starting lineup from Europe's top leagues.
+              the optimal 11-player starting lineup from Europe&apos;s top leagues.
             </p>
             <div className="grid grid-cols-4 gap-3 text-sm">
               <div>
@@ -124,8 +124,8 @@ export default function SoccerOptimization() {
               </li>
             </ul>
             <p>
-              With 2,500+ players to choose from across Europe's top 5 leagues, manual selection 
-              becomes impossible. That's where optimization algorithms come in.
+              With 2,500+ players to choose from across Europe&apos;s top 5 leagues, manual selection 
+              becomes impossible. That&apos;s where optimization algorithms come in.
             </p>
           </div>
         </section>
@@ -149,7 +149,7 @@ export default function SoccerOptimization() {
                 </div>
                 <p className="text-sm text-blue-700 leading-relaxed">
                   Transform subjective player assessment into objective metrics using comprehensive 
-                  performance data from Europe's top leagues.
+                  performance data from Europe&apos;s top leagues.
                 </p>
               </div>
               
@@ -160,7 +160,7 @@ export default function SoccerOptimization() {
                 </div>
                 <p className="text-sm text-green-700 leading-relaxed">
                   Use proven operations research techniques to find the globally optimal solution 
-                  rather than settling for "good enough" manual selections.
+                  rather than settling for &quot;good enough&quot; manual selections.
                 </p>
               </div>
               
@@ -196,7 +196,7 @@ export default function SoccerOptimization() {
               when given an objective function and constraints.
             </p>
             <p>
-              Here's how we translated our soccer team building challenge into mathematical language:
+              Here&apos;s how we translated our soccer team building challenge into mathematical language:
             </p>
           </div>
           
@@ -225,7 +225,7 @@ export default function SoccerOptimization() {
               <div>
                 <h3 className="font-mono text-sm font-semibold mb-3">⚖️ What Rules We Must Follow:</h3>
                 <p className="text-gray-700 mb-3">
-                  We can't just pick the 11 highest-rated players - we have real-world constraints that 
+                  We can&apos;t just pick the 11 highest-rated players - we have real-world constraints that 
                   must be satisfied. Each constraint is expressed as a mathematical equation:
                 </p>
                 <div className="bg-white border border-gray-300 rounded p-4 space-y-4 font-mono text-sm">
@@ -246,7 +246,7 @@ export default function SoccerOptimization() {
                     <div className="bg-purple-50 px-3 py-2 rounded text-xs">
                       ∑<sub>i=1</sub><sup>n</sup> m<sub>i</sub> × x<sub>i</sub> ≤ €350,000,000
                     </div>
-                    <p className="text-gray-600 text-xs mt-1">Total cost of selected players can't exceed our budget</p>
+                    <p className="text-gray-600 text-xs mt-1">Total cost of selected players can&apos;t exceed our budget</p>
                   </div>
                   
                   <div>
@@ -353,7 +353,7 @@ export default function SoccerOptimization() {
             <div className="bg-gray-50 border border-gray-200 rounded p-4 mt-6">
               <p className="text-sm text-gray-700">
                 <strong>Next:</strong> With our mathematical framework and player evaluation system defined, 
-                let's see what the optimal team looks like when we run our algorithm on the full dataset.
+                let&apos;s see what the optimal team looks like when we run our algorithm on the full dataset.
               </p>
             </div>
           </div>
@@ -491,7 +491,7 @@ export default function SoccerOptimization() {
                 </div>
                 <h3 className="font-mono text-sm font-semibold text-gray-800 mb-2">STAR PLAYER</h3>
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  Takefusa Kubo played every game and led the team in goals + assists, validating our algorithm's selection
+                  Takefusa Kubo played every game and led the team in goals + assists, validating our algorithm&apos;s selection
                 </p>
               </div>
               
@@ -559,9 +559,9 @@ export default function SoccerOptimization() {
                 🤝 TEAM CHEMISTRY
               </h3>
               <p className="text-gray-700">
-                Our algorithm optimizes individual player performance but doesn't account for how well players 
+                Our algorithm optimizes individual player performance but doesn&apos;t account for how well players 
                 work together. Team chemistry, communication, and playing style compatibility are crucial 
-                factors that pure statistics can't capture.
+                factors that pure statistics can&apos;t capture.
               </p>
             </div>
             

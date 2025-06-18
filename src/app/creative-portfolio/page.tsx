@@ -35,7 +35,7 @@ export default function CreativePortfolio() {
             PORTFOLIO UNDER CONSTRUCTION
           </h2>
           <p className="text-sm text-yellow-700 mb-4">
-            I'm currently curating and organizing my best creative work for this portfolio. 
+            I&apos;m currently curating and organizing my best creative work for this portfolio. 
             This page will feature my graphic design projects, video editing work, and brand development.
           </p>
           <div className="text-sm text-yellow-700">
@@ -113,8 +113,8 @@ export default function CreativePortfolio() {
             INTERESTED IN WORKING TOGETHER?
           </h3>
           <p className="text-sm text-blue-700 mb-4">
-            I'm available for graphic design projects, video editing work, and creative consulting. 
-            Let's discuss how I can help bring your vision to life.
+            I&apos;m available for graphic design projects, video editing work, and creative consulting. 
+            Let&apos;s discuss how I can help bring your vision to life.
           </p>
           <Link 
             href="mailto:svalenci@uwaterloo.ca?subject=Creative Project Inquiry"

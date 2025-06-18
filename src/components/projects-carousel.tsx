@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+
 
 type Project = {
   title: string
@@ -96,9 +97,11 @@ export function ProjectsCarousel() {
                 <div className="md:w-1/3">
                   <div className="aspect-video bg-white border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
                     {project.image ? (
-                      <img 
+                      <Image 
                         src={project.image} 
                         alt={project.title}
+                        width={400}
+                        height={225}
                         className="w-full h-full object-cover"
                       />
                     ) : (
