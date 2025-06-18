@@ -1,10 +1,6 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, Mail, Linkedin, Twitter } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { BlinkingDot } from "@/components/blinking-dot"
