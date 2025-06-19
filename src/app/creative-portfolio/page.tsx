@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 
 export default function CreativePortfolio() {
   return (
@@ -10,11 +11,11 @@ export default function CreativePortfolio() {
         <nav className="max-w-2xl mx-auto px-6 flex justify-between items-center">
           <Link 
             href="/#projects"
-            className="text-black text-base font-semibold font-serif hover:text-blue-600 transition-colors"
+            className="text-black text-base font-semibold font-mono hover:text-blue-600 transition-colors"
           >
             ← back to portfolio
           </Link>
-          <div className="text-black text-base font-semibold font-serif">
+          <div className="text-black text-base font-semibold font-mono">
             creative work
           </div>
         </nav>
@@ -28,116 +29,273 @@ export default function CreativePortfolio() {
             CREATIVE PORTFOLIO
           </h1>
           <p className="text-base mb-6 leading-relaxed">
-            A collection of my graphic design and video editing work spanning branding, 
+            A collection of my graphic design and video editing work spanning podcastbranding, 
             promotional materials, and content creation. Each project represents a blend 
             of creativity and strategic thinking.
           </p>
         </section>
 
-        {/* Coming Soon Notice */}
-        <section className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-12">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide text-yellow-800 mb-3">
-            PORTFOLIO UNDER CONSTRUCTION
-          </h2>
-          <p className="text-sm text-yellow-700 mb-4">
-            I&apos;m currently curating and organizing my best creative work for this portfolio. 
-            This page will feature my graphic design projects, video editing work, and brand development.
-          </p>
-          <div className="text-sm text-yellow-700">
-            <p className="mb-2">Coming soon:</p>
-            <ul className="ml-4 space-y-1">
-              <li>• Brand identity projects</li>
-              <li>• Video editing and motion graphics</li>
-              <li>• Print and digital design work</li>
-              <li>• Client case studies</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* Creative Experience */}
+        {/* Creative Work */}
         <section className="mb-12">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            CREATIVE EXPERIENCE:
-          </h2>
-          <ul className="space-y-2 ml-4">
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">3+ years of graphic design experience</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">designed branding for <Link href="https://www.techplusuw.com/" target="_blank" className="text-blue-600 underline hover:text-blue-800">TechPlus UW</Link> (200+ members)</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">video content creation and editing</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">proficient in Adobe Creative Suite</span>
-            </li>
-          </ul>
-        </section>
-
-        {/* Tools & Software */}
-        <section className="mb-12">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            TOOLS & SOFTWARE:
-          </h2>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-gray-700 mb-3">
-                  Design Software
-                </h3>
-                <ul className="space-y-1 text-sm text-gray-600">
-                  <li>• Adobe Photoshop</li>
-                  <li>• Adobe Illustrator</li>
-                  <li>• Figma</li>
-                  <li>• Canva Pro</li>
-                </ul>
+          {/* Club Graphics Section */}
+          <div className="mb-10">
+            <h3 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
+              Club Graphics & Branding
+            </h3>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphic1.JPG" 
+                  alt="Club graphic design 1"
+                  width={400}
+                  height={300}
+                  className="w-full h-auto object-contain"
+                />
               </div>
-              <div>
-                <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-gray-700 mb-3">
-                  Video Editing
-                </h3>
-                <ul className="space-y-1 text-sm text-gray-600">
-                  <li>• Adobe Premiere Pro</li>
-                  <li>• Adobe After Effects</li>
-                  <li>• DaVinci Resolve</li>
-                  <li>• CapCut</li>
-                </ul>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphic2.JPG" 
+                  alt="Club graphic design 2"
+                  width={400}
+                  height={300}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphic3.JPG" 
+                  alt="Club graphic design 3"
+                  width={400}
+                  height={300}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphic4.JPG" 
+                  alt="Club graphic design 4"
+                  width={400}
+                  height={300}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphic5.png" 
+                  alt="Club graphic design 5"
+                  width={400}
+                  height={300}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Club Video */}
+            <div className="mb-6">
+              
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <div className="relative w-full" style={{paddingBottom: '56.25%'}}>
+                  <iframe 
+                    className="absolute top-0 left-0 w-full h-full"
+                    src="https://www.youtube.com/embed/Jfib2vEeEqs" 
+                    title="CxC III - Data Science Hackathon Promotional Video"
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="p-3">
+                  <h5 className="font-mono text-xs font-semibold text-gray-800 mb-1">CxC III Hackathon</h5>
+                  <p className="text-xs text-gray-600">Data Science Competition Promotional Video</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Personal Graphics Section */}
+          <div className="mb-10">
+            <h3 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
+              Personal Design Work
+            </h3>
+            <div className="space-y-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphicpersonal1.png" 
+                  alt="Personal graphic design 1"
+                  width={600}
+                  height={400}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                <Image 
+                  src="/logos/graphicpersonal2.png" 
+                  alt="Personal graphic design 2"
+                  width={600}
+                  height={400}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Podcast Content Creation */}
+          <div className="mb-10">
+            <h3 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
+              Podcast Content & Framework
+            </h3>
+            
+            {/* Framework Overview */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h4 className="font-mono text-xs font-semibold uppercase tracking-wide text-blue-800 mb-3">
+                Content Creation Framework
+              </h4>
+              <p className="text-sm text-blue-700 mb-3">
+                Developed a consistent visual framework for podcast episodes, including episode graphics, 
+                promotional materials, and YouTube thumbnails. Each episode follows the same design system 
+                while maintaining unique content.
+              </p>
+              <div className="text-sm text-blue-700">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div>
+                    <span className="font-semibold">• Brand Consistency:</span><br/>
+                    Unified color scheme and typography
+                  </div>
+                  <div>
+                    <span className="font-semibold">• Template System:</span><br/>
+                    Scalable design framework
+                  </div>
+                  <div>
+                    <span className="font-semibold">• Content Strategy:</span><br/>
+                    Episode-specific adaptations
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Design Framework Examples */}
+            <div className="mb-6">
+              <h4 className="font-mono text-xs font-semibold uppercase tracking-wide text-gray-700 mb-3">
+                Design Framework Examples
+              </h4>
+              <p className="text-sm text-gray-600 mb-4">
+                Rather than showing all 10+ graphics, here are key examples that demonstrate 
+                the consistent framework and design system used across all podcast content.
+              </p>
+              
+              {/* Framework Template */}
+              <div className="mb-6">
+                <h5 className="font-mono text-xs font-semibold text-gray-700 mb-2">Master Template Framework</h5>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                  <Image 
+                    src="/logos/datedenframework.jpg" 
+                    alt="The Data Den podcast design framework template"
+                    width={600}
+                    height={400}
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+                <p className="text-xs text-gray-600 mt-2">
+                  Core template system used across all episodes, maintaining consistent branding while allowing for guest-specific customization.
+                </p>
+              </div>
+
+              {/* Applied Examples */}
+              <div className="mb-6">
+                <h5 className="font-mono text-xs font-semibold text-gray-700 mb-2">Framework in Action</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                    <Image 
+                      src="/logos/dataden1.jpg" 
+                      alt="Data Den episode graphic example 1"
+                      width={400}
+                      height={300}
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                    <Image 
+                      src="/logos/dataden2.jpg" 
+                      alt="Data Den episode graphic example 2"
+                      width={400}
+                      height={300}
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mt-2">
+                  Examples showing how the framework adapts for different guests while maintaining visual consistency 
+                  and brand recognition across the entire podcast series.
+                </p>
+              </div>
+            </div>
+
+            {/* YouTube Content */}
+            <div>
+              <h4 className="font-mono text-xs font-semibold uppercase tracking-wide text-gray-700 mb-3">
+                &ldquo;The Data Den&rdquo; Podcast Snippets
+              </h4>
+              <p className="text-sm text-gray-600 mb-4">
+                Created promotional snippets and content for &ldquo;The Data Den&rdquo; podcast featuring industry professionals 
+                in data science and engineering. Each snippet showcases key insights from full episodes.
+              </p>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                  <iframe 
+                    width="100%" 
+                    height="200" 
+                    src="https://www.youtube.com/embed/wAgJ2v8kY0U" 
+                    title="Amy Tai - Applied Scientist Snippet"
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen
+                    className="w-full"
+                  ></iframe>
+                  <div className="p-3">
+                    <h5 className="font-mono text-xs font-semibold text-gray-800 mb-1">Amy Tai</h5>
+                    <p className="text-xs text-gray-600">Applied Scientist</p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                  <iframe 
+                    width="100%" 
+                    height="200" 
+                    src="https://www.youtube.com/embed/3EXRBsWQY_o" 
+                    title="Adi Ravichandran - SR SWE Snippet"
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen
+                    className="w-full"
+                  ></iframe>
+                  <div className="p-3">
+                    <h5 className="font-mono text-xs font-semibold text-gray-800 mb-1">Adi Ravichandran</h5>
+                    <p className="text-xs text-gray-600">Senior Software Engineer</p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                  <iframe 
+                    width="100%" 
+                    height="200" 
+                    src="https://www.youtube.com/embed/ruYr_Uooa8k" 
+                    title="Navya Mehta - Founding Engineer Snippet"
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen
+                    className="w-full"
+                  ></iframe>
+                  <div className="p-3">
+                    <h5 className="font-mono text-xs font-semibold text-gray-800 mb-1">Navya Mehta</h5>
+                    <p className="text-xs text-gray-600">Founding Engineer</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
-
-        {/* Contact for Creative Work */}
-        <section className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-mono text-sm font-semibold uppercase tracking-wide text-blue-800 mb-3">
-            INTERESTED IN WORKING TOGETHER?
-          </h3>
-          <p className="text-sm text-blue-700 mb-4">
-            I&apos;m available for graphic design projects, video editing work, and creative consulting. 
-            Let&apos;s discuss how I can help bring your vision to life.
-          </p>
-          <Link 
-            href="mailto:svalenci@uwaterloo.ca?subject=Creative Project Inquiry"
-            className="inline-flex items-center text-sm font-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
-          >
-            GET IN TOUCH →
-          </Link>
-        </section>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <p className="text-xs text-gray-500">
-            © 2025 Sebastian Valencia. Creative portfolio coming soon.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 } 

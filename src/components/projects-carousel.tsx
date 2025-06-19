@@ -25,7 +25,7 @@ const projects: Project[] = [
   },
   {
     title: "Lyft Express Drive Analytics",
-    description: "Business intelligence dashboard analyzing Lyft's Express Drive program across NYC, Chicago, and Philadelphia, tracking fleet utilization, driver financials, and lifetime value",
+    description: "Business intelligence dashboard analyzing Lyft's Express Drive health metrics across various facets of the business ",
     category: "Business Analytics",
     link: "/projects/lyft-express-drive-dashboard",
     image: "/logos/lyft.png",
@@ -33,19 +33,11 @@ const projects: Project[] = [
   },
   {
     title: "Graphic Design & Video Portfolio",
-    description: "Collection of my creative work including logos, branding, video editing, and visual storytelling projects",
+    description: "Collection of my creative work including logos, promotional graphics, branding, and video editing",
     category: "Creative",
     link: "/creative-portfolio",
-    emoji: "🎨",
+    image: "/logos/goated.jpg",
     tags: ["Design", "Video", "Branding"]
-  },
-  {
-    title: "Portfolio Website",
-    description: "This website you're currently viewing - built with Next.js and modern web technologies",
-    category: "Development",
-    link: "https://www.sebo.fyi/", 
-    emoji: "💻",
-    tags: ["Next.js", "TypeScript", "TailwindCSS"]
   }
 ]
 
@@ -118,86 +110,86 @@ export function ProjectsCarousel() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-
-        {/* Main Carousel */}
+      
+      {/* Main Carousel */}
+      <div 
+        className="relative overflow-hidden bg-gray-50 border border-gray-200 rounded-lg"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <div 
-          className="relative overflow-hidden bg-gray-50 border border-gray-200 rounded-lg"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          <div 
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          >
-            {projects.map((project, index) => (
+          {projects.map((project, index) => (
               <div key={index} className="w-full flex-shrink-0 p-6 pb-16 md:pb-6">
-                <div className="flex flex-col md:flex-row gap-6">
-                  {/* Project Visual */}
-                  <div className="md:w-1/3">
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Project Visual */}
+                <div className="md:w-1/3">
                     <div className={`aspect-video border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center ${
                       project.image === "/logos/lyft.png" ? "" : "bg-white"
                     }`}
                     style={project.image === "/logos/lyft.png" ? { backgroundColor: "#ff00bf" } : {}}
                     >
-                      {project.image ? (
-                        <Image 
-                          src={project.image} 
-                          alt={project.title}
-                          width={400}
-                          height={225}
+                    {project.image ? (
+                      <Image 
+                        src={project.image} 
+                        alt={project.title}
+                        width={400}
+                        height={225}
                           className={`${
                             project.image === "/logos/lyft.png" 
                               ? "w-full h-auto object-contain p-4" 
                               : "w-full h-full object-cover"
                           }`}
-                        />
-                      ) : (
-                        <span className="text-6xl">
-                          {project.emoji}
+                      />
+                    ) : (
+                      <span className="text-6xl">
+                        {project.emoji}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Project Info */}
+                <div className="md:w-2/3 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-mono uppercase tracking-wide text-gray-500 bg-white px-2 py-1 rounded border">
+                        {project.category}
+                      </span>
+                    </div>
+                    <h3 className="font-mono text-lg font-semibold mb-3 text-black">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-4 leading-relaxed">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.tags.map((tag, tagIndex) => (
+                        <span 
+                          key={tagIndex}
+                          className="text-xs font-mono text-gray-600 bg-white px-2 py-1 rounded border"
+                        >
+                          {tag}
                         </span>
-                      )}
+                      ))}
                     </div>
                   </div>
-                  
-                  {/* Project Info */}
-                  <div className="md:w-2/3 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-mono uppercase tracking-wide text-gray-500 bg-white px-2 py-1 rounded border">
-                          {project.category}
-                        </span>
-                      </div>
-                      <h3 className="font-mono text-lg font-semibold mb-3 text-black">
-                        {project.title}
-                      </h3>
-                      <p className="text-sm text-gray-700 mb-4 leading-relaxed">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tags.map((tag, tagIndex) => (
-                          <span 
-                            key={tagIndex}
-                            className="text-xs font-mono text-gray-600 bg-white px-2 py-1 rounded border"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <Link
-                        href={project.link}
+                  <div>
+                    <Link
+                      href={project.link}
                         {...(isExternalLink(project.link) ? { target: "_blank" } : {})}
-                        className="inline-flex items-center text-sm font-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
-                      >
-                        VIEW PROJECT →
-                      </Link>
-                    </div>
+                      className="inline-flex items-center text-sm font-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
+                    >
+                      VIEW PROJECT →
+                    </Link>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
         </div>
       </div>
       
