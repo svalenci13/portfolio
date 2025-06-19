@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 
 export default function CreativePortfolio() {
@@ -6,7 +8,10 @@ export default function CreativePortfolio() {
       {/* Header */}
       <header className="py-6">
         <nav className="max-w-2xl mx-auto px-6 flex justify-between items-center">
-          <Link href="/" className="text-black text-base font-semibold font-serif hover:text-blue-600 transition-colors">
+          <Link 
+            href="/#projects"
+            className="text-black text-base font-semibold font-serif hover:text-blue-600 transition-colors"
+          >
             ← back to portfolio
           </Link>
           <div className="text-black text-base font-semibold font-serif">

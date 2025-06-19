@@ -1,16 +1,21 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 
-export default function HealthDashboard() {
+export default function LyftExpressDriveDashboard() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="py-6">
         <nav className="max-w-2xl mx-auto px-6 flex justify-between items-center">
-          <Link href="/" className="text-black text-base font-semibold font-jetbrains-mono hover:text-blue-600 transition-colors">
+          <Link 
+            href="/#projects"
+            className="text-black text-base font-semibold font-mono hover:text-blue-600 transition-colors"
+          >
             ← back to portfolio
           </Link>
-          <div className="text-black text-base font-semibold font-jetbrains-mono">
+          <div className="text-black text-base font-semibold font-mono">
             project writeup
           </div>
         </nav>
@@ -18,13 +23,13 @@ export default function HealthDashboard() {
 
       {/* Banner Image */}
       <div className="max-w-2xl mx-auto px-6">
-        <div className="mb-8 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+        <div className="mb-8 rounded-lg overflow-hidden border border-gray-200 shadow-sm" style={{ backgroundColor: "#ff00bf" }}>
           <Image 
             src="/logos/lyft.png" 
             alt="Lyft Express Drive Analytics - Business analytics dashboard for rideshare operations"
             width={800}
             height={192}
-            className="w-full h-48 object-cover"
+            className="w-full h-auto object-contain p-4"
           />
         </div>
       </div>
@@ -41,7 +46,7 @@ export default function HealthDashboard() {
               Rideshare Operations
             </span>
           </div>
-          <h1 className="font-jetbrains-mono text-2xl font-bold mb-4 leading-tight">
+          <h1 className="font-mono text-2xl font-bold mb-4 leading-tight">
             LYFT EXPRESS DRIVE DASHBOARD
           </h1>
           <p className="text-base mb-6 leading-relaxed text-gray-700">
@@ -55,7 +60,7 @@ export default function HealthDashboard() {
             <a 
               href="https://app.mode.com/svalenci/reports/54d9c6e3cde5" 
               target="_blank"
-              className="inline-flex items-center text-sm font-jetbrains-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
+              className="inline-flex items-center text-sm font-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
             >
               VIEW LIVE DASHBOARD →
             </a>
@@ -200,8 +205,6 @@ export default function HealthDashboard() {
           </div>
         </section>
 
-
-
         {/* Metadata & Data Structure */}
         <section className="mb-12">
           <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
@@ -245,7 +248,6 @@ export default function HealthDashboard() {
                 </div>
               </div>
             </div>
-
 
           </div>
         </section>
@@ -645,8 +647,6 @@ export default function HealthDashboard() {
               </div>
             </div>
           </div>
-
-
 
           {/* Key Findings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

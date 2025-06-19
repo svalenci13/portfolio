@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 
@@ -7,10 +9,13 @@ export default function SoccerOptimization() {
       {/* Header */}
       <header className="py-6">
         <nav className="max-w-2xl mx-auto px-6 flex justify-between items-center">
-          <Link href="/" className="text-black text-base font-semibold font-jetbrains-mono hover:text-blue-600 transition-colors">
+          <Link 
+            href="/#projects"
+            className="text-black text-base font-semibold font-mono hover:text-blue-600 transition-colors"
+          >
             ← back to portfolio
           </Link>
-          <div className="text-black text-base font-semibold font-jetbrains-mono">
+          <div className="text-black text-base font-semibold font-mono">
             project writeup
           </div>
         </nav>
@@ -41,7 +46,7 @@ export default function SoccerOptimization() {
               Optimization
             </span>
           </div>
-          <h1 className="font-jetbrains-mono text-2xl font-bold mb-4 leading-tight">
+          <h1 className="font-mono text-2xl font-bold mb-4 leading-tight">
             BUILDING BEST VALUE SOCCER TEAM
           </h1>
           <p className="text-base mb-6 leading-relaxed text-gray-700">
@@ -55,7 +60,7 @@ export default function SoccerOptimization() {
             <a 
               href="/soccer-team-optimization.pdf" 
               target="_blank"
-              className="inline-flex items-center text-sm font-jetbrains-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
+              className="inline-flex items-center text-sm font-mono font-medium text-blue-600 underline hover:text-blue-800 transition-colors"
             >
               VIEW FULL TECHNICAL REPORT →
             </a>
