@@ -34,9 +34,26 @@ export function SpotifyNowPlaying() {
 
     fetchNowPlaying()
     
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchNowPlaying, 30000)
-    return () => clearInterval(interval)
+    // Refresh every 45 seconds, but only when page is visible
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        fetchNowPlaying()
+      }
+    }, 45000)
+
+    // Resume polling when page becomes visible
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchNowPlaying()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [])
 
   if (loading) {

@@ -218,6 +218,10 @@ export default function HealthDashboard() {
                   width={800}
                   height={600}
                   className="w-full h-auto"
+                  priority={false}
+                  quality={85}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                 />
               </div>
               <p className="text-xs text-center text-gray-600">
@@ -265,6 +269,9 @@ export default function HealthDashboard() {
                   width={800}
                   height={600}
                   className="w-full h-auto"
+                  priority={false}
+                  quality={85}
+                  loading="lazy"
                 />
               </div>
               
@@ -319,6 +326,9 @@ export default function HealthDashboard() {
                   width={800}
                   height={600}
                   className="w-full h-auto"
+                  priority={false}
+                  quality={85}
+                  loading="lazy"
                 />
               </div>
 
@@ -387,6 +397,9 @@ export default function HealthDashboard() {
                   width={800}
                   height={600}
                   className="w-full h-auto"
+                  priority={false}
+                  quality={85}
+                  loading="lazy"
                 />
               </div>
               
@@ -467,6 +480,9 @@ export default function HealthDashboard() {
                   width={800}
                   height={600}
                   className="w-full h-auto"
+                  priority={false}
+                  quality={85}
+                  loading="lazy"
                 />
               </div>
 
