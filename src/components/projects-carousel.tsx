@@ -18,11 +18,19 @@ type Project = {
 const projects: Project[] = [
   {
     title: "Building Best Value Soccer Team",
-    description: "Using integer programming and operations research to select the optimal 11-player lineup from Europe's top leagues within budget constraints",
+    description: "Using integer programming and operations research to select the optimal 11-player lineup from Europe&apos;s top leagues within budget constraints",
     category: "Data Science", 
     link: "/projects/soccer-optimization",
     image: "/logos/wide.jpeg",
     tags: ["Python", "Gurobi", "Operations Research"]
+  },
+  {
+    title: "Lyft Express Drive Analytics",
+    description: "Business intelligence dashboard analyzing Lyft&apos;s Express Drive program across NYC, Chicago, and Philadelphia, tracking fleet utilization, driver financials, and lifetime value",
+    category: "Business Analytics",
+    link: "/projects/lyft-express-drive-dashboard",
+    image: "/logos/lyft.png",
+    tags: ["SQL", "Mode Analytics", "Business Intelligence"]
   },
   {
     title: "Graphic Design & Video Portfolio",
@@ -91,18 +99,26 @@ export function ProjectsCarousel() {
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {projects.map((project, index) => (
-            <div key={index} className="w-full flex-shrink-0 p-6">
+            <div key={index} className="w-full flex-shrink-0 p-6 pb-16 md:pb-6">
               <div className="flex flex-col md:flex-row gap-6">
                 {/* Project Visual */}
                 <div className="md:w-1/3">
-                  <div className="aspect-video bg-white border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                  <div className={`aspect-video border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center ${
+                    project.image === "/logos/lyft.png" ? "" : "bg-white"
+                  }`}
+                  style={project.image === "/logos/lyft.png" ? { backgroundColor: "#ff00bf" } : {}}
+                  >
                     {project.image ? (
                       <Image 
                         src={project.image} 
                         alt={project.title}
                         width={400}
                         height={225}
-                        className="w-full h-full object-cover"
+                        className={`${
+                          project.image === "/logos/lyft.png" 
+                            ? "w-full h-auto object-contain p-4" 
+                            : "w-full h-full object-cover"
+                        }`}
                       />
                     ) : (
                       <span className="text-6xl">
@@ -158,7 +174,7 @@ export function ProjectsCarousel() {
             prevProject()
             setIsAutoPlaying(false)
           }}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 transition-colors"
+          className="absolute left-4 top-1/2 md:top-1/2 top-auto bottom-4 md:bottom-auto transform md:-translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 transition-colors"
           aria-label="Previous project"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +186,7 @@ export function ProjectsCarousel() {
             nextProject()
             setIsAutoPlaying(false)
           }}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 transition-colors"
+          className="absolute right-4 top-1/2 md:top-1/2 top-auto bottom-4 md:bottom-auto transform md:-translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 transition-colors"
           aria-label="Next project"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
