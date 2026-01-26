@@ -71,8 +71,8 @@ export default function Home() {
 
         {/* TL;DR */}
         <section className="mb-6">
-          <div className="space-y-1.5 text-xs text-gray-700">
-            <p>product data scientist</p>
+          <div className="space-y-2.5 text-xs text-gray-700">
+            <p>Open to product data science opportunities</p>
             <p>
               I want to learn/grow as much as and as quick as possible. If you have an opportunity that allows for then shoot me message on <Link href="https://linkedin.com/in/svalenci" target="_blank" className="text-blue-600 underline hover:text-blue-800">LinkedIn</Link>
             </p>
