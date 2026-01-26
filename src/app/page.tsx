@@ -46,19 +46,11 @@ const ProjectsCarousel = dynamic(
 )
 
 export default function Home() {
-  const [openSections, setOpenSections] = useState<{ [key: number]: boolean }>({})
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  const toggleSection = (index: number) => {
-    setOpenSections(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }))
-  }
 
   // Only render the full page on the client side
   if (!mounted) {
@@ -160,7 +152,7 @@ export default function Home() {
         {/* Currently Listening - Spotify */}
         <section className="mb-4">
           <h2 className="font-mono text-xs font-semibold uppercase tracking-wide mb-3">
-            WHAT I'M LISTENING TO:
+            WHAT I&apos;M LISTENING TO:
           </h2>
           <SpotifyNowPlaying />
         </section>
