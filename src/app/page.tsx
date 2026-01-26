@@ -1,16 +1,57 @@
 "use client"
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
 import { BlinkingDot } from "@/components/blinking-dot"
 import { WorkExperience } from "@/components/work-experience"
 import { Leadership } from "@/components/leadership"
-import { SpotifyNowPlaying } from "@/components/spotify-now-playing"
-import { ProjectsCarousel } from "@/components/projects-carousel"
+
+// Dynamically import components that might use localStorage to prevent SSR issues
+const SpotifyNowPlaying = dynamic(
+  () => import("@/components/spotify-now-playing").then((mod) => ({ default: mod.SpotifyNowPlaying })),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0 animate-pulse">
+            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.84-.179-.959-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.361 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+)
+const ProjectsCarousel = dynamic(
+  () => import("@/components/projects-carousel").then((mod) => ({ default: mod.ProjectsCarousel })),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <div className="animate-pulse">
+          <div className="h-48 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    )
+  }
+)
 
 export default function Home() {
   const [openSections, setOpenSections] = useState<{ [key: number]: boolean }>({})
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const toggleSection = (index: number) => {
     setOpenSections(prev => ({
@@ -19,114 +60,35 @@ export default function Home() {
     }))
   }
 
+  // Only render the full page on the client side
+  if (!mounted) {
+    return null
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Header - No border, bigger text, no blue box */}
-      <header className="py-6">
-        <nav className="max-w-2xl mx-auto px-6 flex justify-between items-center">
-          <div className="text-black text-base font-semibold font-serif">
-            sebo
-          </div>
-          <div className="flex gap-4 md:gap-8 font-mono text-sm font-medium items-center">
-            <Link href="mailto:svalenci@uwaterloo.ca" target="_blank" className="text-blue-600 underline hover:text-blue-800">
-              CONTACT
-            </Link>
-            <Link href="https://linkedin.com/in/svalenci" target="_blank" className="text-blue-600 underline hover:text-blue-800">
-              LINKEDIN
-            </Link>
-            <Link href="https://twitter.com/sebo1738" target="_blank" className="text-blue-600 underline hover:text-blue-800">
-              TWITTER
-            </Link>
-          </div>
-        </nav>
-      </header>
 
       {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-6 pt-16 pb-16">
+      <main className="max-w-2xl mx-auto px-6 pt-6 pb-12">
         {/* Hero Section */}
-        <section className="mb-12">
-          <h1 className="font-mono text-2xl font-bold mb-4 leading-tight">
+        <section className="mb-5">
+          <h1 className="font-mono text-lg font-bold mb-2 leading-tight">
             HEY, I&apos;M SEBASTIAN<BlinkingDot />
           </h1>
-          <p className="text-base mb-2"><br />i&apos;m 23, from <Link href="https://www.youtube.com/watch?v=ATK4v-hxJX8" target="_blank" className="text-blue-600 underline hover:text-blue-800">toronto</Link>.</p>
-          <p className="text-base mb-6">I&apos;ve been failing and getting back up for {Math.floor((new Date().getTime() - new Date('2002-01-13').getTime()) / (1000 * 60 * 60 * 24)).toLocaleString()} days.</p>
-        </section>
-
-        {/* Achievements */}
-        <section className="mb-10">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            A FEW ACHIEVEMENTS:
-          </h2>
-          <ul className="space-y-2 ml-4">
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">went from a 68% grade 11 average to a 97% grade 12 average</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">led <Link href="https://www.techplusuw.com/" target="_blank" className="text-blue-600 underline hover:text-blue-800">mentorship program</Link> for 200+ students in tech</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">top 1% in valorant & marvel rivals</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">did uber eats walking in downtown toronto during covid</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">saw messi in person</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">resold everything from candy to <Link href="https://www.instagram.com/heat.ca/?hl=en" target="_blank" className="text-blue-600 underline hover:text-blue-800">shoes</Link> to <Link href="https://www.kijiji.ca/o-profile/1004568164/reviews" target="_blank" className="text-blue-600 underline hover:text-blue-800">electronics</Link> to <Link href="https://www.ebay.ca/usr/sebavale99" target="_blank" className="text-blue-600 underline hover:text-blue-800">collectibles</Link></span>
-            </li>
-          </ul>
-        </section>
-
-        {/* Current Projects */}
-        <section className="mb-10">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            WHAT I&apos;M WORKING ON RIGHT NOW:
-          </h2>
-          <ul className="space-y-2 ml-4">
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">training for a triathlon</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1">learning how to be a swe</span>
-            </li>
-            <li className="flex items-start text-sm">
-              <span className="text-black font-bold mr-3 mt-0.5">•</span>
-              <span className="flex-1"><Link href="https://www.sebo.fyi/" target="_blank" className="text-blue-600 underline hover:text-blue-800">this website</Link></span>
-            </li>
-          </ul>
-          <p className="text-sm text-gray-600 italic mt-4">
-            more to come
-          </p>
         </section>
 
         {/* TL;DR */}
-        <section className="mb-10">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            TL;DR:
-          </h2>
-          <div className="space-y-3 text-sm">
-            <p>i have a strong background in data</p>
+        <section className="mb-6">
+          <div className="space-y-1.5 text-xs text-gray-700">
+            <p>product data scientist</p>
             <p>
-              everywhere i go I try and do, learn grow as much as possible and I want to keep doing that.
-            </p>
-            <p>
-              i&apos;m a big believer in myself 
+              I want to learn/grow as much as and as quick as possible. If you have an opportunity that allows for then shoot me message on <Link href="https://linkedin.com/in/svalenci" target="_blank" className="text-blue-600 underline hover:text-blue-800">LinkedIn</Link>
             </p>
           </div>
         </section>
 
-        {/* Expandable Sections - Better spacing and readability */}
-        <section className="mb-10">
+        {/* Expandable Sections - Hidden for minimalism but kept in codebase */}
+        {/* <section className="mb-10">
           <div className="space-y-3">
             {[
               {
@@ -184,7 +146,7 @@ export default function Home() {
               )
             })}
           </div>
-        </section>
+        </section> */}
 
         {/* Work Experience */}
         <WorkExperience />
@@ -196,47 +158,28 @@ export default function Home() {
         <ProjectsCarousel />
 
         {/* Currently Listening - Spotify */}
-        <section className="mb-10">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            CURRENTLY LISTENING:
+        <section className="mb-4">
+          <h2 className="font-mono text-xs font-semibold uppercase tracking-wide mb-3">
+            WHAT I'M LISTENING TO:
           </h2>
           <SpotifyNowPlaying />
         </section>
 
-        {/* Directory - Last */}
-        <section className="mb-10">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-4">
-            DIRECTORY:
-          </h2>
-          <ul className="space-y-2 ml-4">
-            {[
-              { name: "contact", href: "mailto:svalenci@uwaterloo.ca" },
-              { name: "gallery", href: "/gallery" },
-              { name: "blog", href: "/blog" }
-            ].map((item, index) => (
-              <li key={index} className="flex items-start text-sm">
-                <span className="text-black font-bold mr-3 mt-0.5">•</span>
-                <Link 
-                  href={item.href} 
-                  target={item.href.startsWith('mailto:') ? "_blank" : "_self"}
-                  className="text-blue-600 underline hover:text-blue-800 flex-1"
-                >
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        {/* Subtle Horizontal Line */}
+        <div className="border-t border-gray-100 my-4"></div>
+
+        {/* Contact Links */}
+        <section className="mb-4">
+          <div className="flex gap-4 md:gap-6 font-mono text-xs font-medium items-center justify-center">
+            <Link href="mailto:svalenci@uwaterloo.ca" target="_blank" className="text-blue-600 underline hover:text-blue-800">
+              CONTACT
+            </Link>
+            <Link href="https://linkedin.com/in/svalenci" target="_blank" className="text-blue-600 underline hover:text-blue-800">
+              LINKEDIN
+            </Link>
+          </div>
         </section>
       </main>
-
-      {/* Footer - Smaller */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <p className="text-xs text-gray-500">
-            © 2025 Sebastian Valencia. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }

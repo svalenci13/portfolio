@@ -3,61 +3,44 @@ import Image from "next/image"
 
 export function Leadership() {
   return (
-    <section className="mb-10">
-      <h2 className="font-mono text-sm font-semibold uppercase tracking-wide mb-6">
+    <section className="mb-6">
+      <h2 className="font-mono text-xs font-semibold uppercase tracking-wide mb-3">
         LEADERSHIP:
       </h2>
-      <div className="space-y-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-white border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0 p-1">
+      <div className="space-y-1">
+        <Link href="https://www.techplusuw.com" target="_blank" className="flex items-center gap-3 hover:bg-gray-50 rounded py-0.5 transition-colors">
+          <div className="w-6 h-6 bg-white border border-gray-200 rounded flex items-center justify-center flex-shrink-0 p-0.5">
             <Image 
               src="/logos/techplus.png" 
               alt="Tech+ UW" 
-              width={40} 
-              height={40}
-              className="w-10 h-10 object-contain"
+              width={20} 
+              height={20}
+              className="w-5 h-5 object-contain"
               unoptimized
             />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-semibold text-base">Tech+ UW</h3>
-              <span className="text-sm text-gray-500 font-mono">Jan 2024 – Dec 2024</span>
-            </div>
-            <p className="text-sm text-gray-600 mb-2">Logistics Lead</p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              restarted <Link href="https://www.techplusuw.com/" target="_blank" className="text-blue-600 underline hover:text-blue-800">mentorship program</Link> that helped me in first year, had 200+ students from diverse backgrounds
-            </p>
+          <div className="flex-1 flex items-center justify-between min-w-0">
+            <span className="text-xs text-gray-700">Logistics Lead</span>
+            <span className="text-xs text-gray-700 font-semibold">Tech+ UW</span>
           </div>
-        </div>
+        </Link>
 
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-black border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+        <Link href="https://www.uwdatascience.ca" target="_blank" className="flex items-center gap-3 hover:bg-gray-50 rounded py-0.5 transition-colors">
+          <div className="w-6 h-6 bg-black border border-gray-200 rounded flex items-center justify-center flex-shrink-0">
             <Image 
               src="/logos/uwdsc.png" 
               alt="UW Data Science Club" 
-              width={48} 
-              height={48}
-              className="w-12 h-12 object-contain rounded-lg"
+              width={24} 
+              height={24}
+              className="w-6 h-6 object-contain rounded"
               unoptimized
             />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-semibold text-base">University of Waterloo Data Science Club</h3>
-              <span className="text-sm text-gray-500 font-mono">Dec 2022 – Aug 2023</span>
-            </div>
-            <p className="text-sm text-gray-600 mb-2">President</p>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-700 leading-relaxed">
-                launched <Link href="https://creators.spotify.com/pod/profile/uwdsc-dataden" target="_blank" className="text-blue-600 underline hover:text-blue-800">podcast</Link>, did everything from editing to creating logos & graphics to cold messaging guests
-              </p>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                founded <Link href="https://www.linkedin.com/feed/update/urn:li:activity:7055207351288549376" target="_blank" className="text-blue-600 underline hover:text-blue-800">consulting team</Link> reached out 40+ companies; delivered climate risk analytics for <Link href="https://www.manifestclimate.com/" target="_blank" className="text-blue-600 underline hover:text-blue-800">manifest climate</Link>
-              </p>
-            </div>
+          <div className="flex-1 flex items-center justify-between min-w-0">
+            <span className="text-xs text-gray-700">President</span>
+            <span className="text-xs text-gray-700 font-semibold">UW Data Science Club</span>
           </div>
-        </div>
+        </Link>
       </div>
     </section>
   )
