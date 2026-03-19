@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linearization Visualizer – sebo</title>
+  <link rel="canonical" href="https://sebo.fyi/linearization-visualizer" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.0/math.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #0a0a0a;
+      min-height: 100vh;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-header {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-header a {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0a0a0a;
+      text-decoration: none;
+    }
+    .site-header nav a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    .site-header nav a:hover { color: #1e40af; }
+
+    .page { max-width: 960px; margin: 0 auto; padding: 24px 24px 12px; }
+
+    .site-footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+    }
+    .site-footer-line { border-top: 1px solid #f3f4f6; margin: 16px 0; }
+    .site-footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .site-footer-links a {
+      color: #2563eb;
+      text-decoration: underline;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .site-footer-links a:hover { color: #1e40af; }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    h1 { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
+    .byline { font-size: 11px; color: #6b7280; font-family: 'JetBrains Mono', monospace; }
+    .byline em { font-style: normal; }
+
+    /* ── Insight strip ── */
+    .insight-strip {
+      display: flex;
+      gap: 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: #f9fafb;
+    }
+    .insight-item {
+      flex: 1;
+      padding: 10px 14px;
+      border-right: 1px solid #e5e7eb;
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.45;
+    }
+    .insight-item:last-child { border-right: none; }
+    .insight-item strong { color: #0a0a0a; font-weight: 600; }
+    .insight-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .fn-label { font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .fn-input {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 6px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      outline: none;
+      width: 160px;
+      background: #fafafa;
+      transition: border 0.15s;
+    }
+    .fn-input:focus { border-color: #0a0a0a; background: #fff; }
+    .fn-error { font-size: 12px; color: #e53935; margin-bottom: 8px; min-height: 16px; }
+
+    .presets {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .preset-btn {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      color: #6b7280;
+      transition: all 0.12s;
+    }
+    .preset-btn:hover { background: #f3f4f6; color: #0a0a0a; }
+    .preset-btn.active { background: #0a0a0a; color: #fff; border-color: #0a0a0a; }
+
+    .divider { width: 1px; height: 22px; background: #e5e7eb; margin: 0 2px; }
+
+    /* ── Graph ── */
+    .graph-wrap {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 0;
+      background: #fff;
+    }
+    svg { display: block; }
+
+    /* ── Graph footer bar ── */
+    .graph-footer {
+      border: 1px solid #e5e7eb;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      background: #f9fafb;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .legend { display: flex; gap: 14px; align-items: center; margin-right: auto; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #6b7280; font-family: 'JetBrains Mono', monospace; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .btn {
+      border: 1px solid transparent;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .btn-primary { background: #0a0a0a; color: #fff; border-color: #0a0a0a; border-radius: 10px; }
+    .btn-primary:hover { background: #262626; }
+    .btn-ghost { background: transparent; color: #6b7280; border-color: #e5e7eb; border-radius: 10px; }
+    .btn-ghost:hover { background: #f9fafb; color: #0a0a0a; }
+    .btn-randomize { background: #0a0a0a; color: #fff; border-color: #0a0a0a; font-size: 11px; padding: 7px 16px; border-radius: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .btn-randomize:hover { background: #262626; }
+
+    .slider-row { display: flex; align-items: center; gap: 6px; }
+    .slider-label { font-size: 11px; color: #6b7280; white-space: nowrap; font-family: 'JetBrains Mono', monospace; }
+    input[type=range] { width: 80px; accent-color: #0a0a0a; cursor: pointer; }
+    .slider-val { font-size: 11px; color: #374151; min-width: 28px; font-variant-numeric: tabular-nums; font-family: 'JetBrains Mono', monospace; }
+    .note { font-size: 11px; color: #ccc; margin-left: auto; white-space: nowrap; }
+
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .stat-box {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: #f9fafb;
+    }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #0a0a0a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; font-weight: 600; }
+    .stat-sub { font-size: 10px; color: #6b7280; margin-bottom: 6px; }
+    .stat-value { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+    .t-color { color: #16a34a; }
+    .c-color { color: #ea580c; }
+
+    /* ── Delta shift ── */
+    .delta-section {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      background: #f9fafb;
+    }
+    .delta-header { margin-bottom: 14px; }
+    .delta-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #0a0a0a; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .delta-sub { font-size: 12px; color: #374151; }
+    .delta-flow { display: flex; align-items: center; gap: 24px; }
+    .delta-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .delta-col-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: #6b7280; margin-bottom: 2px; }
+    .delta-row { display: flex; justify-content: space-between; align-items: center; }
+    .delta-row-label { font-size: 12px; color: #6b7280; }
+    .delta-val { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .delta-arrow { text-align: center; font-size: 11px; color: #aaa; white-space: nowrap; padding: 0 8px; }
+
+    /* ── Explainer ── */
+    .explainer {
+      border: 1px solid #e5e7eb;
+      border-top: 3px solid #0a0a0a;
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.65;
+      background: #f9fafb;
+    }
+    .explainer b { color: #0a0a0a; font-weight: 600; }
+    .t { color: #16a34a; font-weight: 600; }
+    .c { color: #ea580c; font-weight: 600; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <a href="https://sebo.fyi">sebo</a>
+  <nav><a href="https://sebo.fyi">back to portfolio</a></nav>
+</header>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>A/B Experiment Linearization Visualizer</h1>
+    <span class="byline">Interactive companion to the article</span>
+  </div>
+
+  <!-- Insight strip -->
+  <div class="insight-strip">
+    <div class="insight-item">
+      <div class="insight-label">User behavior</div>
+      Can be <strong>anything</strong>, so the metric function can be anything
+    </div>
+    <div class="insight-item">
+      <div class="insight-label">The true rate</div>
+      Can sit <strong>anywhere</strong>, so the expansion point can be anywhere
+    </div>
+    <div class="insight-item">
+      <div class="insight-label">What this proves</div>
+      <span style="color:#16a34a;font-weight:600">Variant</span> and <span style="color:#ea580c;font-weight:600">control</span> approximation errors always cancel out. If there is a true uplift, it survives.
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <span class="fn-label">f(x) =</span>
+    <input class="fn-input" id="fn-input" value="x^2" onkeydown="if(event.key==='Enter') applyFn()">
+    <button class="btn btn-primary" onclick="applyFn()">Plot</button>
+    <div class="divider"></div>
+    <div class="presets">
+      <button class="preset-btn active" onclick="setPreset(this,'x^2',0)">x²</button>
+      <button class="preset-btn" onclick="setPreset(this,'x^3',1)">x³</button>
+      <button class="preset-btn" onclick="setPreset(this,'sin(x)',0.5)">sin(x)</button>
+      <button class="preset-btn" onclick="setPreset(this,'sqrt(abs(x))',1)">√|x|</button>
+      <button class="preset-btn" onclick="setPreset(this,'e^x',0)">eˣ</button>
+      <button class="preset-btn" onclick="setPreset(this,'log(abs(x)+0.1)',1)">log|x|</button>
+    </div>
+    <div class="divider"></div>
+    <button class="btn btn-randomize" onclick="randomizeUsers()">⟳ Randomize 1M Users</button>
+  </div>
+  <div class="fn-error" id="fn-error"></div>
+
+  <!-- Graph -->
+  <div class="graph-wrap">
+      <svg id="main-graph" width="900" height="360"></svg>
+  </div>
+
+  <!-- Graph footer bar -->
+  <div class="graph-footer">
+    <div class="legend" id="legend">
+      <div class="legend-item">
+        <svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#888" stroke-width="2.5"/></svg>
+        f(x)
+      </div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>Variant</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ea580c"></div>Control</div>
+      <div class="legend-item">
+        <svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#1d4ed8" stroke-width="2"/></svg>
+        Tangent
+      </div>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Point:</span>
+      <input type="range" id="mean-slider" min="-1.8" max="1.8" step="0.1" value="0" oninput="updateMean(this.value)">
+      <span class="slider-val" id="mean-label">0.0</span>
+    </div>
+    <div class="divider"></div>
+    <div class="slider-row">
+      <span class="slider-label">Effect:</span>
+      <input type="range" id="effect-slider" min="0" max="1" step="0.01" value="0" oninput="updateEffect(this.value)">
+      <span class="slider-val" id="effect-label">0%</span>
+    </div>
+    <div class="divider"></div>
+    <button class="btn btn-ghost" id="toggle-errors" onclick="toggleErrors()">Hide errors</button>
+  </div>
+  <div style="font-size:11px;color:#ccc;text-align:right;margin-bottom:14px;margin-top:-10px">1M users computed · 40 dots shown</div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-label">Avg error: Treatment</div>
+      <div class="stat-sub">curvature error + signal</div>
+      <div class="stat-value t-color" id="stat-t">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Avg error: Control</div>
+      <div class="stat-sub">curvature error only</div>
+      <div class="stat-value c-color" id="stat-c">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Difference</div>
+      <div class="stat-sub">Curvature cancels, signal survives</div>
+      <div class="stat-value" id="stat-diff">—</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Measured lift (variant vs control)</div>
+        <div class="stat-sub">measured from data</div>
+      <div class="stat-value" style="color:#2563eb" id="stat-effect">—</div>
+    </div>
+  </div>
+
+  <!-- Delta shift section -->
+  <div class="delta-section" id="delta-shift-section">
+    <div class="delta-header">
+      <div>
+        <div class="delta-title">What + R Looks Like</div>
+        <div class="delta-sub">Without + R, each user's value is their deviation from the overall rate, centering around 0. Adding R back shifts values to the actual rate so the platform displays meaningful numbers.</div>
+      </div>
+    </div>
+    <div class="delta-flow">
+      <div class="delta-col">
+        <div class="delta-col-label" style="color:#111">Without + R</div>
+        <div class="delta-row"><span class="delta-row-label">Avg across control users</span><span class="delta-val" id="delta-c-raw">—</span></div>
+        <div class="delta-row"><span class="delta-row-label">Avg across variant users</span><span class="delta-val t-color" id="delta-t-raw">—</span></div>
+      </div>
+      <div class="delta-arrow">+ R =<br><span id="delta-r-val" style="font-size:18px;font-weight:700;color:#111">—</span></div>
+      <div class="delta-col">
+        <div class="delta-col-label" style="color:#111">With + R</div>
+        <div class="delta-row"><span class="delta-row-label">Avg across control users</span><span class="delta-val" id="delta-c-shifted">—</span></div>
+        <div class="delta-row"><span class="delta-row-label">Avg across variant users</span><span class="delta-val t-color" id="delta-t-shifted">—</span></div>
+        <div class="delta-row"><span class="delta-row-label">Relative change</span><span class="delta-val" id="delta-lift-shifted" style="color:#2563eb">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Naive vs linearized comparison -->
+  <div class="delta-section" style="margin-bottom:14px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+      <div>
+        <div class="delta-title">The Problem: Naive Ratios Give the Wrong Answer</div>
+        <div class="delta-sub">Platforms need one number per user. The obvious approach: give each user their ratio (clicks/impressions). But when users have different activity levels, averaging those ratios is wrong. The numbers below are exaggerated to make the gap obvious, but the same bias shows up in real experiments.</div>
+      </div>
+      <button class="btn btn-ghost" onclick="generateCTRUsers()" style="flex-shrink:0">⟳ New users</button>
+    </div>
+    <div style="border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:12px">
+      <svg id="ctr-graph" width="900" height="200"></svg>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="border:1px solid #fecaca;border-radius:8px;padding:12px 14px;background:#fff5f5">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#e53935;margin-bottom:4px">Naive: avg(numerator / denominator) per user</div>
+        <div style="font-size:22px;font-weight:700;color:#e53935" id="ctr-naive">—</div>
+        <div style="font-size:11px;color:#aaa;margin-top:3px">Equal weight per user</div>
+      </div>
+      <div style="border:1px solid #bbf7d0;border-radius:8px;padding:12px 14px;background:#f0fdf4">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#16a34a;margin-bottom:4px">Correct: total numerator / total denominator</div>
+        <div style="font-size:22px;font-weight:700;color:#16a34a" id="ctr-true">—</div>
+        <div style="font-size:11px;color:#aaa;margin-top:3px">Weighted by exposure</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;border-top:1px solid #e8e8e8;padding-top:14px">
+      <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:8px">So what do we do?</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#555">
+        <li style="display:flex;gap:8px"><span style="color:#e53935;flex-shrink:0">✗</span><span><b style="color:#111">Naive:</b> give the platform each user's ratio. It averages them. You get avg(n/d), which is wrong because light users count as much as heavy users.</span></li>
+        <li style="display:flex;gap:8px"><span style="color:#16a34a;flex-shrink:0">✓</span><span><b style="color:#111">Linearized:</b> transform each user's value so that when the platform averages them, it recovers the true rate. Same format, correct answer.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="explainer" style="text-align:center;padding:20px 18px;font-family:'JetBrains Mono',monospace;font-size:12px">
+    For a full explanation of why this works, <a href="https://substack.com/@sebastianvalencia" style="color:#2563eb;font-weight:600;text-decoration:underline">read the article</a>.
+  </div>
+
+</div>
+<footer class="site-footer">
+  <div class="site-footer-line"></div>
+  <div class="site-footer-links">
+    <a href="mailto:svalenci@uwaterloo.ca">contact</a>
+    <a href="https://linkedin.com/in/svalenci" target="_blank">linkedin</a>
+  </div>
+</footer>
+<script>
+  const W = 900, H = 360;
+  const PAD = { top: 20, right: 20, bottom: 36, left: 48 };
+  const NS = 'http://www.w3.org/2000/svg';
+
+  let fnExpr = null;
+  let users = [];
+  let showErrors = true;
+  let liftPct = 0; // 0 to 1
+  let xMin, xMax, yMin, yMax;
+
+  function evalFn(x) { try { return fnExpr.evaluate({ x }); } catch { return NaN; } }
+  function derivative(x) { const h = 1e-5; return (evalFn(x+h) - evalFn(x-h)) / (2*h); }
+  function tangentAt(a) { const fa = evalFn(a), dfa = derivative(a); return x => fa + dfa*(x-a); }
+
+  function sx(x) { return PAD.left + (x-xMin)/(xMax-xMin)*(W-PAD.left-PAD.right); }
+  function sy(y) { return PAD.top + (1-(y-yMin)/(yMax-yMin))*(H-PAD.top-PAD.bottom); }
+
+  function el(tag, attrs, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function getXShift(meanX) {
+    const fVal = Math.abs(evalFn(meanX));
+    const fDeriv = Math.abs(derivative(meanX));
+    let scale;
+    if (fVal < 0.01 || fDeriv < 0.01) {
+      scale = 0.5;
+    } else {
+      scale = Math.min(0.8, 0.5 * fVal / fDeriv);
+      scale = Math.max(0.05, scale);
+    }
+    return liftPct * scale;
+  }
+
+  function computeBounds(meanX) {
+    const xShift = getXShift(meanX);
+    xMin = meanX - 2.4; xMax = meanX + 2.4 + xShift;
+    const ys = [];
+    for (let x = xMin; x <= xMax; x += 0.05) {
+      const y = evalFn(x);
+      if (isFinite(y)) ys.push(y);
+    }
+    if (!ys.length) { yMin = -2; yMax = 2; return; }
+    const rawMin = Math.min(...ys), rawMax = Math.max(...ys);
+    const pad = (rawMax-rawMin)*0.2 || 1;
+    yMin = rawMin-pad; yMax = rawMax+pad;
+  }
+
+  function draw() {
+    const svg = document.getElementById('main-graph');
+    svg.innerHTML = '';
+    const meanX = parseFloat(document.getElementById('mean-slider')?.value || 0);
+    computeBounds(meanX);
+
+    const gyStep = pickStep((yMax-yMin)/5);
+    for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+      svg.appendChild(el('line', { x1:sx(x), y1:PAD.top, x2:sx(x), y2:H-PAD.bottom, stroke:'#f0f0f0', 'stroke-width':1 }));
+      if (x!==0) svg.appendChild(el('text', { x:sx(x), y:H-PAD.bottom+14, 'text-anchor':'middle', 'font-size':10, fill:'#ccc' }, x));
+    }
+    for (let y = Math.ceil(yMin/gyStep)*gyStep; y <= yMax; y += gyStep) {
+      const yr = Math.round(y*1000)/1000;
+      svg.appendChild(el('line', { x1:PAD.left, y1:sy(yr), x2:W-PAD.right, y2:sy(yr), stroke:'#f0f0f0', 'stroke-width':1 }));
+      svg.appendChild(el('text', { x:PAD.left-6, y:sy(yr)+4, 'text-anchor':'end', 'font-size':10, fill:'#ccc' }, fmt(yr)));
+    }
+    if (yMin<0&&yMax>0) svg.appendChild(el('line', { x1:PAD.left, y1:sy(0), x2:W-PAD.right, y2:sy(0), stroke:'#e0e0e0', 'stroke-width':1 }));
+    if (xMin<0&&xMax>0) svg.appendChild(el('line', { x1:sx(0), y1:PAD.top, x2:sx(0), y2:H-PAD.bottom, stroke:'#e0e0e0', 'stroke-width':1 }));
+
+    const xShift = getXShift(meanX);
+    const pooledY = evalFn(meanX);
+    const dfa = derivative(meanX);
+    const L = x => pooledY + dfa * (x - meanX);
+    let tX1 = xMin, tX2 = xMax;
+    if (Math.abs(dfa) > 1e-10) {
+      const xAtYMin = meanX + (yMin - pooledY) / dfa;
+      const xAtYMax = meanX + (yMax - pooledY) / dfa;
+      const xLow = Math.min(xAtYMin, xAtYMax);
+      const xHigh = Math.max(xAtYMin, xAtYMax);
+      tX1 = Math.max(xMin, xLow);
+      tX2 = Math.min(xMax, xHigh);
+    }
+    if (tX1 < tX2 && isFinite(L(tX1)) && isFinite(L(tX2))) {
+      svg.appendChild(el('line', {
+        x1:sx(tX1), y1:sy(L(tX1)),
+        x2:sx(tX2), y2:sy(L(tX2)),
+        stroke:'#1d4ed8', 'stroke-width':2
+      }));
+    }
+
+    const drawCurve = (stroke, width, dash, opacity) => {
+      const pts = [];
+      for (let x = xMin; x <= xMax; x += 0.01) {
+        const y = evalFn(x);
+        if (!isFinite(y)||y<yMin-2||y>yMax+2) {
+          if (pts.length>1) svg.appendChild(el('polyline', { points:pts.join(' '), fill:'none', stroke, 'stroke-width':width, 'stroke-linejoin':'round', 'stroke-linecap':'round', opacity, ...(dash ? {'stroke-dasharray':dash} : {}) }));
+          pts.length=0; continue;
+        }
+        pts.push(`${sx(x)},${sy(y)}`);
+      }
+      if (pts.length>1) svg.appendChild(el('polyline', { points:pts.join(' '), fill:'none', stroke, 'stroke-width':width, 'stroke-linejoin':'round', 'stroke-linecap':'round', opacity, ...(dash ? {'stroke-dasharray':dash} : {}) }));
+    };
+
+    drawCurve('#888', 2.5, null, 1);
+    const labelX = xMax - 0.2;
+    const labelY = evalFn(labelX);
+    if (isFinite(labelY)) svg.appendChild(el('text', { x:sx(labelX)+4, y:sy(labelY)+4, 'font-size':10, fill:'#888', 'font-weight':'600' }, 'f(x)'));
+
+    if (isFinite(pooledY)) {
+      svg.appendChild(el('circle', { cx:sx(meanX), cy:sy(pooledY), r:5, fill:'#111', stroke:'white', 'stroke-width':1.5 }));
+      const label = `x = ${parseFloat(meanX).toFixed(1)}`;
+      svg.appendChild(el('text', { x:sx(meanX)+9, y:sy(pooledY)-7, 'font-size':11, fill:'#555', 'font-weight':'600' }, label));
+    }
+
+    let sumApproxErrT=0, sumApproxErrC=0, sumValT=0, sumValC=0, nT=0, nC=0;
+    const renderSample = new Set();
+    const step = Math.floor(users.length/40);
+    for (let i=0; i<users.length; i+=step) renderSample.add(i);
+
+    for (let i=0; i<users.length; i++) {
+      const u = users[i];
+      const isTreatment = u.group==='treatment';
+      const effectiveX = isTreatment ? u.x + meanX + xShift : u.x + meanX;
+      const trueY = evalFn(effectiveX);
+      const approxY = L(effectiveX);
+      if (!isFinite(trueY)||!isFinite(approxY)) continue;
+      const approxErr = trueY - approxY;
+      if (isTreatment) { sumApproxErrT+=approxErr; sumValT+=trueY; nT++; }
+      else { sumApproxErrC+=approxErr; sumValC+=trueY; nC++; }
+      if (!renderSample.has(i)) continue;
+
+      const color = u.group==='treatment' ? '#16a34a' : '#ea580c';
+      const cx=sx(effectiveX), cy=sy(trueY), cy2=sy(approxY);
+      if (showErrors && Math.abs(cy-cy2) > 5) {
+        const tangentOnScreen = cy2 >= PAD.top - 10 && cy2 <= H - PAD.bottom + 10;
+        if (tangentOnScreen) {
+          // Full arrow from dot to tangent line
+          const topY = Math.min(cy, cy2);
+          const botY = Math.max(cy, cy2);
+          svg.appendChild(el('line', { x1:cx, y1:topY+4, x2:cx, y2:botY-4, stroke:color, 'stroke-width':1.5, opacity:0.55, 'stroke-dasharray':'3,2' }));
+          const wingY = cy2 + (cy < cy2 ? -6 : 6);
+          svg.appendChild(el('polygon', { points:`${cx},${cy2} ${cx-3},${wingY} ${cx+3},${wingY}`, fill:color, opacity:0.8 }));
+        } else {
+          // Arrow from dot to graph edge in direction of tangent
+          const edgeY = cy2 > cy ? H - PAD.bottom : PAD.top;
+          if (Math.abs(edgeY - cy) > 8) {
+            const topY = Math.min(cy, edgeY);
+            const botY = Math.max(cy, edgeY);
+            svg.appendChild(el('line', { x1:cx, y1:topY+4, x2:cx, y2:botY, stroke:color, 'stroke-width':1.5, opacity:0.55, 'stroke-dasharray':'3,2' }));
+          }
+        }
+      }
+      svg.appendChild(el('circle', { cx, cy, r:4, fill:color, stroke:'white', 'stroke-width':1.5, opacity:0.9 }));
+    }
+
+    const avgErrT = nT>0 ? sumApproxErrT/nT : null;
+    const avgErrC = nC>0 ? sumApproxErrC/nC : null;
+    const avgValT = nT>0 ? sumValT/nT : null;
+    const avgValC = nC>0 ? sumValC/nC : null;
+    const pooledR = pooledY;
+
+    const deltaSection = document.getElementById('delta-shift-section');
+    if (avgErrT !== null && avgErrC !== null && avgValC !== null && avgValT !== null) {
+      deltaSection.style.display = '';
+      const rawC = avgErrC, rawT = avgErrT;
+      const shiftedC = rawC + pooledR, shiftedT = rawT + pooledR;
+      const rawLiftShifted = Math.abs(avgValC) > 0.01 ? ((avgValT - avgValC) / Math.abs(avgValC) * 100) : 0;
+      document.getElementById('delta-c-raw').textContent = fmt(rawC);
+      document.getElementById('delta-t-raw').textContent = fmt(rawT);
+      document.getElementById('delta-r-val').textContent = fmt(pooledR);
+      document.getElementById('delta-c-shifted').textContent = fmt(shiftedC);
+      document.getElementById('delta-t-shifted').textContent = fmt(shiftedT);
+      document.getElementById('delta-lift-shifted').textContent = (rawLiftShifted>0?'+':'') + rawLiftShifted.toFixed(1) + '%';
+    } else {
+      deltaSection.style.display = 'none';
+    }
+    document.getElementById('stat-t').textContent = avgErrT!==null ? fmt(avgErrT) : '—';
+    document.getElementById('stat-c').textContent = avgErrC!==null ? fmt(avgErrC) : '—';
+    if (avgErrT!==null && avgErrC!==null) {
+      const diff = avgErrT-avgErrC;
+      const absDiff = Math.abs(diff);
+      const sd = document.getElementById('stat-diff');
+      sd.textContent = fmt(diff);
+      sd.style.color = absDiff<0.05 ? '#16a34a' : absDiff<0.5 ? '#d97706' : '#2563eb';
+    }
+    if (avgValT!==null && avgValC!==null) {
+      const hasEffect = liftPct > 0;
+      const absDiff = avgValT - avgValC;
+      const canComputeRelative = Math.abs(avgValC) > 0.01;
+      const se = document.getElementById('stat-effect');
+      let effectStr;
+      if (!hasEffect) {
+        effectStr = '0%';
+      } else if (canComputeRelative) {
+        const rawLift = (absDiff / Math.abs(avgValC)) * 100;
+        effectStr = (rawLift>0?'+':'') + rawLift.toFixed(1) + '%';
+      } else {
+        effectStr = 'Δ ' + fmt(absDiff);
+      }
+      se.textContent = effectStr;
+      se.style.color = hasEffect ? '#2563eb' : '#bbb';
+      document.getElementById('effect-label').textContent = effectStr;
+    }
+  }
+
+  function randomizeUsers() {
+    users = [];
+    const n = 1000000;
+    for (let i=0; i<n; i++) users.push({ x:(Math.random()*4)-2, group: i<n/2?'treatment':'control' });
+    users = users.sort(()=>Math.random()-0.5);
+    draw();
+  }
+
+  function resetSliders(point) {
+    liftPct = 0;
+    const p = point ?? 0;
+    document.getElementById('effect-slider').value = 0;
+    document.getElementById('effect-label').textContent = '0%';
+    document.getElementById('mean-slider').value = p;
+    document.getElementById('mean-label').textContent = parseFloat(p).toFixed(1);
+  }
+
+  function applyFn(point) {
+    const raw = document.getElementById('fn-input').value.trim();
+    document.getElementById('fn-error').textContent = '';
+    try {
+      const compiled = math.parse(raw).compile();
+      const test = compiled.evaluate({ x: 1 });
+      if (typeof test !== 'number' || !isFinite(test)) throw new Error('bad');
+      fnExpr = compiled;
+      resetSliders(point);
+      randomizeUsers();
+      document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    } catch { document.getElementById('fn-error').textContent = 'Invalid. Try: x^2, sin(x), x^3'; }
+  }
+
+  function setPreset(btn, fn, point) {
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('fn-input').value = fn;
+    applyFn(point);
+  }
+
+  function updateMean(val) {
+    document.getElementById('mean-label').textContent = parseFloat(val).toFixed(1);
+    draw();
+  }
+
+  function updateEffect(val) {
+    liftPct = parseFloat(val);
+    draw();
+  }
+
+  function toggleErrors() {
+    showErrors = !showErrors;
+    document.getElementById('toggle-errors').textContent = showErrors ? 'Hide errors' : 'Show errors';
+    draw();
+  }
+
+  function fmt(n) { return (Math.round(n*1000)/1000).toFixed(3); }
+  function pickStep(raw) { return [0.1,0.2,0.25,0.5,1,2,5,10,25,50].find(s=>s>=raw)||50; }
+
+  // ---- CTR simulation ----
+  function generateCTRUsers() {
+    const CW = 900, CH = 200;
+    const CPAD = { top: 16, right: 20, bottom: 32, left: 48 };
+    const svg = document.getElementById('ctr-graph');
+    svg.innerHTML = '';
+
+    // Generate users: 70% light (5-30 impressions, high CTR), 30% heavy (100-600 impressions, low CTR)
+    const users = [];
+    for (let i = 0; i < 60; i++) {
+      const isHeavy = Math.random() < 0.3;
+      const impressions = isHeavy ? Math.round(100 + Math.random() * 500) : Math.round(5 + Math.random() * 25);
+      const trueCTR = isHeavy ? 0.15 + Math.random() * 0.15 : 0.55 + Math.random() * 0.3;
+      const clicks = Math.round(impressions * trueCTR);
+      users.push({ impressions, clicks, ctr: clicks / impressions });
+    }
+
+    const maxImp = Math.max(...users.map(u => u.impressions));
+    const naive = users.reduce((s, u) => s + u.ctr, 0) / users.length;
+    const trueRate = users.reduce((s, u) => s + u.clicks, 0) / users.reduce((s, u) => s + u.impressions, 0);
+
+    const gw = CW - CPAD.left - CPAD.right;
+    const gh = CH - CPAD.top - CPAD.bottom;
+    const cx = x => CPAD.left + (x / maxImp) * gw;
+    const cy = y => CPAD.top + (1 - y) * gh;
+
+    const ctel = (tag, attrs, text) => {
+      const e = document.createElementNS(NS, tag);
+      for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+      if (text !== undefined) e.textContent = text;
+      return e;
+    };
+
+    // Grid
+    [0, 0.25, 0.5, 0.75, 1].forEach(v => {
+      svg.appendChild(ctel('line', { x1: CPAD.left, y1: cy(v), x2: CW - CPAD.right, y2: cy(v), stroke: '#f0f0f0', 'stroke-width': 1 }));
+      svg.appendChild(ctel('text', { x: CPAD.left - 6, y: cy(v) + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#ccc' }, (v*100).toFixed(0) + '%'));
+    });
+    svg.appendChild(ctel('text', { x: CPAD.left - 6, y: cy(0) + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#ccc' }, '0%'));
+    svg.appendChild(ctel('text', { x: CPAD.left + gw/2, y: CH - 4, 'text-anchor': 'middle', 'font-size': 10, fill: '#ccc' }, 'Impressions per user →'));
+
+    // Naive line
+    svg.appendChild(ctel('line', { x1: CPAD.left, y1: cy(naive), x2: CW - CPAD.right, y2: cy(naive), stroke: '#e53935', 'stroke-width': 1.5, 'stroke-dasharray': '5,3' }));
+    svg.appendChild(ctel('rect', { x: CW - CPAD.right - 120, y: cy(naive) - 11, width: 114, height: 14, fill: 'white', opacity: 0.9, rx: 3 }));
+    svg.appendChild(ctel('text', { x: CW - CPAD.right - 116, y: cy(naive) + 1, 'font-size': 10, fill: '#e53935', 'font-weight': '700' }, `naive avg: ${(naive*100).toFixed(1)}%`));
+
+    // True rate line
+    svg.appendChild(ctel('line', { x1: CPAD.left, y1: cy(trueRate), x2: CW - CPAD.right, y2: cy(trueRate), stroke: '#16a34a', 'stroke-width': 2 }));
+    svg.appendChild(ctel('rect', { x: CW - CPAD.right - 114, y: cy(trueRate) - 11, width: 108, height: 14, fill: 'white', opacity: 0.9, rx: 3 }));
+    svg.appendChild(ctel('text', { x: CW - CPAD.right - 110, y: cy(trueRate) + 1, 'font-size': 10, fill: '#16a34a', 'font-weight': '700' }, `true rate: ${(trueRate*100).toFixed(1)}%`));
+
+    // Dots
+    users.forEach(u => {
+      svg.appendChild(ctel('circle', { cx: cx(u.impressions), cy: cy(u.ctr), r: 4, fill: u.impressions > 50 ? '#6366f1' : '#f97316', opacity: 0.75, stroke: 'white', 'stroke-width': 1 }));
+    });
+
+    // Legend dots
+    svg.appendChild(ctel('circle', { cx: CPAD.left + 10, cy: CPAD.top + 10, r: 4, fill: '#f97316', opacity: 0.75 }));
+    svg.appendChild(ctel('text', { x: CPAD.left + 18, y: CPAD.top + 14, 'font-size': 10, fill: '#888' }, 'light users (few actions)'));
+    svg.appendChild(ctel('circle', { cx: CPAD.left + 175, cy: CPAD.top + 10, r: 4, fill: '#6366f1', opacity: 0.75 }));
+    svg.appendChild(ctel('text', { x: CPAD.left + 183, y: CPAD.top + 14, 'font-size': 10, fill: '#888' }, 'heavy users (many actions)'));
+
+    document.getElementById('ctr-naive').textContent = (naive * 100).toFixed(1) + '%';
+    document.getElementById('ctr-true').textContent = (trueRate * 100).toFixed(1) + '%';
+  }
+
+  fnExpr = math.parse('x^2').compile();
+  randomizeUsers();
+  generateCTRUsers();
+</script>
+</body>
+</html>
