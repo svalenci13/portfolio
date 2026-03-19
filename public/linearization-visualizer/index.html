@@ -261,6 +261,37 @@
     .explainer b { color: #0a0a0a; font-weight: 600; }
     .t { color: #16a34a; font-weight: 600; }
     .c { color: #ea580c; font-weight: 600; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .page { padding: 16px 16px 12px; }
+      .site-header { padding: 16px 16px 0; }
+      .site-footer { padding: 0 16px 32px; }
+
+      .insight-strip { flex-direction: column; }
+      .insight-item { border-right: none; border-bottom: 1px solid #e5e7eb; }
+      .insight-item:last-child { border-bottom: none; }
+
+      .toolbar { gap: 6px; }
+      .fn-input { width: 100px; }
+      .divider { display: none; }
+      .btn-randomize { font-size: 10px; padding: 6px 10px; }
+
+      .graph-footer { flex-wrap: wrap; gap: 8px; }
+      .legend { gap: 10px; margin-right: 0; width: 100%; margin-bottom: 4px; }
+
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat-value { font-size: 15px; }
+
+      .delta-flow { flex-direction: column; gap: 12px; }
+      .delta-arrow { padding: 4px 0; }
+    }
+
+    @media (max-width: 480px) {
+      .presets { display: none; }
+      .stats { grid-template-columns: 1fr; }
+      .fn-input { width: 80px; }
+    }
   </style>
 </head>
 <body>
@@ -273,7 +304,7 @@
   <!-- Header -->
   <div class="header">
     <h1>A/B Experiment Linearization Visualizer</h1>
-    <span class="byline">Interactive companion to the article</span>
+    <span class="byline">Interactive companion to the article · Best on desktop</span>
   </div>
 
   <!-- Insight strip -->
@@ -313,7 +344,7 @@
 
   <!-- Graph -->
   <div class="graph-wrap">
-      <svg id="main-graph" width="900" height="360"></svg>
+      <svg id="main-graph" viewBox="0 0 900 360" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto"></svg>
   </div>
 
   <!-- Graph footer bar -->
@@ -404,7 +435,7 @@
       <button class="btn btn-ghost" onclick="generateCTRUsers()" style="flex-shrink:0">⟳ New users</button>
     </div>
     <div style="border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:12px">
-      <svg id="ctr-graph" width="900" height="200"></svg>
+      <svg id="ctr-graph" viewBox="0 0 900 200" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto"></svg>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div style="border:1px solid #fecaca;border-radius:8px;padding:12px 14px;background:#fff5f5">
