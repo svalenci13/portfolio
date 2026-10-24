@@ -50,12 +50,16 @@ export function AsciiEvolution() {
           const next = frames[(stage + 1) % frames.length] ?? current
           if (!current?.rows || !next?.rows) continue
           const progress = Math.max(0, Math.min(1, (clock % 11 - 8.5) / 2.5))
-          const scales = [.75, 1, 1, 1]
-          const scale = scales[stage]
-          const size = creature.size * scale
-          // Keep each form fixed in size; only Agumon is reduced.
-          const originX = creature.x + 48 * (creature.size - size)
-          const originY = creature.y + 96 * (creature.size - size)
+          const size = creature.size
+          const originX = creature.x
+          const originY = creature.y
+          // Sample both forms at their own final size throughout the scan.
+          const sample = (index: number, x: number, y: number) => {
+            const scale = frames[index]?.name === "Agumon" ? .75 : 1
+            const sx = Math.floor(48 + (x - 48) / scale)
+            const sy = Math.floor(64 + (y - 64) / scale)
+            return sx >= 0 && sx < 96 && sy >= 0 && sy < 64 ? frames[index]?.rows[sy]?.[sx] ?? " " : " "
+          }
           const pulse = Math.sin(progress * Math.PI)
           if (progress > 0) {
             const cx = originX + offsetX + 48 * size
@@ -81,8 +85,8 @@ export function AsciiEvolution() {
           }
           ctx.font = `${size * 1.6}px monospace`
           for (let y = 0; y < 64; y++) for (let x = 0; x < 96; x++) {
-            const oldChar = current.rows[y]?.[x] ?? " "
-            const newChar = next.rows[y]?.[x] ?? " "
+            const oldChar = sample(stage, x, y)
+            const newChar = sample((stage + 1) % frames.length, x, y)
             // A gently staggered scan reconstructs the next form in place.
             const stagger = ((x * 17 + y * 31) % 29) / 29
             const threshold = .12 + y / 64 * .62 + stagger * .16
@@ -111,6 +115,7 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
 
