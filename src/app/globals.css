@@ -133,30 +133,24 @@
 
 
 /* Minimal homepage; all content lives in one reading column. */
-.portfolio-home { position: relative; isolation: isolate; min-height: 100vh; overflow: hidden; background: #0a0a0a; color: #d7d7d2; font-family: var(--font-jetbrains-mono), 'Courier New', monospace; font-size: 13px; line-height: 1.9; }
+.portfolio-home { position: relative; isolation: isolate; min-height: 100vh; overflow: hidden; background: #fff; color: #333631; font-family: var(--font-jetbrains-mono), 'Courier New', monospace; font-size: 13px; line-height: 1.9; }
 .portfolio-content { position: relative; width: min(100% - 48px, 650px); margin: 0 auto; padding: 76px 0 88px; }
-.portfolio-home h1 { font: inherit; font-size: clamp(25px, 5vw, 32px); font-weight: 600; line-height: 1.35; letter-spacing: -1.3px; color: #f0f0ec; }
+.portfolio-home h1 { font: inherit; font-size: clamp(25px, 5vw, 32px); font-weight: 600; line-height: 1.35; letter-spacing: -1.3px; color: #232621; }
 .nickname { margin-top: 8px; font-size: 13px; color: #8c8d87; }
 .intro { margin-top: 30px; max-width: 560px; }
 .intro p + p { margin-top: 13px; }
 .portfolio-home .muted { color: #7e807b; }
 .earlier { font-size: 11px; line-height: 1.9; max-width: 520px; }
-.portfolio-home a { text-decoration: underline; text-decoration-color: #50534d; text-underline-offset: 4px; transition: color .2s, text-decoration-color .2s; }
-.portfolio-home a:hover { color: #fff; text-decoration-color: #c6c9bf; }
+.portfolio-home a { text-decoration: underline; text-decoration-color: #b4bcb0; text-underline-offset: 4px; transition: color .2s, text-decoration-color .2s; }
+.portfolio-home a:hover { color: #263e57; text-decoration-color: #71869b; }
 .portfolio-home a:focus-visible { outline: 1px solid #c6c9bf; outline-offset: 5px; }
 .portfolio-section { margin-top: 30px; max-width: 600px; }
-.portfolio-section h2 { font: inherit; color: #a8aba1; margin-bottom: 10px; }
+.portfolio-section h2 { font: inherit; color: #777d71; margin-bottom: 10px; }
 .portfolio-section ul { list-style: disc; padding-left: 19px; }
 .portfolio-section li { padding-left: 1px; margin-top: 9px; }
 .portfolio-section li::marker { color: #595e53; font-size: 9px; }
-.portfolio-footer { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 44px; padding-top: 20px; border-top: 1px solid #242622; font-size: 11px; color: #92978b; max-width: 550px; }
-.ascii-evolution { position: absolute; z-index: -1; inset: 0; pointer-events: none; user-select: none; overflow: hidden; }
-.evolution-stage { position: absolute; right: max(-80px, calc((100vw - 1450px) / 2)); top: 270px; margin: 0; font: 14px/19px 'Courier New', monospace; color: #737d6c; opacity: 0; animation: digivolve 48s infinite; white-space: pre; }
-.evolution-0 { animation-delay: 0s; }
-.evolution-1 { animation-delay: -32s; }
-.evolution-2 { animation-delay: -16s; }
-@keyframes digivolve { 0%, 29% { opacity: .2; } 32%, 97% { opacity: 0; } 100% { opacity: .2; } }
-@media (max-width: 1050px) { .evolution-stage { right: -180px; color: #454b40; } }
-@media (max-width: 600px) { .portfolio-content { padding-top: 42px; } .portfolio-home { font-size: 12px; } .portfolio-section li { margin-top: 13px; } .evolution-stage { top: 330px; right: -230px; font-size: 12px; line-height: 17px; color: #353a31; } }
-@media (prefers-reduced-motion: reduce) { .evolution-stage { animation: none; opacity: 0; } .evolution-2 { opacity: .16; } .portfolio-home a { transition: none; } }
+.portfolio-footer { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 44px; padding-top: 20px; border-top: 1px solid #e5e8e1; font-size: 11px; color: #92978b; max-width: 550px; }
+.ascii-evolution { position: fixed; z-index: -1; inset: 0; width: 100%; height: 100%; pointer-events: none; background-image: linear-gradient(#6a7d9409 1px, transparent 1px), linear-gradient(90deg, #6a7d9409 1px, transparent 1px); background-size: 12px 12px; }
+@media (max-width: 600px) { .portfolio-content { padding-top: 42px; } .portfolio-home { font-size: 12px; } .portfolio-section li { margin-top: 13px; } }
+@media (prefers-reduced-motion: reduce) { .portfolio-home a { transition: none; } }
 

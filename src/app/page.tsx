@@ -1,66 +1,6 @@
 import Link from "next/link"
 
-const evolutions = [String.raw`
-                   __
-                __/  \__
-              /   o     \
-             /       ___/
-             \  ___  /
-          ___/      /
-         /   \    /\
-        /  /  \__/  \
-       /__/          \__
-      /  /    __      __\
-     /__/    /  \    /
-        \___/    \__/
-        /  /      \ \
-       /__/        \_\
-      /_/_/        \_\_\
-`, String.raw`
-                      /\    /\
-                  ___/  \__/  \
-                _/   /\        \___
-               /    /  \   o       \
-              /____/    \      ____/
-                  /      \____/
-             ____/   /\      \
-            /  /    /  \      \___
-           /__/    /    \      ___/>
-          /  /    /      \    /
-     ____/  /    /        \__/\
-    /      /    /             \
-   /______/    /   ___         \
-          \___/   /   \    ___/
-            /    /     \   \
-          _/____/       \___\
-         /_/_/_/        \_\_\
-`, String.raw`
-             /|                              |\
-            / |           /\  /\             | \
-           /  |       ___/  \/  \__          |  \
-          / / |      /  /\  __     \___      | \ \
-         / /| |     /__/  \[__] o      \     | |\ \
-        / / | |         /  \      ____/      | | \ \
-       /_/  | |     ___/ /\  \____/          | |  \_\
-            | |   _/###\/  \     \___        | |
-            | | _/####/    /      /==\___    | |
-            | |/####/    _/      /========\__| |
-            | /###/    _/   ___  \=========/  |
-            |/###/   _/    /   \  \______/|   |
-           /####/___/     /     \       / |___|
-          /####/  /     _/       \     /
-         /____/__/   __/     /\   \___/\
-         /==/       /      /  \        \
-        /==/       /      /    \        \____
-       /==/    ___/      /      \           _\
-      /__/    /   \____/        \____   __/
-             /____/                 /___\
-            /_/_/_/                /_/_/_/
-`]
-
-function AsciiEvolution() {
-  return <div className="ascii-evolution" aria-hidden="true">{evolutions.map((art, i) => <pre key={i} className={`evolution-stage evolution-${i}`}>{art}</pre>)}</div>
-}
+import { AsciiEvolution } from "@/components/ascii-evolution"
 
 export default function Home() {
   return (
@@ -77,14 +17,13 @@ export default function Home() {
         <section className="portfolio-section" aria-labelledby="projects-heading">
           <h2 id="projects-heading">projects</h2>
           <ul>
-            <li><a href="https://www.kalshivspolymarket.com" target="_blank" rel="noreferrer">Kalshi vs. Polymarket</a><span className="muted"> — comparing prediction markets</span></li>
-            <li><Link href="/projects/soccer-optimization">Best value soccer team</Link><span className="muted"> — lineup optimization</span></li>
-            <li><Link href="/creative-portfolio">Creative work</Link><span className="muted"> — design &amp; video</span></li>
+            <li><a href="https://www.kalshivspolymarket.com" target="_blank" rel="noreferrer">Comparing prediction markets: Kalshi vs. Polymarket</a></li>
+            <li><Link href="/projects/soccer-optimization">Using optimization and integer programming to pick the best soccer lineup</Link></li>
           </ul>
         </section>
         <section className="portfolio-section" aria-labelledby="writing-heading">
           <h2 id="writing-heading">writing</h2>
-          <ul><li><a href="https://1sebstack.substack.com/p/how-linearization-fixes-the-ratio" target="_blank" rel="noreferrer">How linearization fixes the ratio</a></li></ul>
+          <ul><li><a href="https://1sebstack.substack.com/p/how-linearization-fixes-the-ratio" target="_blank" rel="noreferrer">Why Ratio Metrics Break A/B Tests and How Linearization Fixes It</a></li></ul>
         </section>
         <footer className="portfolio-footer">
           <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
@@ -95,4 +34,5 @@ export default function Home() {
     </div>
   )
 }
+
 
