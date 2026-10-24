@@ -50,10 +50,17 @@ export function AsciiEvolution() {
           const next = frames[(stage + 1) % frames.length] ?? current
           if (!current?.rows || !next?.rows) continue
           const progress = Math.max(0, Math.min(1, (clock % 11 - 8.5) / 2.5))
+          const scales = [.52, .72, .88, 1]
+          const blend = progress * progress * (3 - 2 * progress)
+          const scale = scales[stage] * (1 - blend) + scales[(stage + 1) % scales.length] * blend
+          const size = creature.size * scale
+          // Grow around the same center and baseline so evolution does not shift position.
+          const originX = creature.x + 48 * (creature.size - size)
+          const originY = creature.y + 96 * (creature.size - size)
           const pulse = Math.sin(progress * Math.PI)
           if (progress > 0) {
-            const cx = creature.x + offsetX + 48 * creature.size
-            const cy = creature.y + offsetY + 48 * creature.size
+            const cx = originX + offsetX + 48 * size
+            const cy = originY + offsetY + 48 * size
             const energy = Math.sin(progress * Math.PI)
             ctx.save()
             ctx.strokeStyle = `rgba(100,127,157,${energy * .17})`
@@ -62,18 +69,18 @@ export function AsciiEvolution() {
             ctx.lineDashOffset = -progress * 45
             for (const tilt of [-.38, .38]) {
               ctx.beginPath()
-              ctx.ellipse(cx, cy, creature.size * (40 + energy * 4), creature.size * 12, tilt, 0, Math.PI * 2)
+              ctx.ellipse(cx, cy, size * (40 + energy * 4), size * 12, tilt, 0, Math.PI * 2)
               ctx.stroke()
             }
             ctx.font = "8px monospace"
             for (let n = 0; n < 16; n++) {
               const angle = n / 16 * Math.PI * 2 + progress * 2
               ctx.fillStyle = `rgba(100,127,157,${energy * .23})`
-              ctx.fillText(n % 2 ? "1" : "0", cx + Math.cos(angle) * creature.size * 43, cy + Math.sin(angle) * creature.size * 17)
+              ctx.fillText(n % 2 ? "1" : "0", cx + Math.cos(angle) * size * 43, cy + Math.sin(angle) * size * 17)
             }
             ctx.restore()
           }
-          ctx.font = `${creature.size * 1.6}px monospace`
+          ctx.font = `${size * 1.6}px monospace`
           for (let y = 0; y < 64; y++) for (let x = 0; x < 96; x++) {
             const oldChar = current.rows[y]?.[x] ?? " "
             const newChar = next.rows[y]?.[x] ?? " "
@@ -85,13 +92,13 @@ export function AsciiEvolution() {
             const scan = progress > 0 && Math.abs(progress - threshold) < .055
             if (scan && (oldChar !== " " || newChar !== " ")) char = "01:#"[(x + y) % 4]
             if (char === " ") continue
-            const screenX = creature.x + offsetX + x * creature.size
-            const screenY = creature.y + offsetY + y * creature.size * 1.5
+            const screenX = originX + offsetX + x * size
+            const screenY = originY + offsetY + y * size * 1.5
             const centerDistance = Math.abs(screenX - (anchorX + 325))
             const readingFade = .30 + Math.min(.70, Math.max(0, (centerDistance - 260) / 140))
             const alpha = creature.opacity * readingFade * (scan ? .55 : 1 - pulse * .12)
             ctx.fillStyle = `rgba(106,125,148,${alpha * .14})`
-            ctx.fillRect(screenX, screenY, creature.size, creature.size * 1.5)
+            ctx.fillRect(screenX, screenY, size, size * 1.5)
             ctx.fillStyle = `rgba(58,79,106,${alpha})`
             ctx.fillText(char, screenX, screenY)
           }
@@ -105,6 +112,7 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
 
