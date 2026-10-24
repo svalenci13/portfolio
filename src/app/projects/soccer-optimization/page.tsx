@@ -22,6 +22,7 @@ export default function SoccerOptimization() {
         <aside className="article-contents"><span>On this page</span><a href="#question">The question</a><a href="#data">The data</a><a href="#model">The model</a><a href="#player-index">Player scores</a><a href="#lineup">The lineup</a><a href="#budgets">Changing the budget</a><a href="#results">Time to Let EA FC Decide</a><a href="#limitations">What we learned</a></aside>
         <main className="article-body">
           <section className="article-section" id="question">
+            <SoccerBackdrop player="ronaldinho" side="left" />
             <h2>First, What Are We Actually Trying to Build?</h2>
             <p>If you’ve ever built a team in FIFA, you know the problem. You find a few players you want, look at the total price, and start making compromises. Maybe the cheaper defender is fine. Maybe you don’t need that third expensive forward.</p>
             <p>We wanted to do that systematically. Our budget was €350M, roughly the seventh most expensive starting eleven in the Premier League at the time. The job: pick 11 players from Europe’s top five leagues and get the highest combined performance score we could afford.</p>
@@ -80,6 +81,7 @@ export default function SoccerOptimization() {
             <p className="article-note">Reference: McHale, Scarf &amp; Folker, “On the Development of a Soccer Player Performance Rating System for the English Premier League,” Interfaces 42 (2012), 339–351. See the original report for its bibliography.</p>
           </section>
           <section className="article-section" id="lineup">
+            <SoccerBackdrop player="pele" side="left" />
             <h2>So, Who Did We Get?</h2>
             <p>Here’s the starting eleven. Total cost: €347M. Average age: about 25.9. Both within the limits, with €3M left over.</p>
             <figure className="report-figure"><Image src="/logos/team.png" alt="Selected players in the project's 4-3-3 formation" width={600} height={400} /><figcaption>The team, arranged in a 4-3-3. A reminder: the model knows “defender,” not “left-back.”</figcaption></figure>
@@ -114,6 +116,7 @@ while the model is feasible:
             <p>Obviously EA FC is not real life. One simulated season doesn’t validate a model, and we didn’t test the index against an independent set of real match results. But the contrast is useful: a team can look efficient on paper and still not be good enough to compete.</p>
           </section>
           <section className="article-section" id="limitations">
+            <SoccerBackdrop player="maradona" side="left" />
             <h2>What the Model Doesn’t Know</h2>
             <div className="report-rule-list"><div><strong>Use actual roles, not just position groups</strong><p>A forward who is also eligible at midfield can be selected there because of scoring stats, even if their real midfield contribution is weak. Center-back, full-back, winger, and striker need more specific treatment.</p></div><div><strong>Account for league strength</strong><p>The same statistics can mean different things in different competitions. League adjustment is a proposed improvement, not part of the implemented player index.</p></div><div><strong>Model combinations, not just individuals</strong><p>Team chemistry, passing interactions, coaching, and adaptation to transfers are missing. Summing good individual scores does not guarantee a good team.</p></div><div><strong>Broaden the scouting pool</strong><p>Lower divisions and leagues outside Europe’s top five may contain undervalued players that this dataset cannot discover.</p></div></div>
             <p>The first thing I’d fix is the position data. If we tell the solver a player can play midfield, it will believe us. It won’t notice that we’ve put an attacker there because their goals make the score look better. Better inputs before a more complicated model.</p>

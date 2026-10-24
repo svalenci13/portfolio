@@ -1,7 +1,7 @@
 import legends from "@/lib/soccer-legends.json"
 
 type Player = keyof typeof legends
-const names: Record<Player, string> = { messi: "Lionel Messi", neymar: "Neymar", r9: "Ronaldo Nazário", adriano: "Adriano", kaka: "Kaká" }
+const names: Record<Player, string> = { messi: "Lionel Messi", neymar: "Neymar", r9: "Ronaldo Nazário", adriano: "Adriano", kaka: "Kaká", pele: "Pelé · 1970", maradona: "Maradona · 1986", ronaldinho: "Ronaldinho · 2006" }
 
 export function SoccerBackdrop({ player, side = "right" }: { player: Player; side?: "left" | "right" }) {
   const art = legends[player]
@@ -19,7 +19,7 @@ export function SoccerArtCredits() {
     <summary>ASCII photo credits</summary>
     <ul>{(Object.keys(legends) as Player[]).map(player => {
       const art = legends[player]
-      return <li key={player}><a href={art.source} target="_blank" rel="noreferrer">{names[player]}</a> · {art.artist} · <a href={art.licenseUrl} target="_blank" rel="noreferrer">{art.license}</a>. Cropped and converted to ASCII; adaptation under the same license.</li>
+      return <li key={player}><a href={art.source} target="_blank" rel="noreferrer">{names[player]}</a> · {art.artist} · <a href={art.licenseUrl} target="_blank" rel="noreferrer">{art.license}</a>. Converted to ASCII. {art.license === "Public domain" ? "Source photograph in the public domain." : "Adaptation under the same license."}</li>
     })}</ul>
   </details>
 }

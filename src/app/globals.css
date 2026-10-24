@@ -364,15 +364,16 @@ body:has(.portfolio-home) { overflow: hidden; }
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  top: 90px;
+  top: 60px;
   width: 320px;
   height: auto;
+  max-height: 340px;
   color: #587998;
   opacity: .52;
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 .soccer-art-right { right: -120px; }
-.soccer-art-left { left: -200px; }
+.soccer-art-left { left: -180px; }
 .soccer-art-credits { margin: 0 0 30px; font-size: 10px; color: #8795a0; }
 .soccer-art-credits summary { cursor: pointer; }
 .soccer-art-credits ul { margin-top: 12px; }
@@ -380,11 +381,11 @@ body:has(.portfolio-home) { overflow: hidden; }
 @media (max-width: 1050px) {
   .soccer-art-right { right: -90px; }
   .soccer-art-left { left: -100px; }
-  .soccer-ascii-backdrop { opacity: .36; width: 270px; }
+  .soccer-ascii-backdrop { opacity: .36; width: 270px; max-height: 290px; }
 }
 @media (max-width: 600px) {
   .soccer-art-right { right: -65px; }
   .soccer-art-left { left: -65px; }
-  .soccer-ascii-backdrop { width: 220px; opacity: .30; }
+  .soccer-ascii-backdrop { width: 220px; max-height: 240px; opacity: .30; }
 }
 
