@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic"
 
-type Track = { name: string; type?: string; artists?: { name: string }[]; external_urls?: { spotify?: string } }
+type Track = { album?: { name?: string; images?: { url: string }[] }; duration_ms?: number; name: string; type?: string; artists?: { name: string }[]; external_urls?: { spotify?: string } }
 let tokenCache: { value: string; until: number } | undefined
 let snapshot: { value: object; until: number } | undefined
 
@@ -33,7 +33,7 @@ export async function GET() {
       const playback = await response.json()
       const item = playback.item as Track | null
       if (playback.is_playing && item?.name && item.type === "track" && item.external_urls?.spotify) {
-        result = { status: "playing", isPlaying: true, title: item.name, artist: item.artists?.map(artist => artist.name).join(", ") || "", songUrl: item.external_urls.spotify }
+        result = { status: "playing", isPlaying: true, title: item.name, artist: item.artists?.map(artist => artist.name).join(", ") || "", songUrl: item.external_urls.spotify, album: item.album?.name, albumImageUrl: item.album?.images?.[0]?.url, durationMs: item.duration_ms ?? 0, progressMs: playback.progress_ms ?? 0, fetchedAt: Date.now() }
       }
     }
     snapshot = { value: result, until: Date.now() + 20000 }
@@ -42,4 +42,5 @@ export async function GET() {
     return reply({ status: "unavailable", isPlaying: false }, 503)
   }
 }
+
 
