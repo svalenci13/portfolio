@@ -33,6 +33,7 @@ export default function Home() {
         <footer className="portfolio-footer">
           <a href="https://linkedin.com/in/svalenci" target="_blank" rel="noreferrer">LinkedIn</a>
           <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://x.com/internetsebo" target="_blank" rel="noreferrer">X</a>
 
           <p className="email-address">email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
         </footer>
