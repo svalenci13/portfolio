@@ -14,6 +14,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.18.1",
+    "katex": "^0.19.1",
     "lucide-react": "^0.516.0",
     "next": "^16.1.4",
     "react": "^19.2.3",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -35,3 +37,4 @@
     "typescript": "^5"
   }
 }
+
