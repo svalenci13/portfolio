@@ -345,3 +345,6 @@ body:has(.portfolio-home) { overflow: hidden; }
 .soccer-ascii-backdrop { position: fixed; z-index: -1; right: -6vw; top: 3vh; width: min(110vw,1500px); height: 94vh; object-fit: contain; pointer-events: none; opacity: .19; mask-image: linear-gradient(90deg,#000 0%,transparent 25%,transparent 70%,#000 100%); }
 @media (max-width:800px) { .soccer-ascii-backdrop { opacity: .07; mask-image: linear-gradient(90deg,transparent 20%,#000); } }
 
+.soccer-ascii-backdrop { width: min(130vw,1750px); height: auto; top: 24vh; right: -10vw; opacity: .18; }
+@media (max-width:800px) { .soccer-ascii-backdrop { width: 150vw; top: 30vh; opacity: .09; } }
+
