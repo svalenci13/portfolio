@@ -1,21 +1,14 @@
-"use client"
-
-import { useEffect, useRef } from "react"
 import rows from "@/lib/soccer-backdrop.json"
 
 export function SoccerBackdrop() {
-  const ref = useRef<HTMLCanvasElement>(null)
-  useEffect(() => {
-    const ctx = ref.current?.getContext("2d")
-    if (!ctx) return
-    ctx.clearRect(0, 0, 1440, 558)
-    ctx.font = "10px monospace"; ctx.textBaseline = "top"
-    ctx.fillStyle = "#637f9a"
-    for (let y = 0; y < rows.length; y++) for (let x = 0; x < rows[y].length; x++) {
-      if (rows[y][x] !== " ") ctx.fillText(rows[y][x], x * 6, y * 9)
-    }
-  }, [])
-  return <canvas ref={ref} width={1440} height={558} className="soccer-ascii-backdrop" aria-hidden="true" />
+  return (
+    <svg className="soccer-ascii-backdrop" viewBox="0 0 1440 558" aria-hidden="true" focusable="false">
+      <g fill="currentColor" fontFamily="monospace" fontSize="10" xmlSpace="preserve">
+        {rows.map((row, index) => (
+          <text key={index} x="0" y={index * 9 + 9}>{row}</text>
+        ))}
+      </g>
+    </svg>
+  )
 }
-
 
