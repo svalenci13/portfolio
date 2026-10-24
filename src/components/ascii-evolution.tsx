@@ -41,8 +41,8 @@ export function AsciiEvolution() {
         ]
         for (const creature of creatures) {
           // Translate the intact silhouette; avoid rotating individual glyphs.
-          const offsetX = Math.sin(t * .075 + creature.seed) * 24 + Math.sin(t * .033 + creature.seed * 2) * 14
-          const offsetY = Math.sin(t * .058 + creature.seed * .7) * 18
+          const offsetX = Math.sin(t * .05 + creature.seed) * 12 + Math.sin(t * .025 + creature.seed * 2) * 7
+          const offsetY = Math.sin(t * .04 + creature.seed * .7) * 9
           const clock = Math.max(0, Number.isFinite(t) ? t : 0) + (creature.seed === 7 ? 0 : 3)
           const cycle = Math.floor(clock / 11)
           const stage = cycle % frames.length
@@ -105,6 +105,7 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
 
