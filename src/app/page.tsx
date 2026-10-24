@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 import { AsciiEvolution } from "@/components/ascii-evolution"
 
@@ -9,20 +10,20 @@ export default function Home() {
       <main className="portfolio-content">
         <header><h1>Sebastian Valencia</h1><p className="nickname">/sebo/</p></header>
         <section className="intro" aria-label="About">
-          <p>I work at <a href="https://ramp.com" target="_blank" rel="noreferrer">Ramp</a>.</p>
-          <p>Previously Data Scientist @ <a href="https://www.shopify.com" target="_blank" rel="noreferrer">Shopify</a>.</p>
-          <p className="muted earlier">Before that: software @ Shopify; data @ 1Password &amp; theScore; growth @ Loblaw Digital; dev @ Loblaw; data @ TTC.</p>
+          <p>I work at <a href="https://ramp.com" target="_blank" rel="noreferrer"><Image src="/logos/ramp.png" alt="" width={15} height={15} className="company-logo" />Ramp</a>.</p>
+          <p>Previously Data Scientist @ <a href="https://www.shopify.com" target="_blank" rel="noreferrer"><Image src="/logos/shopify.JPG" alt="" width={15} height={15} className="company-logo" />Shopify</a>.</p>
+          <p className="muted earlier">Before that: software @ Shopify; data @ <Image src="/logos/1password.png" alt="" width={12} height={12} className="company-logo small-logo" />1Password &amp; <Image src="/logos/thescore.jpg" alt="" width={12} height={12} className="company-logo small-logo" />theScore; growth @ <Image src="/logos/loblaw-digital.jpg" alt="" width={12} height={12} className="company-logo small-logo" />Loblaw Digital; dev @ <Image src="/logos/loblaw.jpg" alt="" width={12} height={12} className="company-logo small-logo" />Loblaw; data @ <Image src="/logos/ttc.png" alt="" width={12} height={12} className="company-logo small-logo" />TTC.</p>
           <p>I like working with data and building things.</p>
         </section>
         <section className="portfolio-section" aria-labelledby="projects-heading">
-          <h2 id="projects-heading">projects</h2>
+          <h2 id="projects-heading">Projects</h2>
           <ul>
-            <li><a href="https://www.kalshivspolymarket.com" target="_blank" rel="noreferrer">Comparing prediction markets: Kalshi vs. Polymarket</a></li>
-            <li><Link href="/projects/soccer-optimization">Using optimization and integer programming to pick the best soccer lineup</Link></li>
+            <li><a href="https://www.kalshivspolymarket.com" target="_blank" rel="noreferrer">Kalshi vs. Polymarket: Prediction Market Analytics</a></li>
+            <li><Link href="/projects/soccer-optimization">Budget-Constrained Soccer Lineups via Integer Programming</Link></li>
           </ul>
         </section>
         <section className="portfolio-section" aria-labelledby="writing-heading">
-          <h2 id="writing-heading">writing</h2>
+          <h2 id="writing-heading">Writing</h2>
           <ul><li><a href="https://1sebstack.substack.com/p/how-linearization-fixes-the-ratio" target="_blank" rel="noreferrer">Why Ratio Metrics Break A/B Tests and How Linearization Fixes It</a></li></ul>
         </section>
         <footer className="portfolio-footer">
@@ -34,5 +35,7 @@ export default function Home() {
     </div>
   )
 }
+
+
 
 

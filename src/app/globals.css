@@ -157,3 +157,8 @@
 .background-toggle { position: fixed; bottom: 14px; right: 18px; z-index: 2; font: 10px monospace; color: #7b8490; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .background-toggle:hover { color: #33475e; }
 
+.company-logo { display: inline-block; width: 15px; height: 15px; object-fit: contain; vertical-align: -3px; margin-right: 5px; border-radius: 2px; }
+.portfolio-section h2 { color: #3d4339; font-size: 13px; font-weight: 600; letter-spacing: .01em; }
+.ascii-evolution { mask-image: linear-gradient(90deg, #000 calc(50% - 370px), transparent calc(50% - 310px), transparent calc(50% + 310px), #000 calc(50% + 370px)); }
+.small-logo { width: 12px; height: 12px; vertical-align: -2px; margin-right: 3px; }
+

@@ -5,7 +5,6 @@ import allFrames from "@/lib/digimon-frames.json"
 
 const frames = allFrames.filter(frame => !["Botamon", "Koromon"].includes(frame.name))
 
-// Character density is sampled from the reference artwork for each evolution.
 export function AsciiEvolution() {
   const ref = useRef<HTMLCanvasElement>(null)
   const [paused, setPaused] = useState(false)
@@ -13,64 +12,89 @@ export function AsciiEvolution() {
   useEffect(() => {
     const canvas = ref.current
     const ctx = canvas?.getContext("2d")
-    if (!canvas || !ctx || frames.length === 0) return
+    if (!canvas || !ctx || !frames.length) return
     if (!Number.isFinite(elapsed.current)) elapsed.current = 0
-    let frame = 0, last = 0, previous = performance.now()
-    let width = 0, height = 0
+    let frame = 0, previous = performance.now()
+    let width = 0, height = 0, ratio = 1
+    const cache = new Map<string, HTMLCanvasElement>()
+    const buffers = new Map<number, HTMLCanvasElement>()
     function resize() {
       width = window.innerWidth; height = window.innerHeight
-      const ratio = Math.min(window.devicePixelRatio || 1, 2)
-      canvas!.width = width * ratio; canvas!.height = height * ratio
+      ratio = Math.min(window.devicePixelRatio || 1, 2)
+      canvas!.width = Math.round(width * ratio); canvas!.height = Math.round(height * ratio)
       ctx!.setTransform(ratio, 0, 0, ratio, 0, 0)
+      ctx!.imageSmoothingEnabled = false
+      cache.clear(); buffers.clear()
+    }
+    function sprite(stage: number, size: number) {
+      const key = `${stage}:${size}`
+      const existing = cache.get(key)
+      if (existing) return existing
+      const layer = document.createElement("canvas")
+      layer.width = Math.round(96 * size * ratio); layer.height = Math.round(96 * size * ratio)
+      const ink = layer.getContext("2d")!
+      ink.setTransform(ratio, 0, 0, ratio, 0, 0)
+      ink.font = `${size * 1.6}px monospace`
+      ink.textBaseline = "top"
+      for (let y = 0; y < 64; y++) for (let x = 0; x < 96; x++) {
+        const char = frames[stage]?.rows[y]?.[x] ?? " "
+        if (char === " ") continue
+        ink.fillStyle = "rgba(106,125,148,.14)"
+        ink.fillRect(x * size, y * size * 1.5, size, size * 1.5)
+        ink.fillStyle = "#3a4f6a"
+        ink.fillText(char, x * size, y * size * 1.5)
+      }
+      cache.set(key, layer)
+      return layer
     }
     function draw(now: number) {
       if (!ctx) return
-      if (!paused) elapsed.current += Math.min(now - previous, 100) / 1000
+      if (!paused) elapsed.current += Math.max(0, Math.min(now - previous, 100)) / 1000
       previous = now
-      if (now - last > 30) {
-        last = now
-        const t = elapsed.current
-        ctx.clearRect(0, 0, width, height)
-        ctx.textBaseline = "top"
-        const creatures = [
-          { x: width - 350, y: Math.max(height * .56, height - 325), size: 3.7, opacity: .65, seed: 7, speed: 11 },
-          { x: -105, y: height * .19, size: 3.3, opacity: .40, seed: 31, speed: 17 },
-        ]
-        for (const creature of creatures) {
-          // Translate the intact silhouette; avoid rotating individual glyphs.
-          const offsetX = Math.sin(t * .085 + creature.seed) * 30 + Math.sin(t * .037 + creature.seed * 2) * 18
-          const offsetY = Math.sin(t * .065 + creature.seed * .7) * 22
-          const clock = Math.max(0, Number.isFinite(t) ? t : 0) + (creature.seed === 7 ? 0 : 3)
-          const cycle = Math.floor(clock / 14)
-          const stage = cycle % frames.length
-          const current = frames[stage] ?? frames[0]
-          const next = frames[(stage + 1) % frames.length] ?? current
-          if (!current?.rows || !next?.rows) continue
-          const progress = Math.max(0, Math.min(1, (clock % 14 - 12) / 2))
-          const pulse = Math.sin(progress * Math.PI)
-          ctx.font = `${creature.size * 1.6}px monospace`
-          for (let y = 0; y < 64; y++) for (let x = 0; x < 96; x++) {
-            const oldChar = current.rows[y]?.[x] ?? " "
-            const newChar = next.rows[y]?.[x] ?? " "
-            // A gently staggered scan reconstructs the next form in place.
-            const stagger = ((x * 17 + y * 31) % 29) / 29
-            const threshold = .12 + y / 64 * .62 + stagger * .16
-            const changed = progress > threshold
-            let char = changed ? newChar : oldChar
-            const scan = progress > 0 && Math.abs(progress - threshold) < .055
-            if (scan && (oldChar !== " " || newChar !== " ")) char = ".:+"[(x + y) % 3]
-            if (char === " ") continue
-            const screenX = creature.x + offsetX + x * creature.size
-            const screenY = creature.y + offsetY + y * creature.size * 1.5
-            const centerDistance = Math.abs(screenX - width / 2)
-            const readingFade = width < 700 ? .22 : Math.min(1, Math.max(.05, (centerDistance - 275) / 100))
-            const alpha = creature.opacity * readingFade * (scan ? .55 : 1 - pulse * .12)
-            ctx.fillStyle = `rgba(106,125,148,${alpha * .14})`
-            ctx.fillRect(screenX, screenY, creature.size, creature.size * 1.5)
-            ctx.fillStyle = `rgba(58,79,106,${alpha})`
-            ctx.fillText(char, screenX, screenY)
-          }
+      const t = elapsed.current
+      ctx.clearRect(0, 0, width, height)
+      const contentLeft = width / 2 - 325
+      const creatures = [
+        { x: width / 2 + 300, y: Math.min(height - 335, height * .56), size: 4, opacity: .31, seed: 7, delay: 0 },
+        { x: contentLeft - 325, y: height * .18, size: 3, opacity: .23, seed: 31, delay: 3 },
+      ]
+      for (const creature of creatures) {
+        const clock = Math.max(0, Number.isFinite(t) ? t : 0) + creature.delay
+        const stage = Math.floor(clock / 14) % frames.length
+        const progress = Math.max(0, Math.min(1, (clock % 14 - 12) / 2))
+        const extent = 96 * creature.size
+        // Move a cached raster at physical-pixel boundaries. Glyphs never rerasterize in motion.
+        const x = Math.round((creature.x + Math.sin(t * .085 + creature.seed) * 24 + Math.sin(t * .037) * 12) * ratio) / ratio
+        const y = Math.round((creature.y + Math.sin(t * .065 + creature.seed * .7) * 18) * ratio) / ratio
+        let composite = buffers.get(creature.size)
+        if (!composite) {
+          composite = document.createElement("canvas")
+          composite.width = Math.round(extent * ratio); composite.height = Math.round(extent * ratio)
+          buffers.set(creature.size, composite)
         }
+        const layer = composite.getContext("2d")!
+        const old = sprite(stage, creature.size)
+        const next = sprite((stage + 1) % frames.length, creature.size)
+        layer.clearRect(0, 0, composite.width, composite.height)
+        layer.drawImage(old, 0, 0)
+        if (progress > 0) {
+          // A single soft scan only during evolution; ordinary movement stays unchanged.
+          const scanY = progress * (composite.height + 48 * ratio) - 24 * ratio
+          layer.save()
+          layer.beginPath(); layer.rect(0, 0, composite.width, Math.max(0, scanY)); layer.clip()
+          layer.clearRect(0, 0, composite.width, composite.height)
+          layer.drawImage(next, 0, 0)
+          layer.restore()
+          const glow = layer.createLinearGradient(0, scanY - 12 * ratio, 0, scanY + 12 * ratio)
+          glow.addColorStop(0, "rgba(111,142,175,0)")
+          glow.addColorStop(.5, "rgba(111,142,175,.07)")
+          glow.addColorStop(1, "rgba(111,142,175,0)")
+          layer.fillStyle = glow; layer.fillRect(0, scanY - 12 * ratio, composite.width, 24 * ratio)
+        }
+        ctx.save()
+        ctx.globalAlpha = width < 700 ? .08 : creature.opacity
+        ctx.drawImage(composite, x, y, extent, extent)
+        ctx.restore()
       }
       frame = requestAnimationFrame(draw)
     }
@@ -80,6 +104,5 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
-
 
 
