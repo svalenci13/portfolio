@@ -1,34 +1,18 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import frames from "@/lib/digimon-frames.json"
 
-type Point = [number, number]
-// Filled pixel silhouettes, sampled into character cells rather than outline art.
-const body: Point[] = [[22,25],[28,20],[30,13],[36,8],[42,10],[45,14],[53,16],[54,20],[47,23],[42,22],[40,29],[44,34],[43,44],[38,48],[29,47],[24,40],[20,35]]
-const leg: Point[] = [[29,40],[35,41],[33,50],[27,55],[20,55],[22,52],[27,49]]
-const arm: Point[] = [[38,28],[43,29],[48,35],[53,36],[52,40],[45,39],[39,34]]
-const tail: Point[] = [[26,36],[20,41],[12,39],[5,32],[9,44],[17,48],[28,44]]
-const horn: Point[] = [[30,14],[28,3],[35,10],[40,4],[42,12]]
-const wing: Point[] = [[25,31],[8,7],[7,24],[11,22],[12,32],[17,29],[19,39]]
-function inside(x: number, y: number, polygon: Point[]) {
-  let hit = false
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const [xi, yi] = polygon[i], [xj, yj] = polygon[j]
-    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) hit = !hit
-  }
-  return hit
-}
-
+// Character density is sampled from the reference artwork for each evolution.
 export function AsciiEvolution() {
   const ref = useRef<HTMLCanvasElement>(null)
   const [paused, setPaused] = useState(false)
+  const elapsed = useRef(0)
   useEffect(() => {
     const canvas = ref.current
-    if (!canvas) return
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-    // Animation is explicitly requested; keep a visible pause control available.
-    let frame = 0, last = -100, start = performance.now()
+    const ctx = canvas?.getContext("2d")
+    if (!canvas || !ctx) return
+    let frame = 0, last = 0, previous = performance.now()
     let width = 0, height = 0
     function resize() {
       width = window.innerWidth; height = window.innerHeight
@@ -38,41 +22,35 @@ export function AsciiEvolution() {
     }
     function draw(now: number) {
       if (!ctx) return
+      if (!paused) elapsed.current += Math.min(now - previous, 100) / 1000
+      previous = now
       if (now - last > 50) {
         last = now
-        const t = paused ? 32 : (now - start) / 1000
-        const stage = Math.floor(t / 12) % 3
-        const phase = (t % 12) / 12
-        const fade = paused ? 1 : Math.min(1, phase * 12, (1 - phase) * 12)
+        const t = elapsed.current
+        const stage = Math.floor(t / 8) % frames.length
+        const phase = t % 8
+        const fade = Math.min(1, (phase + .5) * 2, (8 - phase) * 2)
         ctx.clearRect(0, 0, width, height)
-        ctx.font = "10px monospace"
         ctx.textBaseline = "top"
-        // Multiple floating silhouettes, with the reading column kept clear.
         const creatures = [
-          { x: -85 + Math.sin(t * .48) * 70, y: height * .13 + Math.cos(t * .65) * 32, size: 5.3, flip: false },
-          { x: width - 250 + Math.sin(t * .4 + 2) * 85, y: height * .60 + Math.sin(t * .6) * 40, size: 5.8, flip: true },
-          { x: width * .34 + Math.sin(t * .10) * 65, y: height * .83, size: 3.2, flip: false },
+          { x: width - 365 + Math.sin(t * .45) * 30, y: Math.max(height * .56, height - 325) + Math.sin(t * .8) * 15, size: 3.7, opacity: .65 },
+          { x: -105 + Math.sin(t * .35 + 1) * 35, y: height * .12 + Math.cos(t * .6) * 20, size: 3.3, opacity: .40 },
         ]
         for (const creature of creatures) {
-          for (let y = 0; y < 58; y += 2) for (let x = 0; x < 58; x++) {
-            const sway = Math.sin(t * 2.3 + y * .1)
-            const px = x + (y > 36 ? sway * 3 : 0)
-            const shapes = [body, leg, arm, tail]
-            if (stage > 0) shapes.push(horn)
-            if (stage === 2) shapes.push(wing)
-            const filled = shapes.some(shape => inside(px, y, shape))
-            if (!filled) continue
-            const screenX = creature.x + (creature.flip ? 58 - x : x) * creature.size
-            const screenY = creature.y + y * creature.size + Math.sin(t + x * .07) * 4
+          ctx.font = `${creature.size * 1.6}px monospace`
+          const rows = frames[stage].rows
+          for (let y = 0; y < rows.length; y++) for (let x = 0; x < rows[y].length; x++) {
+            const char = rows[y][x]
+            if (char === " ") continue
+            const screenX = creature.x + x * creature.size
+            const screenY = creature.y + y * creature.size * 1.5 + Math.sin(t * 1.3 + x * .055) * 2
             const centerDistance = Math.abs(screenX - width / 2)
-            const clearText = width < 700 ? .16 : Math.min(1, Math.max(.06, (centerDistance - 280) / 140))
-            const shade = ((x * 17 + y * 31) % 11) / 11
-            const alpha = (.22 + shade * .3) * fade * clearText
-            ctx.fillStyle = `rgba(106,125,148,${alpha * .3})`
-            ctx.fillRect(screenX, screenY, creature.size + .5, creature.size * 2)
-            ctx.fillStyle = `rgba(66,87,115,${alpha})`
-            const chars = ".:;%S8@#"
-            ctx.fillText(chars[(x * 7 + y * 3 + Math.floor(t * 2)) % chars.length], screenX, screenY)
+            const readingFade = width < 700 ? .22 : Math.min(1, Math.max(.05, (centerDistance - 275) / 100))
+            const alpha = creature.opacity * fade * readingFade
+            ctx.fillStyle = `rgba(106,125,148,${alpha * .14})`
+            ctx.fillRect(screenX, screenY, creature.size, creature.size * 1.5)
+            ctx.fillStyle = `rgba(58,79,106,${alpha})`
+            ctx.fillText(char, screenX, screenY)
           }
         }
       }
@@ -84,5 +62,4 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
-
 
