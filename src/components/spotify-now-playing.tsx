@@ -1,158 +1,97 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
+import { useEffect, useRef, useState } from "react"
 
-interface SpotifyTrack {
-  isPlaying: boolean
-  title?: string
-  artist?: string
-  album?: string
-  albumImageUrl?: string
-  songUrl?: string
+type Track = { status: "playing" | "idle" | "unavailable"; title?: string; artist?: string; songUrl?: string; album?: string; albumImageUrl?: string; durationMs?: number; progressMs?: number; fetchedAt?: number }
+const time = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, "0")}`
+
+function AsciiCover({ url, album }: { url: string; album?: string }) {
+  const ref = useRef<HTMLCanvasElement>(null)
+  const [failed, setFailed] = useState(false)
+  useEffect(() => {
+    let cancelled = false
+    setFailed(false)
+    const image = new window.Image()
+    image.onload = () => {
+      if (cancelled) return
+      try {
+        const sample = document.createElement("canvas")
+        sample.width = 24; sample.height = 16
+        const source = sample.getContext("2d")!
+        source.drawImage(image, 0, 0, 24, 16)
+        const pixels = source.getImageData(0, 0, 24, 16).data
+        const ctx = ref.current?.getContext("2d")
+        if (!ctx) return
+        ctx.clearRect(0, 0, 168, 168)
+        ctx.fillStyle = "#f4f6f7"; ctx.fillRect(0, 0, 168, 168)
+        ctx.font = "11px monospace"; ctx.textBaseline = "top"
+        const glyphs = " .:;+%S8#@"
+        for (let y = 0; y < 16; y++) for (let x = 0; x < 24; x++) {
+          const i = (y * 24 + x) * 4
+          const luma = pixels[i] * .2126 + pixels[i + 1] * .7152 + pixels[i + 2] * .0722
+          const shade = 1 - luma / 255
+          ctx.fillStyle = `rgba(66,87,115,${.2 + shade * .7})`
+          ctx.fillText(glyphs[Math.min(9, Math.floor(shade * 10))], x * 7, y * 10.5)
+        }
+      } catch { if (!cancelled) setFailed(true) }
+    }
+    image.onerror = () => { if (!cancelled) setFailed(true) }
+    // Same-origin image proxy keeps canvas pixel access safe from cross-origin restrictions.
+    image.src = `/_next/image?url=${encodeURIComponent(url)}&w=96&q=75`
+    return () => { cancelled = true }
+  }, [url])
+  return failed ? <span className="ascii-cover cover-placeholder" aria-label="Album art unavailable">♫</span> : <canvas ref={ref} width={168} height={168} className="ascii-cover" role="img" aria-label={`ASCII cover art${album ? ` for ${album}` : ""}`} />
 }
 
 export function SpotifyNowPlaying() {
-  const [track, setTrack] = useState<SpotifyTrack>({ isPlaying: false })
-  const [loading, setLoading] = useState(true)
-
+  const [track, setTrack] = useState<Track | null>(null)
+  const [now, setNow] = useState(0)
   useEffect(() => {
-    const fetchNowPlaying = async () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("portfolio:last-track") || "null")
+      if (saved?.title && typeof saved.songUrl === "string" && saved.songUrl.startsWith("https://open.spotify.com/")) setTrack({ ...saved, status: "idle" })
+    } catch { /* Storage is optional. */ }
+    const controller = new AbortController()
+    let pending = false
+    async function update() {
+      if (pending || document.visibilityState !== "visible") return
+      pending = true
       try {
-        const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-        const response = await fetch(`${baseUrl}/api/spotify`)
+        const response = await fetch("/api/spotify", { cache: "no-store", signal: controller.signal })
         const data = await response.json()
-        setTrack(data)
-      } catch (error) {
-        console.error('Error fetching Spotify data:', error)
-        setTrack({ isPlaying: false })
-      } finally {
-        setLoading(false)
-      }
+        if (!controller.signal.aborted) {
+          if (response.ok && data.title && data.songUrl) {
+            setTrack(data)
+            try { localStorage.setItem("portfolio:last-track", JSON.stringify(data)) } catch { /* Storage is optional. */ }
+          } else setTrack(previous => ({ ...previous, status: response.ok ? data.status : "unavailable" }))
+          setNow(Date.now())
+        }
+      } catch {
+        if (!controller.signal.aborted) setTrack(previous => ({ ...previous, status: "unavailable" }))
+      } finally { pending = false }
     }
-
-    fetchNowPlaying()
-    
-    // Refresh every 45 seconds, but only when page is visible
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        fetchNowPlaying()
-      }
-    }, 45000)
-
-    // Resume polling when page becomes visible
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchNowPlaying()
-      }
-    }
-
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    
-    return () => {
-      clearInterval(interval)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
+    void update()
+    const interval = setInterval(update, 45000)
+    const ticker = setInterval(() => { if (document.visibilityState === "visible") setNow(Date.now()) }, 1000)
+    document.addEventListener("visibilitychange", update)
+    return () => { controller.abort(); clearInterval(interval); clearInterval(ticker); document.removeEventListener("visibilitychange", update) }
   }, [])
-
-  if (loading) {
-    return (
-      <div className="bg-green-50 border border-green-200 rounded p-2">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.84-.179-.959-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.361 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-            </svg>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-gray-700">Loading...</p>
-          </div>
-          <Link 
-            href="https://open.spotify.com/user/sbstnvlncia" 
-            target="_blank" 
-            className="text-xs text-green-600 underline hover:text-green-800 flex-shrink-0"
-          >
-            SPOTIFY →
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  if (!track.isPlaying) {
-    return (
-      <div className="bg-green-50 border border-green-200 rounded p-2">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.84-.179-.959-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.361 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-            </svg>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-gray-700">Not currently listening</p>
-            <p className="text-xs text-gray-500">🎵 Probably thinking or working in silence</p>
-          </div>
-          <Link 
-            href="https://open.spotify.com/user/sbstnvlncia" 
-            target="_blank" 
-            className="text-xs text-green-600 underline hover:text-green-800 flex-shrink-0"
-          >
-            SPOTIFY →
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="bg-green-50 border border-green-200 rounded p-2">
-      <div className="flex items-center gap-3">
-        {track.albumImageUrl ? (
-          <div className="w-10 h-10 flex-shrink-0 relative">
-            <Image
-              src={track.albumImageUrl}
-              alt={`${track.album} album art`}
-              width={40}
-              height={40}
-              className="rounded"
-              unoptimized
-            />
-          </div>
-        ) : (
-          <div className="w-10 h-10 bg-green-500 rounded flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.84-.179-.959-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.361 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-            </svg>
-          </div>
-        )}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1 mb-0.5">
-            <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs text-green-600 font-medium">NOW PLAYING</span>
-          </div>
-          {track.songUrl ? (
-            <Link 
-              href={track.songUrl} 
-              target="_blank" 
-              className="text-xs text-gray-700 hover:text-green-600 transition-colors line-clamp-1"
-            >
-              {track.title} - {track.artist}
-            </Link>
-          ) : (
-            <p className="text-xs text-gray-700 line-clamp-1">
-              {track.title} - {track.artist}
-            </p>
-          )}
-        </div>
-        <Link 
-          href="https://open.spotify.com/user/sbstnvlncia" 
-          target="_blank" 
-          className="text-xs text-green-600 underline hover:text-green-800 flex-shrink-0"
-        >
-          SPOTIFY →
-        </Link>
-      </div>
+  if (!track?.songUrl) return <p className="spotify-line"><a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">♫ {track?.status === "idle" ? "Nothing playing right now" : "Find me on Spotify"}</a></p>
+  const duration = track.durationMs || 0
+  const progress = Math.min(duration, (track.progressMs || 0) + Math.max(0, now - (track.fetchedAt || now)))
+  return <aside className="spotify-player" aria-label={track.status === "playing" ? "Currently listening on Spotify" : "Last listened on Spotify"}>
+    <a href={track.songUrl} target="_blank" rel="noreferrer" aria-label={`Open ${track.title} on Spotify`}>
+      {track.albumImageUrl ? <AsciiCover url={track.albumImageUrl} album={track.album} /> : <span className="ascii-cover cover-placeholder">♫</span>}
+    </a>
+    <div className="spotify-details">
+      <span className="spotify-caption">{track.status === "playing" ? "Listening on " : track.status === "idle" ? "Nothing playing right now · Last listened on " : "Last listened on "}<a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">Spotify ↗</a></span>
+      <a className="spotify-title" href={track.songUrl} target="_blank" rel="noreferrer">{track.title}</a>
+      <span className="spotify-artist">{track.artist}</span>
+      {track.status === "playing" && duration > 0 && <div className="spotify-timeline"><span>{time(progress)}</span><div className="spotify-progress" role="progressbar" aria-label="Track progress" aria-valuemin={0} aria-valuemax={Math.round(duration / 1000)} aria-valuenow={Math.round(progress / 1000)}><span style={{ width: `${progress / duration * 100}%` }} /></div><span>{time(duration)}</span></div>}
     </div>
-  )
-} 
+  </aside>
+}
+
+
+
+
