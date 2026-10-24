@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Equation } from "@/components/equation"
-import { AsciiBanner } from "@/components/ascii-banner"
+
 
 const players = [
   ["Goalkeeper", "Marc-André ter Stegen", 30, 35], ["Defender", "Danilo", 31, 15],
@@ -15,13 +15,7 @@ export default function SoccerOptimization() {
   return <div className="soccer-article report-informed">
     <div className="article-shell">
       <nav className="article-top"><Link href="/#projects">← Sebastian Valencia</Link><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Original report ↗</a></nav>
-      <header className="article-hero">
-        <p className="article-kicker">Optimization, Operations Research · Group project</p>
-        <h1>Building the best value soccer team</h1>
-        <p className="article-deck">Give us a budget and a list of players. Can we use math to build a decent soccer team? That was the idea. Then we put the team in EA FC 24 to see what happened.</p>
-        <div className="article-at-a-glance"><div><span>Starting dataset</span><strong>2,500+ players</strong></div><div><span>After filtering</span><strong>~1,000 candidates</strong></div><div><span>Main budget</span><strong>€350M</strong></div></div>
-        <figure className="article-banner"><AsciiBanner /><figcaption>2022–23 player data from Europe’s five major leagues.</figcaption></figure>
-      </header>
+      <header className="article-report-title"><h1>Building the Best Value Soccer Team</h1></header>
       <div className="article-layout">
         <aside className="article-contents"><span>On this page</span><a href="#question">The question</a><a href="#data">The data</a><a href="#model">The model</a><a href="#player-index">Player scores</a><a href="#lineup">The lineup</a><a href="#budgets">Changing the budget</a><a href="#results">Time to Let EA FC Decide</a><a href="#limitations">What we learned</a></aside>
         <main className="article-body">
@@ -124,6 +118,7 @@ while the model is feasible:
     </div>
   </div>
 }
+
 
 
 
