@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Equation } from "@/components/equation"
 import { AsciiBanner } from "@/components/ascii-banner"
-import { SoccerBackdrop } from "@/components/soccer-backdrop"
+import { SoccerBackdrop, SoccerArtCredits } from "@/components/soccer-backdrop"
 
 
 const players = [
@@ -14,7 +14,7 @@ const players = [
 ] as const
 
 export default function SoccerOptimization() {
-  return <div className="soccer-article report-informed"><SoccerBackdrop />
+  return <div className="soccer-article report-informed">
     <div className="article-shell">
       <Link href="/" className="article-back-home">← Back to home</Link>
       <header className="article-report-title"><h1>Building the Best Value Soccer Team</h1><figure className="article-banner"><AsciiBanner /></figure></header>
@@ -28,12 +28,14 @@ export default function SoccerOptimization() {
             <div className="report-takeaway"><span>A small spoiler</span><p>The team we picked finished fifth in simulation. A much cheaper team looked even better on a “score per euro” metric. That team finished last. We’ll get to that.</p></div>
           </section>
           <section className="article-section" id="data">
+            <SoccerBackdrop player="neymar" side="right" />
             <h2>Before the Math, We Need Some Players</h2>
             <p>We started with 2022–23 stats for roughly 2,500 players across the Premier League, Bundesliga, Ligue 1, Serie A, and La Liga. We joined those to Transfermarkt market values and scraped goalkeeper stats from FBRef, since our main dataset didn’t have them.</p>
             <div className="report-pipeline"><div><strong>2,500+</strong><span>Players in the source data</span></div><span aria-hidden="true">→</span><div><strong>10 games + 700 minutes</strong><span>Minimum season participation</span></div><span aria-hidden="true">→</span><div><strong>~1,000</strong><span>Players eligible for the model</span></div></div>
             <p>We also needed players who actually played. Someone can look very good over three appearances. That’s less useful when you’re asking them to start for an entire season. So we kept players with at least 10 games and 700 minutes, leaving about 1,000 candidates.</p>
           </section>
           <section className="article-section" id="model">
+            <SoccerBackdrop player="r9" side="left" />
             <h2>Okay, How Do We Pick the Team?</h2>
             <p>You could sort everyone by their performance score and take the top 11. Easy enough. Except you might end up with 11 forwards and no money left. We need the score and the rules to work together.</p>
             <p>The formula below just says: add up the scores of the players we select, and make that total as large as possible. Iᵢ is player i’s score. xᵢ is 1 if we pick them and 0 if we don’t. An unselected player contributes nothing.</p>
@@ -68,6 +70,7 @@ export default function SoccerOptimization() {
             </div></details>
           </section>
           <section className="article-section" id="player-index">
+            <SoccerBackdrop player="kaka" side="right" />
             <h2>What Makes a Player “Good” Here?</h2>
             <p>Gurobi doesn’t know who Lewandowski is. It needs a number. We adapted a player-performance index from McHale, Scarf, and Folker (2012), averaged the inputs over a season, and left out a predictive component that would have required simulating game events for every player.</p>
             <p>That left us with five sub-scores. Playing time matters, scoring and assisting matter, and keeping a clean sheet matters. But not equally for every position. A goalkeeper gets more credit for a clean sheet than a striker does, which seems fair.</p>
@@ -85,6 +88,7 @@ export default function SoccerOptimization() {
           </section>
           <figure className="report-figure report-evidence"><Image src="/projects/soccer/solver-output.png" alt="Original solver output showing selected players, assigned positions, ages, scores, and market values" width={1482} height={546} /><figcaption>The less glamorous version of the team photo. Same eleven, with the numbers attached.</figcaption></figure>
           <section className="article-section" id="budgets">
+            <SoccerBackdrop player="adriano" side="left" />
             <h2>What If We Spent Less?</h2>
             <p>€350M was our main budget, but there was no reason to stop there. What does another million buy? And how far can we cut the budget before the team gets noticeably worse?</p>
             <ol className="report-steps"><li>Solve the model and record the lineup’s cost.</li><li>Set the next budget to that cost minus €1,000.</li><li>Replace the previous budget constraint and solve again.</li><li>Repeat until no feasible lineup exists.</li></ol>
@@ -100,6 +104,7 @@ while the model is feasible:
             <figure className="report-figure report-chart"><Image src="/projects/soccer/value-per-euro.png" alt="The ratio of optimal index to cost is highest at the low-budget end" width={786} height={616} /><figcaption>Now divide the score by the price. Suddenly the cheap teams look very appealing.</figcaption></figure>
           </section>
           <section className="article-section" id="results">
+            <SoccerBackdrop player="messi" side="right" />
             <h2>Time to Let EA FC Decide</h2>
             <p>We put our €347M lineup into Luton Town in EA FC 24 manager career mode and simulated the next season. We only controlled the starting lineup. If someone got injured, the existing Luton substitutes had to cover. No quietly buying a better bench halfway through.</p>
             <div className="report-results"><div><strong>5th / 20</strong><span>Simulated Premier League finish</span></div><div><strong>13</strong><span>Clean sheets</span></div><div><strong>€347M</strong><span>Selected lineup cost</span></div></div>
@@ -114,6 +119,7 @@ while the model is feasible:
             <p>The first thing I’d fix is the position data. If we tell the solver a player can play midfield, it will believe us. It won’t notice that we’ve put an attacker there because their goals make the score look better. Better inputs before a more complicated model.</p>
           </section>
           <section className="article-section" id="sources"><h2>Project notes</h2><p>Python, Gurobi, Pandas, and NumPy for the model and data work. EA FC 24 for the simulation.</p><p>Built with Hadas Barabash, Misha Melnyk, David Lascu, Sebastian Valencia, and Shamar Phillips.</p><ul className="report-source-list"><li><a href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats" target="_blank" rel="noreferrer">2022–23 player statistics</a></li><li><a href="https://www.kaggle.com/datasets/davidcariboo/player-scores" target="_blank" rel="noreferrer">Transfermarkt market values</a></li><li><a href="https://fbref.com/en/comps/Big5/2022-2023/keepersadv/players/2022-2023-Big-5-European-Leagues-Stats" target="_blank" rel="noreferrer">FBRef goalkeeper statistics</a></li><li><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Original report, with full formulation, figures, and references</a></li></ul></section>
+          <SoccerArtCredits />
           <footer className="article-end"><Link href="/#projects">← Back to projects</Link><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Read the original report ↗</a></footer>
         </main>
       </div>
