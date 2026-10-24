@@ -1,7 +1,21 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import frames from "@/lib/digimon-frames.json"
+import allFrames from "@/lib/digimon-frames.json"
+
+const frames = allFrames.filter(frame => !["Botamon", "Koromon"].includes(frame.name))
+
+// Smooth seeded waypoints produce independent paths without a repeating bob cycle.
+function wander(time: number, seed: number) {
+  const segment = Math.floor(time)
+  const fraction = time - segment
+  const blend = fraction * fraction * fraction * (fraction * (fraction * 6 - 15) + 10)
+  const value = (index: number) => {
+    const hash = Math.sin(index * 127.1 + seed * 311.7) * 43758.5453
+    return (hash - Math.floor(hash)) * 2 - 1
+  }
+  return value(segment) * (1 - blend) + value(segment + 1) * blend
+}
 
 // Character density is sampled from the reference artwork for each evolution.
 export function AsciiEvolution() {
@@ -33,17 +47,25 @@ export function AsciiEvolution() {
         ctx.clearRect(0, 0, width, height)
         ctx.textBaseline = "top"
         const creatures = [
-          { x: width - 365 + Math.sin(t * .45) * 30, y: Math.max(height * .56, height - 325) + Math.sin(t * .8) * 15, size: 3.7, opacity: .65 },
-          { x: -105 + Math.sin(t * .35 + 1) * 35, y: height * .12 + Math.cos(t * .6) * 20, size: 3.3, opacity: .40 },
+          { x: width - 350, y: Math.max(height * .56, height - 325), size: 3.7, opacity: .65, seed: 7, speed: 11 },
+          { x: -105, y: height * .19, size: 3.3, opacity: .40, seed: 31, speed: 17 },
         ]
         for (const creature of creatures) {
+          const travel = t / creature.speed
+          const offsetX = wander(travel, creature.seed) * 105 + wander(travel * 2.3, creature.seed + 1) * 14
+          const offsetY = wander(travel * .83, creature.seed + 2) * 80
+          const angle = wander(travel * 1.17, creature.seed + 3) * .14
+          const scale = 1 + wander(travel * .57, creature.seed + 4) * .045
+          const cosine = Math.cos(angle), sine = Math.sin(angle)
           ctx.font = `${creature.size * 1.6}px monospace`
           const rows = frames[stage].rows
           for (let y = 0; y < rows.length; y++) for (let x = 0; x < rows[y].length; x++) {
             const char = rows[y][x]
             if (char === " ") continue
-            const screenX = creature.x + x * creature.size
-            const screenY = creature.y + y * creature.size * 1.5 + Math.sin(t * 1.3 + x * .055) * 2
+            const localX = (x - 48) * creature.size * scale
+            const localY = (y - 32) * creature.size * 1.5 * scale
+            const screenX = creature.x + 48 * creature.size + offsetX + localX * cosine - localY * sine
+            const screenY = creature.y + 48 * creature.size + offsetY + localX * sine + localY * cosine
             const centerDistance = Math.abs(screenX - width / 2)
             const readingFade = width < 700 ? .22 : Math.min(1, Math.max(.05, (centerDistance - 275) / 100))
             const alpha = creature.opacity * fade * readingFade
@@ -62,4 +84,5 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
