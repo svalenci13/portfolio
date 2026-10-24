@@ -124,103 +124,25 @@ export default function SoccerOptimization() {
           </div>
         </section>
 <section className="article-section" id="model">
-          <h2>The mathematical model</h2>
-          
-          <div className="article-flow">
-            <p>
-              To solve this systematically, we formulated it as an <strong>integer programming problem</strong>. 
-              This is a mathematical optimization technique that can find the globally optimal solution 
-              when given an objective function and constraints.
-            </p>
-            <p>
-              Here&apos;s how we translated our soccer team building challenge into mathematical language:
-            </p>
-          </div>
-          
-          <div className="article-panel">
-            <div className="article-flow">
-              <div>
-                <h3>What We Want to Maximize</h3>
-                <p >
-                  Our goal is simple: select the 11 players that give us the highest total performance. 
-                  Mathematically, this means:
-                </p>
-                <div className="article-panel article-mono">
-                  <div >MAXIMIZE</div>
-                  <div className="article-equation">
-                    <span >∑</span><sub >i=1</sub><sup >n</sup> 
-                    <span >I<sub>i</sub> × x<sub>i</sub></span>
-                  </div>
-                  <div className="article-flow article-note">
-                    <div><strong>I<sub>i</sub></strong> = performance index of player i (explained in detail below)</div>
-                    <div><strong>x<sub>i</sub></strong> = 1 if we select player i, 0 if we don&apos;t</div>
-                    <div><strong>n</strong> = 2,500+ players in our dataset</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h3>What Rules We Must Follow</h3>
-                <p >
-                  We can&apos;t just pick the 11 highest-rated players - we have real-world constraints that 
-                  must be satisfied. Each constraint is expressed as a mathematical equation:
-                </p>
-                <div className="article-flow article-panel article-mono">
-                  <div>
-                    <div >
-                      <span >Team Formation (4-3-3):</span>
-                    </div>
-                    <div className="article-note">
-                      ∑<sub>GK</sub> x<sub>i</sub> = 1, ∑<sub>DF</sub> x<sub>i</sub> = 4, ∑<sub>MF</sub> x<sub>i</sub> = 3, ∑<sub>FW</sub> x<sub>i</sub> = 3
-                    </div>
-                    <p className="article-note">Exactly 1 goalkeeper, 4 defenders, 3 midfielders, 3 forwards</p>
-                  </div>
-                  
-                  <div>
-                    <div >
-                      <span >Budget Limit:</span>
-                    </div>
-                    <div className="article-note">
-                      ∑<sub>i=1</sub><sup>n</sup> m<sub>i</sub> × x<sub>i</sub> ≤ €350,000,000
-                    </div>
-                    <p className="article-note">Total cost of selected players can&apos;t exceed our budget</p>
-                  </div>
-                  
-                  <div>
-                    <div >
-                      <span >Age Balance:</span>
-                    </div>
-                    <div className="article-note">
-                      |1/11 × ∑<sub>i=1</sub><sup>n</sup> age<sub>i</sub> × x<sub>i</sub> - 25| ≤ 1
-                    </div>
-                    <p className="article-note">Team average age must be between 24-26 years old</p>
-                  </div>
-                  
-                  <div>
-                    <div >
-                      <span >Experience Requirements:</span>
-                    </div>
-                    <div className="article-note">
-                      ∑<sub>age≥27</sub> x<sub>i</sub> ≥ 3, ∑<sub>age≤24</sub> x<sub>i</sub> ≥ 3
-                    </div>
-                    <p className="article-note">At least 3 experienced players (27+) and 3 young players (24 or under)</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="article-panel">
-                <h4>How We Solve It</h4>
-                <p >
-                  We used the <strong>Gurobi solver</strong> - a powerful optimization engine that can handle 
-                  problems with thousands of variables and constraints. It uses advanced algorithms like 
-                  branch-and-bound and cutting planes to find the mathematically optimal solution.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+  <h2>The mathematical model</h2>
+  <p className="math-lead">Think of every player as a checkbox. The solver decides which 11 boxes to tick. It adds up their performance scores, checks the rules below, and finds the highest-scoring lineup that passes every rule.</p>
+  <div className="math-key">
+    <h3>Four symbols, one decision</h3>
+    <dl><div><dt>xᵢ</dt><dd>Pick player i? 1 means yes, 0 means no.</dd></div><div><dt>Iᵢ</dt><dd>That player’s performance score.</dd></div><div><dt>mᵢ</dt><dd>That player’s market value, in euros.</dd></div><div><dt>ageᵢ</dt><dd>That player’s age, in years.</dd></div></dl>
+    <p className="article-note">The symbol Σ means “add this up across the players.” Multiplying by xᵢ includes selected players and contributes zero for everyone else.</p>
+  </div>
+  <div className="math-objective"><span className="math-eyebrow">The objective</span><h3>Get the highest combined performance score.</h3><div className="math-formula">Maximize ∑<sub>i=1</sub><sup>n</sup> I<sub>i</sub> × x<sub>i</sub></div><p>For example, selecting players with scores of 82, 76, and 91 contributes 249 points. The model does this for all 11 selected players.</p></div>
+  <h3 className="math-rules-heading">The rules every lineup must pass</h3>
+  <div className="math-rules">
+    <div><div className="math-rule-title"><span>01</span><h4>Spend no more than €350M</h4></div><p>Add the market values of selected players. The total must fit the budget.</p><div className="math-formula">∑<sub>i=1</sub><sup>n</sup> m<sub>i</sub> × x<sub>i</sub> ≤ €350,000,000</div></div>
+    <div><div className="math-rule-title"><span>02</span><h4>Fill exactly 11 positions</h4></div><p>Use a 4-3-3 formation: one goalkeeper, four defenders, three midfielders, and three forwards.</p><div className="math-formation"><div><strong>1</strong><span>Goalkeeper</span></div><div><strong>4</strong><span>Defenders</span></div><div><strong>3</strong><span>Midfielders</span></div><div><strong>3</strong><span>Forwards</span></div></div><div className="math-formula small-formula">∑<sub>GK</sub> x<sub>i</sub> = 1 &nbsp; ∑<sub>DF</sub> x<sub>i</sub> = 4<br />∑<sub>MF</sub> x<sub>i</sub> = 3 &nbsp; ∑<sub>FW</sub> x<sub>i</sub> = 3</div></div>
+    <div><div className="math-rule-title"><span>03</span><h4>Keep the average age between 24 and 26</h4></div><p>Add the ages of the selected players and divide by 11. The average can be at most one year away from 25.</p><div className="math-formula">| (∑<sub>i=1</sub><sup>n</sup> age<sub>i</sub> × x<sub>i</sub>) / 11 − 25 | ≤ 1</div></div>
+    <div><div className="math-rule-title"><span>04</span><h4>Include both youth and experience</h4></div><p>At least three players must be 27 or older, and at least three must be 24 or younger. This prevents a balanced average from hiding a team with little age diversity.</p><div className="math-formula small-formula">∑<sub>age≥27</sub> x<sub>i</sub> ≥ 3<br />∑<sub>age≤24</sub> x<sub>i</sub> ≥ 3</div></div>
+  </div>
+  <div className="math-solver"><h3>How we solve it</h3><p>Gurobi searches for the best combination of yes/no decisions using branch-and-bound and cutting planes. We supply the scores and constraints; the solver finds the highest-scoring feasible lineup.</p><p className="article-note">“Optimal” means best under this scoring system and these constraints. It does not guarantee the best real-world soccer team.</p></div>
+</section>
 <section className="article-section" id="player-index">
-          <h2>Evaluating players</h2>
+          <h2>Evaluating players</h2><p className="math-lead">The solver needs one score per player. We build it by putting several statistics on a comparable scale, applying weights, and adding them together. A larger weight makes a statistic count more toward the final score.</p>
           <div className="article-flow">
             <p>
               The performance index <strong>I<sub>player</sub></strong> is the core of our optimization. 
@@ -228,7 +150,7 @@ export default function SoccerOptimization() {
             </p>
             
             <div className="article-panel">
-              <h3>Mathematical Definition</h3>
+              <h3>Combine five normalized sub-scores</h3><p className="article-note">Read this as: multiply each sub-score by its weight, add the results, then multiply by 100.</p>
               <div className="article-panel article-mono article-equation">
                 <div >
                   I<sub>player</sub> = 100 × (0.375·I₁ + 0.125·I₂ + 0.125·I₃ + 0.0625·I₄ + 0.0625·I₅)
