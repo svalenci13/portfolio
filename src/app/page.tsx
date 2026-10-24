@@ -35,7 +35,7 @@ export default function Home() {
           <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://x.com/internetsebo" target="_blank" rel="noreferrer">X</a>
 
-          <p className="email-address">email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
+          <p className="email-address">Email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
         </footer>
       </main>
     </HomeViewport>
