@@ -23,7 +23,8 @@ export function AsciiEvolution() {
       ratio = Math.min(window.devicePixelRatio || 1, 2)
       canvas!.width = Math.round(width * ratio); canvas!.height = Math.round(height * ratio)
       ctx!.setTransform(ratio, 0, 0, ratio, 0, 0)
-      ctx!.imageSmoothingEnabled = false
+      ctx!.imageSmoothingEnabled = true
+      ctx!.imageSmoothingQuality = "high"
       cache.clear(); buffers.clear()
     }
     function sprite(stage: number, size: number) {
@@ -60,12 +61,12 @@ export function AsciiEvolution() {
       ]
       for (const creature of creatures) {
         const clock = Math.max(0, Number.isFinite(t) ? t : 0) + creature.delay
-        const stage = Math.floor(clock / 14) % frames.length
-        const progress = Math.max(0, Math.min(1, (clock % 14 - 12) / 2))
+        const stage = Math.floor(clock / 12) % frames.length
+        const progress = Math.max(0, Math.min(1, (clock % 12 - 9.6) / 2.4))
         const extent = 96 * creature.size
-        // Move a cached raster at physical-pixel boundaries. Glyphs never rerasterize in motion.
-        const x = Math.round((creature.x + Math.sin(t * .085 + creature.seed) * 24 + Math.sin(t * .037) * 12) * ratio) / ratio
-        const y = Math.round((creature.y + Math.sin(t * .065 + creature.seed * .7) * 18) * ratio) / ratio
+        // Move the cached image continuously; individual glyphs stay rasterized.
+        const x = creature.x + Math.sin(t * .17 + creature.seed) * 46 + Math.sin(t * .061 + creature.seed * .3) * 20
+        const y = creature.y + Math.sin(t * .13 + creature.seed * .7) * 32 + Math.sin(t * .043 + creature.seed) * 12
         let composite = buffers.get(creature.size)
         if (!composite) {
           composite = document.createElement("canvas")
@@ -87,9 +88,16 @@ export function AsciiEvolution() {
           layer.restore()
           const glow = layer.createLinearGradient(0, scanY - 12 * ratio, 0, scanY + 12 * ratio)
           glow.addColorStop(0, "rgba(111,142,175,0)")
-          glow.addColorStop(.5, "rgba(111,142,175,.07)")
+          glow.addColorStop(.5, "rgba(111,142,175,.22)")
           glow.addColorStop(1, "rgba(111,142,175,0)")
           layer.fillStyle = glow; layer.fillRect(0, scanY - 12 * ratio, composite.width, 24 * ratio)
+          layer.save()
+          layer.strokeStyle = `rgba(111,142,175,${Math.sin(progress * Math.PI) * .16})`
+          layer.lineWidth = ratio
+          layer.beginPath()
+          layer.ellipse(composite.width / 2, composite.height * .53, composite.width * (.30 + progress * .13), composite.height * .14, -.2, 0, Math.PI * 2)
+          layer.stroke()
+          layer.restore()
         }
         ctx.save()
         ctx.globalAlpha = width < 700 ? .08 : creature.opacity
@@ -104,5 +112,6 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
