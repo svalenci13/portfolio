@@ -1,481 +1,99 @@
 import Link from "next/link"
 import Image from "next/image"
 
+const players = [
+  ["Goalkeeper", "Marc-André ter Stegen", 30, 35], ["Defender", "Danilo", 31, 15],
+  ["Defender", "Giovanni Di Lorenzo", 29, 25], ["Defender", "Jules Koundé", 24, 60],
+  ["Defender", "Alejandro Balde", 19, 50], ["Midfielder", "Vincenzo Grifo", 29, 12],
+  ["Midfielder", "Mattia Zaccagni", 27, 30], ["Midfielder", "Takefusa Kubo", 21, 25],
+  ["Forward", "Robert Lewandowski", 34, 30], ["Forward", "Ansu Fati", 20, 35], ["Forward", "Folarin Balogun", 21, 30],
+] as const
+
 export default function SoccerOptimization() {
-  return <div className="soccer-article">
+  return <div className="soccer-article report-informed">
     <div className="article-shell">
-      <nav className="article-top"><Link href="/#projects">← Sebastian Valencia</Link><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Full report ↗</a></nav>
+      <nav className="article-top"><Link href="/#projects">← Sebastian Valencia</Link><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Original report ↗</a></nav>
       <header className="article-hero">
-        <p className="article-kicker">A project in optimization &amp; operations research</p>
-        <h1>Building the best<br className="article-title-break" /> value soccer team.</h1>
-        <p className="article-deck">An 11-player lineup. A €350M budget. More than 2,500 candidates. Finding the best combination with integer programming.</p>
-        <div className="article-at-a-glance"><div><span>Candidate pool</span><strong>2,500+ players</strong></div><div><span>Budget ceiling</span><strong>€350 million</strong></div><div><span>Model</span><strong>Binary integer program</strong></div></div>
-        <figure className="article-banner"><Image src="/logos/wide.jpeg" alt="Soccer team optimization project" width={1200} height={420} priority /><figcaption>From player statistics to a budget-constrained starting eleven.</figcaption></figure>
+        <p className="article-kicker">Optimization, Operations Research · Group project</p>
+        <h1>Building the best<br />value soccer team.</h1>
+        <p className="article-deck">How do you choose 11 players when you can’t afford everyone? We built an integer program to make those tradeoffs explicit, then tested what “best value” actually means.</p>
+        <div className="article-at-a-glance"><div><span>Starting dataset</span><strong>2,500+ players</strong></div><div><span>After filtering</span><strong>~1,000 candidates</strong></div><div><span>Main budget</span><strong>€350M</strong></div></div>
+        <figure className="article-banner"><Image src="/logos/wide.jpeg" alt="Soccer team optimization project" width={1200} height={420} priority /><figcaption>2022–23 player data from Europe’s five major leagues.</figcaption></figure>
       </header>
       <div className="article-layout">
-        <aside className="article-contents"><span>On this page</span><a href="#problem">The problem</a><a href="#model">The model</a><a href="#player-index">Player evaluation</a><a href="#lineup">The lineup</a><a href="#results">Results</a><a href="#limitations">Limitations</a><a href="#implementation">Tools &amp; data</a></aside>
+        <aside className="article-contents"><span>On this page</span><a href="#question">The question</a><a href="#data">The data</a><a href="#model">The model</a><a href="#player-index">Player scores</a><a href="#lineup">The lineup</a><a href="#budgets">What money buys</a><a href="#results">The reality check</a><a href="#limitations">What we learned</a></aside>
         <main className="article-body">
-<section className="article-section" id="overview">
-          <h2>Overview</h2>
-          <div className="article-panel">
-            <p >
-              The Premier League has seen 51 different teams since its start, but only 7 have won titles. 
-              Why is success so rare? Building a winning team requires balancing player talent, budget constraints, 
-              age diversity, and team chemistry. Our team tackled this challenge by creating an optimization algorithm that selects 
-              the optimal 11-player starting lineup from Europe&apos;s top leagues.
-            </p>
-            <div className="article-facts">
-              <div>
-                <span className="article-note">Group Project:</span>
-                <p >5 collaborators</p>
-              </div>
-              <div>
-                <span className="article-note">Dataset:</span>
-                <p >2,500+ players</p>
-              </div>
-              <div>
-                <span className="article-note">Budget:</span>
-                <p >€350M constraint</p>
-              </div>
-              <div>
-                <span className="article-note">Method:</span>
-                <p >Integer Programming</p>
-              </div>
-            </div>
-          </div>
-        </section>
-<section className="article-section" id="problem">
-          <h2>The selection problem</h2>
-          <div className="article-flow">
-            <p>
-              Building a successful soccer team is like solving a complex puzzle. You need to:
-            </p>
-            <ul className="article-flow">
-              <li className="article-bullet">
-                <span >•</span>
-                <span>Stay within your budget (we used €350M - the 7th highest in Premier League)</span>
-              </li>
-              <li className="article-bullet">
-                <span >•</span>
-                <span>Fill specific positions (1 goalkeeper, 4 defenders, 3 midfielders, 3 forwards)</span>
-              </li>
-              <li className="article-bullet">
-                <span >•</span>
-                <span>Balance experience and youth (at least 3 players over 27, at least 3 under 24)</span>
-              </li>
-              <li className="article-bullet">
-                <span >•</span>
-                <span>Maximize team performance using advanced player statistics</span>
-              </li>
-            </ul>
-            <p>
-              With 2,500+ players to choose from across Europe&apos;s top 5 leagues, manual selection 
-              becomes impossible. That&apos;s where optimization algorithms come in.
-            </p>
-          </div>
-        </section>
-<section className="article-section" id="approach">
-          <h2>The approach</h2>
-          <div className="article-flow">
-            <p>
-              Rather than relying on gut instinct or traditional scouting, we approached this as a 
-              data science problem. Our solution combines three key insights:
-            </p>
-            
-            <div className="article-three">
-              <div className="article-panel">
-                <div >
-                  <span className="article-step article-note">1</span>
-                  <h3>Data-driven evaluation</h3>
-                </div>
-                <p >
-                  Transform subjective player assessment into objective metrics using comprehensive 
-                  performance data from Europe&apos;s top leagues.
-                </p>
-              </div>
-              
-              <div className="article-panel">
-                <div >
-                  <span className="article-step article-note">2</span>
-                  <h3>Mathematical optimization</h3>
-                </div>
-                <p >
-                  Use proven operations research techniques to find the globally optimal solution 
-                  rather than settling for &quot;good enough&quot; manual selections.
-                </p>
-              </div>
-              
-              <div className="article-panel">
-                <div >
-                  <span className="article-step article-note">3</span>
-                  <h3>Real-world testing</h3>
-                </div>
-                <p >
-                  Validate theoretical results through simulation and compare against actual 
-                  Premier League performance to prove the approach works.
-                </p>
-              </div>
-            </div>
-            
-            <p >
-              The following sections detail exactly how we implemented each of these components 
-              and the mathematical framework that ties them together.
-            </p>
-          </div>
-        </section>
-<section className="article-section" id="model">
-  <h2>The mathematical model</h2>
-  <p className="math-lead">Think of every player as a checkbox. The solver decides which 11 boxes to tick. It adds up their performance scores, checks the rules below, and finds the highest-scoring lineup that passes every rule.</p>
-  <div className="math-key">
-    <h3>Four symbols, one decision</h3>
-    <dl><div><dt>xᵢ</dt><dd>Pick player i? 1 means yes, 0 means no.</dd></div><div><dt>Iᵢ</dt><dd>That player’s performance score.</dd></div><div><dt>mᵢ</dt><dd>That player’s market value, in euros.</dd></div><div><dt>ageᵢ</dt><dd>That player’s age, in years.</dd></div></dl>
-    <p className="article-note">The symbol Σ means “add this up across the players.” Multiplying by xᵢ includes selected players and contributes zero for everyone else.</p>
-  </div>
-  <div className="math-objective"><span className="math-eyebrow">The objective</span><h3>Get the highest combined performance score.</h3><div className="math-formula">Maximize ∑<sub>i=1</sub><sup>n</sup> I<sub>i</sub> × x<sub>i</sub></div><p>For example, selecting players with scores of 82, 76, and 91 contributes 249 points. The model does this for all 11 selected players.</p></div>
-  <h3 className="math-rules-heading">The rules every lineup must pass</h3>
-  <div className="math-rules">
-    <div><div className="math-rule-title"><span>01</span><h4>Spend no more than €350M</h4></div><p>Add the market values of selected players. The total must fit the budget.</p><div className="math-formula">∑<sub>i=1</sub><sup>n</sup> m<sub>i</sub> × x<sub>i</sub> ≤ €350,000,000</div></div>
-    <div><div className="math-rule-title"><span>02</span><h4>Fill exactly 11 positions</h4></div><p>Use a 4-3-3 formation: one goalkeeper, four defenders, three midfielders, and three forwards.</p><div className="math-formation"><div><strong>1</strong><span>Goalkeeper</span></div><div><strong>4</strong><span>Defenders</span></div><div><strong>3</strong><span>Midfielders</span></div><div><strong>3</strong><span>Forwards</span></div></div><div className="math-formula small-formula">∑<sub>GK</sub> x<sub>i</sub> = 1 &nbsp; ∑<sub>DF</sub> x<sub>i</sub> = 4<br />∑<sub>MF</sub> x<sub>i</sub> = 3 &nbsp; ∑<sub>FW</sub> x<sub>i</sub> = 3</div></div>
-    <div><div className="math-rule-title"><span>03</span><h4>Keep the average age between 24 and 26</h4></div><p>Add the ages of the selected players and divide by 11. The average can be at most one year away from 25.</p><div className="math-formula">| (∑<sub>i=1</sub><sup>n</sup> age<sub>i</sub> × x<sub>i</sub>) / 11 − 25 | ≤ 1</div></div>
-    <div><div className="math-rule-title"><span>04</span><h4>Include both youth and experience</h4></div><p>At least three players must be 27 or older, and at least three must be 24 or younger. This prevents a balanced average from hiding a team with little age diversity.</p><div className="math-formula small-formula">∑<sub>age≥27</sub> x<sub>i</sub> ≥ 3<br />∑<sub>age≤24</sub> x<sub>i</sub> ≥ 3</div></div>
-  </div>
-  <div className="math-solver"><h3>How we solve it</h3><p>Gurobi searches for the best combination of yes/no decisions using branch-and-bound and cutting planes. We supply the scores and constraints; the solver finds the highest-scoring feasible lineup.</p><p className="article-note">“Optimal” means best under this scoring system and these constraints. It does not guarantee the best real-world soccer team.</p></div>
-</section>
-<section className="article-section" id="player-index">
-          <h2>Evaluating players</h2><p className="math-lead">The solver needs one score per player. We build it by putting several statistics on a comparable scale, applying weights, and adding them together. A larger weight makes a statistic count more toward the final score.</p>
-          <div className="article-flow">
-            <p>
-              The performance index <strong>I<sub>player</sub></strong> is the core of our optimization. 
-              We developed a weighted composite score that captures multiple dimensions of player value:
-            </p>
-            
-            <div className="article-panel">
-              <h3>Combine five normalized sub-scores</h3><p className="article-note">Read this as: multiply each sub-score by its weight, add the results, then multiply by 100.</p>
-              <div className="article-panel article-mono article-equation">
-                <div >
-                  I<sub>player</sub> = 100 × (0.375·I₁ + 0.125·I₂ + 0.125·I₃ + 0.0625·I₄ + 0.0625·I₅)
-                </div>
-              </div>
-              
-              <div className="article-columns">
-                <div>
-                  <h4>Sub-Index Components</h4>
-                  <ul className="article-flow">
-                    <li><strong>I₁ (37.5%):</strong> Goals & Assists</li>
-                    <li><strong>I₂ (12.5%):</strong> Clean Sheets (GK/DEF)</li>
-                    <li><strong>I₃ (12.5%):</strong> Pass Accuracy</li>
-                    <li><strong>I₄ (6.25%):</strong> Team Performance</li>
-                    <li><strong>I₅ (6.25%):</strong> League Strength</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h4>Normalization Process</h4>
-                  <ul className="article-flow">
-                    <li>• Position-specific scaling</li>
-                    <li>• Min-max normalization [0,1]</li>
-                    <li>• League competition adjustment</li>
-                    <li>• Age performance curves</li>
-                    <li>• Market value correlation check</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3>Why this weighting?</h3>
-              <p >
-                Goals and assists (37.5% weight) are the strongest predictors of team success and directly 
-                correlate with match outcomes. Defensive metrics like clean sheets (12.5%) are crucial but 
-                position-dependent. Pass accuracy and team performance provide context, while league strength 
-                ensures fair comparison across competitions.
-              </p>
-            </div>
-            
-            <div>
-              <h3>Validation results</h3>
-              <p >
-                Our index correctly identified 8 out of 11 players who became regular starters in top 
-                Premier League teams the following season. The correlation between our index and actual 
-                season performance was 0.73, significantly higher than market value alone (0.41).
-              </p>
-            </div>
-            
-            <div className="article-panel">
-              <p >
-                <strong>Next:</strong> With our mathematical framework and player evaluation system defined, 
-                let&apos;s see what the optimal team looks like when we run our algorithm on the full dataset.
-              </p>
-            </div>
-          </div>
-        </section>
-<section className="article-section" id="lineup">
-          <h2>The selected lineup</h2>
-          
-          {/* Team Formation Visual */}
-          <div className="article-panel">
-            <h3>4-3-3 formation</h3>
-            <div className="article-formation">
-              <p className="article-note">
-                Optimal team selected by our algorithm (total value: €347M)
-              </p>
-              <div className="article-panel">
-                <Image 
-                  src="/logos/team.png" 
-                  alt="Optimal 4-3-3 Formation - Selected players positioned on soccer field"
-                  width={600}
-                  height={400}
-                  
-                />
-              </div>
-              <p className="article-note">
-                Our algorithm selected this optimal 11-player lineup using integer programming
-              </p>
-            </div>
-          </div>
-
-          {/* Team Breakdown */}
-          <div className="article-columns">
-            <div className="article-panel">
-              <h4>Defense + goalkeeper</h4>
-              <div className="article-flow">
-                <div className="article-data-row">
-                  <span>Marc-André ter Stegen (GK)</span>
-                  <span className="article-note">€35M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Alejandro Balde (LB)</span>
-                  <span className="article-note">€50M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Jules Koundé (CB)</span>
-                  <span className="article-note">€60M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Danilo (CB)</span>
-                  <span className="article-note">€15M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Giovanni Di Lorenzo (RB)</span>
-                  <span className="article-note">€25M</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="article-panel">
-              <h4>Midfield + attack</h4>
-              <div className="article-flow">
-                <div className="article-data-row">
-                  <span>Vincenzo Grifo (LM)</span>
-                  <span className="article-note">€12M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Takefusa Kubo (CAM)</span>
-                  <span className="article-note">€25M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Mattia Zaccagni (RM)</span>
-                  <span className="article-note">€30M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Ansu Fati (LW)</span>
-                  <span className="article-note">€35M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Robert Lewandowski (ST)</span>
-                  <span className="article-note">€30M</span>
-                </div>
-                <div className="article-data-row">
-                  <span>Folarin Balogun (RW)</span>
-                  <span className="article-note">€30M</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-<section className="article-section" id="results">
-          <h2>Results and validation</h2>
-          
-          <div className="article-panel">
-            <div className="article-three">
-              
-              {/* Result 1 */}
-              <div >
-                <div className="article-result-icon">
-                  <span className="article-stat">5th</span>
-                </div>
-                <h3>League position</h3>
-                <p className="article-note">
-                  EA FC 24 simulation: finished 5th in Premier League, outperforming our 7th-place budget ranking
-                </p>
-              </div>
-              
-              {/* Result 2 */}
-              <div >
-                <div className="article-result-icon">
-                  <span className="article-stat">347</span>
-                </div>
-                <h3>Budget scenarios</h3>
-                <p className="article-note">
-                  Analyzed 347 different budget levels using cutting planes to find optimal teams for any budget
-                </p>
-              </div>
-              
-              {/* Result 3 */}
-              <div >
-                <div className="article-result-icon">
-                  <Image 
-                    src="/logos/take.png" 
-                    alt="Takefusa Kubo - Star Player"
-                    width={64}
-                    height={64}
-                    
-                  />
-                </div>
-                <h3>Star player</h3>
-                <p className="article-note">
-                  Takefusa Kubo played every game and led the team in goals + assists, validating our algorithm&apos;s selection
-                </p>
-              </div>
-              
-            </div>
-            
-            {/* Additional Team Stats */}
-            <div >
-              <h4>Team composition & performance</h4>
-              <div className="article-facts">
-                <div className="article-panel">
-                  <div className="article-mono">13</div>
-                  <div className="article-note">Clean Sheets</div>
-                  <div className="article-note">Defensive strength</div>
-                </div>
-                <div className="article-panel">
-                  <div className="article-mono">€347M</div>
-                  <div className="article-note">Total Investment</div>
-                  <div className="article-note">Under budget limit</div>
-                </div>
-                <div className="article-panel">
-                  <div className="article-mono">25.1</div>
-                  <div className="article-note">Average Age</div>
-                  <div className="article-note">Perfect balance</div>
-                </div>
-                <div className="article-panel">
-                  <div className="article-mono">4-3-3</div>
-                  <div className="article-note">Formation</div>
-                  <div className="article-note">Attacking setup</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-<section className="article-section" id="limitations">
-          <h2>What the model misses</h2>
-          <div className="article-flow">
-            <div>
-              <h3>Position specificity</h3>
-              <p >
-                Our data only had broad positions (defender, midfielder, forward) instead of specific roles 
-                like center-back vs full-back. This could put players slightly out of their optimal positions, 
-                affecting team chemistry and tactical effectiveness.
-              </p>
-            </div>
-            
-            <div>
-              <h3>League differences</h3>
-              <p >
-                Not all leagues are equally competitive. A player dominating in a weaker league might 
-                struggle in the Premier League. Future versions should weight stats by league strength 
-                and include adaptation factors for cross-league transfers.
-              </p>
-            </div>
-            
-            <div>
-              <h3>Team chemistry</h3>
-              <p >
-                Our algorithm optimizes individual player performance but doesn&apos;t account for how well players 
-                work together. Team chemistry, communication, and playing style compatibility are crucial 
-                factors that pure statistics can&apos;t capture.
-              </p>
-            </div>
-            
-            <div>
-              <h3>Key insights</h3>
-              <p >
-                Despite limitations, our algorithm successfully identified undervalued players and achieved 
-                better performance than expected. The simulation results validate that data-driven approaches 
-                can significantly improve team building decisions in professional sports.
-              </p>
-            </div>
-          </div>
-        </section>
-<section className="article-section" id="next-steps">
-          <h2>Next steps</h2>
-          <ul className="article-flow">
-            <li className="article-bullet">
-              <span >•</span>
-              <span>Include more specific player positions (center-back, left-wing, etc.)</span>
-            </li>
-            <li className="article-bullet">
-              <span >•</span>
-              <span>Add league strength multipliers to normalize performance across competitions</span>
-            </li>
-            <li className="article-bullet">
-              <span >•</span>
-              <span>Expand dataset to include lower division and non-European leagues</span>
-            </li>
-            <li className="article-bullet">
-              <span >•</span>
-              <span>Incorporate pass completion and team chemistry metrics</span>
-            </li>
-          </ul>
-        </section>
-<section className="article-section" id="collaborators">
-          <h2>Collaborators</h2>
-          <div className="article-panel">
-            <p >
-              This research was conducted as a group project with contributions from:
-            </p>
-            <div className="article-credits">
-              <div >Hadas Barabash</div>
-              <div >Misha Melnyk</div>
-              <div >David Lascu</div>
-              <div >Sebastian Valencia</div>
-              <div >Shamar Phillips</div>
-            </div>
-            <p className="article-note">
-              Each team member contributed to data collection, algorithm development, analysis, and validation.
-            </p>
-          </div>
-        </section>
-<section className="article-section" id="implementation">
-          <h2>Tools and data</h2>
-          <div className="article-panel">
-            <div className="article-columns">
-              <div>
-                <h3>Languages & Libraries</h3>
-                <ul className="article-flow">
-                  <li>• Python</li>
-                  <li>• Gurobi (Optimization Solver)</li>
-                  <li>• Pandas & NumPy</li>
-                  <li>• Matplotlib/Seaborn</li>
-                </ul>
-              </div>
-              <div>
-                <h3>Data Sources</h3>
-                <ul className="article-flow">
-                  <li>• <Link href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats" target="_blank" >Kaggle Player Stats</Link> (2,500 players)</li>
-                  <li>• <Link href="https://www.kaggle.com/datasets/davidcariboo/player-scores" target="_blank" >Transfermarkt Values</Link> (Market data)</li>
-                  <li>• <Link href="https://fbref.com/en/comps/Big5/2022-2023/keepersadv/players/2022-2023-Big-5-European-Leagues-Stats" target="_blank" >FBRef Goalkeeper Stats</Link></li>
-                  <li>• EA FC 24 (Team simulation)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-          <footer className="article-end"><Link href="/#projects">← Back to projects</Link><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Read the full technical report ↗</a></footer>
+          <section className="article-section" id="question">
+            <h2>Two ways to mean “best value”</h2>
+            <p>A team can have the best performance you can afford, or the most performance per euro. Those are different objectives. Our main model tackles the first: choose the highest-scoring feasible lineup within a €350M budget.</p>
+            <p>We then vary the budget to study the second. That produces the most useful result in the project: the cheapest-looking efficiency win is not necessarily a competitive soccer team.</p>
+            <div className="report-takeaway"><span>The finding</span><p>The €350M-budget lineup finished fifth in our EA FC 24 simulation. The €13.2M lineup with the highest score per euro finished bottom. Optimizing a metric is not the same as optimizing the real outcome.</p></div>
+          </section>
+          <section className="article-section" id="data">
+            <h2>Start with players who actually played</h2>
+            <p>We combined 2022–23 player statistics, Transfermarkt market values, and goalkeeper data scraped from FBRef. The initial dataset covered roughly 2,500 players in the Premier League, Bundesliga, Ligue 1, Serie A, and La Liga.</p>
+            <div className="report-pipeline"><div><strong>2,500+</strong><span>Players in the source data</span></div><span aria-hidden="true">→</span><div><strong>10 games + 700 minutes</strong><span>Minimum season participation</span></div><span aria-hidden="true">→</span><div><strong>~1,000</strong><span>Players eligible for the model</span></div></div>
+            <p>The filter removes small-sample outliers: a player with a few excellent appearances should not automatically outrank someone who performed over a full season.</p>
+          </section>
+          <section className="article-section" id="model">
+            <h2>Pick players, then check the rules</h2>
+            <p className="math-lead">Imagine a checkbox beside each player. The model ticks the 11 boxes with the highest combined score, while staying within the budget and filling every position.</p>
+            <div className="math-key"><h3>The short version</h3><dl><div><dt>xᵢ</dt><dd>1 if player i is selected; 0 if not.</dd></div><div><dt>Iᵢ</dt><dd>The player’s performance score.</dd></div><div><dt>mᵢ</dt><dd>The player’s market value in euros.</dd></div></dl><p className="article-note">Σ means “add up.” Multiplying by xᵢ includes the selected players and contributes zero for everyone else.</p></div>
+            <div className="math-objective"><span className="math-eyebrow">What to maximize</span><h3>The selected players’ total score</h3><div className="math-formula">Maximize ∑<sub>i∈S</sub> I<sub>i</sub>x<sub>i</sub></div><p>Three selected players with scores of 82, 76, and 91 contribute 249 points. The solver evaluates the combined score of a full lineup.</p></div>
+            <div className="report-rule-list"><div><strong>Budget</strong><p>Total market value ≤ €350M.</p></div><div><strong>Formation</strong><p>Exactly 1 goalkeeper, 4 defenders, 3 midfielders, and 3 forwards.</p></div><div><strong>Average age</strong><p>Between 24 and 26 years.</p></div><div><strong>Age diversity</strong><p>At least 3 players aged 27+ and at least 3 aged 24 or younger.</p></div><div><strong>No double counting</strong><p>A player eligible for multiple positions can fill only one slot.</p></div></div>
+            <details className="report-details"><summary>The full formulation, with position assignments</summary><div className="report-details-body"><p>The actual decision is x<sub>ip</sub>: select player i in position p. P<sub>i</sub> is that player’s eligible position set, and x<sub>i</sub> = ∑<sub>p∈Pᵢ</sub> x<sub>ip</sub>. This matters because a forward/midfielder must not be selected twice.</p><div className="report-equation-list"><div><span>One slot per player</span><code>∑<sub>p∈Pᵢ</sub> x<sub>ip</sub> ≤ 1</code></div><div><span>Position counts</span><code>∑<sub>i∈Pₚ</sub> x<sub>ip</sub> = k<sub>p</sub>, &nbsp;k = (1, 4, 3, 3)</code></div><div><span>Budget</span><code>∑<sub>i∈S</sub> m<sub>i</sub>x<sub>i</sub> ≤ B, &nbsp;B = €350M</code></div><div><span>Average age</span><code>264 ≤ ∑<sub>i∈S</sub> age<sub>i</sub>x<sub>i</sub> ≤ 286</code></div><div><span>Experience</span><code>∑<sub>i: ageᵢ≥27</sub> x<sub>i</sub> ≥ 3</code></div><div><span>Youth</span><code>∑<sub>i: ageᵢ≤24</sub> x<sub>i</sub> ≥ 3</code></div><div><span>Binary decisions</span><code>x<sub>ip</sub> ∈ &#123;0, 1&#125;</code></div></div><p className="article-note">The average-age bounds are 24 × 11 and 26 × 11. All sums over positions include only eligible player-position pairs.</p></div></details>
+            <p>Gurobi solves the binary integer program. “Optimal” means the best combined index score under these constraints, not a guarantee of winning matches.</p>
+          </section>
+          <section className="article-section" id="player-index">
+            <h2>Give the solver something to optimize</h2>
+            <p>We adapted the player-performance index from McHale, Scarf, and Folker (2012). Their method estimates contributions to team performance; our version uses season-averaged statistics and drops a computationally expensive predictive component.</p>
+            <p>The score combines five signals from participation, team points, goals, assists, and clean sheets. Clean-sheet contributions change with position; league-strength adjustment remains a proposed improvement.</p>
+            <div className="report-table-wrap"><table className="report-table"><caption>What goes into the player index</caption><thead><tr><th>Signal</th><th>What it rewards</th><th>Coefficient</th></tr></thead><tbody><tr><td>I₁ · Team points contribution</td><td>Playing more minutes for a team earning more points.</td><td>0.375</td></tr><tr><td>I₂ · Minutes contribution</td><td>Participation, beyond the team-points component.</td><td>0.125</td></tr><tr><td>I₃ · Goals</td><td>Scoring goals.</td><td>0.125</td></tr><tr><td>I₄ · Assists</td><td>Creating goals.</td><td>0.0625</td></tr><tr><td>I₅ · Clean sheets</td><td>Keeping opponents scoreless, weighted by position.</td><td>0.0625</td></tr></tbody></table></div>
+            <div className="math-objective"><span className="math-eyebrow">Combine the five signals</span><div className="math-formula report-index-formula">I<sub>player</sub> = 100 × (0.375 I₁ + 0.125 I₂ + 0.125 I₃ + 0.0625 I₄ + 0.0625 I₅)</div><p>Calculate each sub-score, apply its coefficient, add them, then multiply by 100. The coefficients are inherited from the cited index, rather than fitted in this project.</p></div>
+            <details className="report-details"><summary>The five sub-score equations</summary><div className="report-details-body"><p>Let min<sub>p</sub> be average minutes played per game and points<sub>avg</sub> the team’s average points per game. The denominator 90 × 11 is the total player-minutes in a full match.</p><div className="report-equation-list"><div><span>Team points</span><code>I₁ = min<sub>p</sub> / (90 × 11) × points<sub>avg</sub></code></div><div><span>Participation</span><code>I₂ = min<sub>p</sub> / (90 × 11) × 1.34</code></div><div><span>Goals</span><code>I₃ = goals × 1.039</code></div><div><span>Assists</span><code>I₄ = assists × 1.039</code></div><div><span>Clean sheets</span><code>I₅ = clean-sheets × weight<sub>p</sub></code></div></div><p>Clean-sheet weights are 0.585 for goalkeepers, 0.365 for defenders, 0.15 for midfielders, and 0.071 for forwards. Goal-related inputs follow the report’s season-averaged adaptation.</p><p className="article-note">The retained coefficients sum to 0.75 after removing the predictive component. We preserve the report’s formula; its scale is not a normalized percentage or a score out of 100.</p></div></details>
+            <p className="article-note">Reference: McHale, Scarf &amp; Folker, “On the Development of a Soccer Player Performance Rating System for the English Premier League,” Interfaces 42 (2012), 339–351. See the original report for its bibliography.</p>
+          </section>
+          <section className="article-section" id="lineup">
+            <h2>The €350M-budget lineup</h2>
+            <p>The selected players cost €347M in total. Using the ages in the report’s solver output, the average is about 25.9 years, within the allowed 24–26 range.</p>
+            <figure className="report-figure"><Image src="/logos/team.png" alt="Selected players in the project's 4-3-3 formation" width={600} height={400} /><figcaption>The selected eleven, shown in a 4-3-3 formation. The model itself uses broad position groups.</figcaption></figure>
+            <div className="report-table-wrap"><table className="report-table"><caption>From the report’s solver output, Appendix Figure 2</caption><thead><tr><th>Position</th><th>Player</th><th>Age</th><th>Value</th></tr></thead><tbody>{players.map(([position, name, age, value]) => <tr key={name}><td>{position}</td><td>{name}</td><td>{age}</td><td>€{value}M</td></tr>)}</tbody><tfoot><tr><td colSpan={3}>Total market value</td><td>€347M</td></tr></tfoot></table></div>
+            <p className="article-note">The appendix lists Balde at €50M; one paragraph in the report says €60M. This table follows the solver output, which reconciles to the €347M total.</p>
+          </section>
+          <section className="article-section" id="budgets">
+            <h2>What does a bigger budget buy?</h2>
+            <p>Instead of testing a few arbitrary budgets, we traced the points where the optimal lineup changes. Without a budget limit, the selected team cost €710M. That team remains optimal for every budget at or above €710M.</p>
+            <ol className="report-steps"><li>Solve the model and record the lineup’s cost.</li><li>Set the next budget to that cost minus €1,000.</li><li>Replace the previous budget constraint and solve again.</li><li>Repeat until no feasible lineup exists.</li></ol>
+            <p>All market values were multiples of €1,000, so the decrement excludes the current spending level without skipping a possible lower one. This produced 347 budget ranges. Replacing the old budget constraint, rather than accumulating new ones, cut the reported runtime from about 60 to 20 seconds.</p>
+            <figure className="report-figure report-chart"><Image src="/projects/soccer/budget-frontier.png" alt="Optimal team index increases with budget, with smaller improvements at higher budgets" width={552} height={431} /><figcaption>Report Figure 5. More money improves the model’s score, but the gains diminish.</figcaption></figure>
+            <details className="report-details"><summary>Budget-sweep pseudocode</summary><pre className="report-code">{`solve without a budget limit
+while the model is feasible:
+    record selected team, score, and cost
+    next_budget = selected_team_cost - 1,000
+    replace the budget constraint with cost ≤ next_budget
+    solve again`}</pre></details>
+            <p>The report calls this extension “cutting planes.” Operationally, it repeatedly tightens the budget and re-solves the integer program to identify the optimal budget ranges.</p>
+            <figure className="report-figure report-chart"><Image src="/projects/soccer/value-per-euro.png" alt="The ratio of optimal index to cost is highest at the low-budget end" width={786} height={616} /><figcaption>Report Figure 7. Dividing score by cost favors a much cheaper lineup.</figcaption></figure>
+          </section>
+          <section className="article-section" id="results">
+            <h2>The reality check</h2>
+            <p>We put the main lineup into Luton Town in EA FC 24 manager career mode. We controlled the starting lineup, simulated the following season, and used the existing, weaker substitutes when selected players were injured.</p>
+            <div className="report-results"><div><strong>5th / 20</strong><span>Simulated Premier League finish</span></div><div><strong>13</strong><span>Clean sheets</span></div><div><strong>€347M</strong><span>Selected lineup cost</span></div></div>
+            <div className="report-player-note"><Image src="/logos/take.png" alt="Takefusa Kubo" width={64} height={64} /><p>Kubo played every match and led the team in goals and assists. Lewandowski contributed 11 goals and 5 assists, below his previous season’s output.</p></div>
+            <div className="report-takeaway"><span>The important counterexample</span><p>The highest index-per-euro lineup cost only €13.2M. In simulation it finished bottom, and the manager was fired. A ratio can reward low cost so strongly that it selects a team below a competitive performance threshold.</p></div>
+            <p>That does not validate the model as a predictor of professional soccer. It is one simulation-based stress test, and the project did not establish a causal performance improvement or an out-of-sample prediction benchmark.</p>
+          </section>
+          <section className="article-section" id="limitations">
+            <h2>What we would improve</h2>
+            <div className="report-rule-list"><div><strong>Use actual roles, not just position groups</strong><p>A forward who is also eligible at midfield can be selected there because of scoring stats, even if their real midfield contribution is weak. Center-back, full-back, winger, and striker need more specific treatment.</p></div><div><strong>Account for league strength</strong><p>The same statistics can mean different things in different competitions. League adjustment is a proposed improvement, not part of the implemented player index.</p></div><div><strong>Model combinations, not just individuals</strong><p>Team chemistry, passing interactions, coaching, and adaptation to transfers are missing. Summing good individual scores does not guarantee a good team.</p></div><div><strong>Broaden the scouting pool</strong><p>Lower divisions and leagues outside Europe’s top five may contain undervalued players that this dataset cannot discover.</p></div></div>
+            <p>The model is useful because it makes tradeoffs inspectable. The stronger next step is to improve what the score rewards and how the selected players are evaluated together.</p>
+          </section>
+          <section className="article-section" id="sources"><h2>Tools, team, and original work</h2><p>Python, Gurobi, Pandas, and NumPy for the model and data work. EA FC 24 for the simulation.</p><p>Built with Hadas Barabash, Misha Melnyk, David Lascu, Sebastian Valencia, and Shamar Phillips.</p><ul className="report-source-list"><li><a href="https://www.kaggle.com/datasets/vivovinco/20222023-football-player-stats" target="_blank" rel="noreferrer">2022–23 player statistics</a></li><li><a href="https://www.kaggle.com/datasets/davidcariboo/player-scores" target="_blank" rel="noreferrer">Transfermarkt market values</a></li><li><a href="https://fbref.com/en/comps/Big5/2022-2023/keepersadv/players/2022-2023-Big-5-European-Leagues-Stats" target="_blank" rel="noreferrer">FBRef goalkeeper statistics</a></li><li><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Original report, with full formulation, figures, and references</a></li></ul></section>
+          <footer className="article-end"><Link href="/#projects">← Back to projects</Link><a href="/soccer-team-optimization.pdf" target="_blank" rel="noreferrer">Read the original report ↗</a></footer>
         </main>
       </div>
     </div>
   </div>
 }
+
 

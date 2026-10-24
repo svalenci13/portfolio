@@ -291,3 +291,60 @@
 .math-solver { margin-top: 28px; border-left: 2px solid #b5c3d1; padding-left: 22px; }
 @media (max-width: 600px) { .math-objective { padding: 20px; } .math-formula { font-size: 18px; } .small-formula { font-size: 18px; } .math-lead { font-size: 16px; } .math-rule-title h4 { font-size: 16px; } }
 
+/* Report-led article: homepage details, long-form reading typography. */
+.report-informed .article-shell { max-width: 1030px; }
+.report-informed .article-top { font-size: 11px; color: #8a9084; }
+.report-informed .article-hero { padding-top: 48px; }
+.report-informed .article-kicker { color: #8a9084; text-transform: none; letter-spacing: .01em; }
+.report-informed .article-hero h1 { font-size: clamp(34px, 4.8vw, 54px); letter-spacing: -.045em; font-weight: 550; color: #292e29; }
+.report-informed .article-deck { font-size: 18px; max-width: 690px; color: #747d75; }
+.report-informed .article-layout { grid-template-columns: 145px minmax(0,740px); gap: 55px; }
+.report-informed .article-section h2 { font-size: 24px; font-weight: 550; }
+.report-informed .article-section h2::before { color: #9aa5ac; }
+.report-informed .article-section { margin-bottom: 55px; }
+.report-informed .article-at-a-glance strong { color: #63758b; }
+.report-informed .article-at-a-glance span, .report-informed .article-contents { color: #8a9084; }
+.report-takeaway { border-left: 2px solid #a8bacb; padding: 4px 0 4px 22px; margin: 26px 0; }
+.report-takeaway > span { display: block; font: 10px/1.8 var(--font-jetbrains-mono), monospace; color: #8b9cab; margin-bottom: 9px; }
+.report-takeaway p { color: #566875; font-size: 16px; }
+.report-pipeline { display: flex; align-items: center; gap: 18px; padding: 24px 0; margin: 18px 0; border-block: 1px solid #e3e8eb; }
+.report-pipeline > div { flex: 1; }
+.report-pipeline strong { display: block; font-size: 15px; font-weight: 500; color: #63758b; }
+.report-pipeline span { font-size: 11px; color: #8c989f; }
+.report-rule-list > div { padding: 17px 0; border-bottom: 1px solid #e3e8eb; }
+.report-rule-list strong { display: block; font-size: 15px; font-weight: 550; color: #4a5f72; margin-bottom: 5px; }
+.report-rule-list p { font-size: 14px; color: #768087; }
+.report-details { border: 1px solid #e0e6eb; border-radius: 3px; margin: 24px 0; }
+.report-details summary { padding: 15px 18px; cursor: pointer; font: 11px/1.8 var(--font-jetbrains-mono), monospace; color: #63758b; }
+.report-details[open] summary { border-bottom: 1px solid #e0e6eb; }
+.report-details-body { padding: 22px; font-size: 14px; }
+.report-equation-list { margin: 22px 0; }
+.report-equation-list > div { padding: 12px 0; border-bottom: 1px solid #e7ebee; }
+.report-equation-list span { display: block; font: 10px/1.7 var(--font-jetbrains-mono), monospace; color: #92a0ad; margin-bottom: 5px; }
+.report-equation-list code { font: 18px/1.9 Georgia, serif; color: #526b82; }
+.report-table-wrap { overflow-x: auto; margin: 25px 0; }
+.report-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.7; text-align: left; }
+.report-table caption { text-align: left; font: 10px/1.8 var(--font-jetbrains-mono), monospace; color: #8a98a2; padding-bottom: 14px; }
+.report-table th { font-size: 11px; color: #8a98a2; font-weight: 500; }
+.report-table th, .report-table td { padding: 12px 14px 12px 0; border-bottom: 1px solid #e4e9ed; vertical-align: top; }
+.report-table td:first-child { color: #63758b; }
+.report-table th:last-child, .report-table td:last-child { padding-right: 0; text-align: right; white-space: nowrap; }
+.report-table tfoot { font-weight: 600; color: #526b82; }
+.report-index-formula { font-size: 18px; overflow-wrap: anywhere; }
+.report-figure { margin: 28px 0; }
+.report-figure img { display: block; max-width: 100%; height: auto; margin-inline: auto; }
+.report-figure figcaption { font: 10px/1.8 var(--font-jetbrains-mono), monospace; color: #8a98a2; margin-top: 12px; }
+.report-chart img { max-width: min(100%, 560px); }
+.report-steps { list-style: decimal; padding-left: 24px; margin: 22px 0; }
+.report-steps li { padding-left: 8px; margin: 10px 0; }
+.report-code { padding: 20px; font: 11px/1.9 var(--font-jetbrains-mono), monospace; overflow-x: auto; color: #63758b; }
+.report-results { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; padding: 25px 0; margin: 22px 0; border-block: 1px solid #e0e6eb; }
+.report-results strong { display: block; font-size: 27px; font-weight: 450; color: #63758b; letter-spacing: -.03em; }
+.report-results span { font-size: 11px; color: #8d989f; }
+.report-player-note { display: flex; align-items: center; gap: 18px; }
+.report-player-note img { flex-shrink: 0; border-radius: 3px; }
+.report-player-note p { font-size: 14px; }
+.report-source-list { list-style: disc; padding-left: 20px; font-size: 13px; }
+@media (max-width: 1050px) { .report-informed .article-layout { grid-template-columns: minmax(0,740px); gap: 35px; } }
+@media (max-width: 600px) { .report-informed .article-hero { padding-top: 34px; } .report-informed .article-deck { font-size: 16px; } .report-informed .article-section h2 { font-size: 21px; } .report-pipeline { flex-wrap: wrap; gap: 15px; } .report-pipeline > div { min-width: 100px; } .report-pipeline > span { display: none; } .report-table { font-size: 11px; } .report-details-body { padding: 16px; } .report-results { gap: 10px; } .report-results strong { font-size: 22px; } .report-equation-list code { font-size: 16px; } }
+
