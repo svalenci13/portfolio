@@ -275,3 +275,7 @@
 @media (max-width: 1050px) { .article-layout { grid-template-columns: minmax(0,700px); justify-content: center; gap: 35px; margin-top: 45px; } .article-contents { position: static; flex-direction: row; flex-wrap: wrap; gap: 10px 20px; border-bottom: 1px solid #e5eaee; padding-bottom: 20px; } .article-contents > span { width: 100%; } }
 @media (max-width: 600px) { .article-shell { width: calc(100% - 40px); } .article-hero { padding-top: 38px; } .article-deck { font-size: 16px; } .article-at-a-glance { gap: 18px 25px; } .article-at-a-glance strong { font-size: 12px; } .article-layout { margin-top: 35px; } .article-section h2 { font-size: 21px; } .soccer-article { font-size: 15px; } .article-section { margin-bottom: 45px; } .model-constraints > div { grid-template-columns: 1fr; gap: 4px; padding: 13px 0; } .report-pipeline { flex-wrap: wrap; gap: 13px; } .report-pipeline > div { min-width: 100px; } .report-pipeline > span { display: none; } .report-table { font-size: 11px; } .typeset-equation { font-size: 19px; } .compact-equation { font-size: 12px; } .report-equation-list > div { grid-template-columns: 1fr; gap: 4px; } .report-results strong { font-size: 22px; } .report-results { gap: 12px; } }
 
+.report-evidence { margin-block: 34px; }
+.report-evidence img { border: 1px solid #e6e9eb; border-radius: 3px; }
+.report-evidence figcaption { text-align: center; color: #8f9ca5; }
+
