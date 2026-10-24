@@ -17,7 +17,7 @@ export default function Home() {
           <p>Studied Math at <a href="https://uwaterloo.ca" target="_blank" rel="noreferrer"><Image src="/logos/uwaterloo.svg" alt="" width={15} height={15} className="company-logo full-color-logo" />UWaterloo</a>.</p>
           <p>I like shaping products, with and without data.</p>
         </section>
-        <section className="portfolio-section" aria-labelledby="projects-heading">
+        <section className="portfolio-section" id="projects" aria-labelledby="projects-heading">
           <h2 id="projects-heading">Projects</h2>
           <ul className="project-entries">
             <li><Link href="/projects/soccer-optimization">Building the Best Value Soccer Team</Link><span className="project-theme">Optimization, Operations Research</span></li>
@@ -30,8 +30,8 @@ export default function Home() {
         </section>
         <SpotifyNowPlaying />
         <footer className="portfolio-footer">
-          <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
           <a href="https://linkedin.com/in/svalenci" target="_blank" rel="noreferrer">linkedin</a>
+          <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
 
           <p className="email-address">email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
         </footer>
@@ -39,6 +39,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 

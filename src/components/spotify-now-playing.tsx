@@ -76,7 +76,7 @@ export function SpotifyNowPlaying() {
     document.addEventListener("visibilitychange", update)
     return () => { controller.abort(); clearInterval(interval); clearInterval(ticker); document.removeEventListener("visibilitychange", update) }
   }, [])
-  if (!track?.songUrl) return <p className="spotify-line"><a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">♫ {track?.status === "idle" ? "Not listening right now" : "Find me on Spotify"}</a></p>
+  if (!track?.songUrl) return <p className="spotify-line"><a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">♫ {track?.status === "idle" ? "Nothing playing right now" : "Find me on Spotify"}</a></p>
   const duration = track.durationMs || 0
   const progress = Math.min(duration, (track.progressMs || 0) + Math.max(0, now - (track.fetchedAt || now)))
   return <aside className="spotify-player" aria-label={track.status === "playing" ? "Currently listening on Spotify" : "Last listened on Spotify"}>
@@ -84,13 +84,14 @@ export function SpotifyNowPlaying() {
       {track.albumImageUrl ? <AsciiCover url={track.albumImageUrl} album={track.album} /> : <span className="ascii-cover cover-placeholder">♫</span>}
     </a>
     <div className="spotify-details">
-      <span className="spotify-caption">{track.status === "playing" ? "Listening on " : track.status === "idle" ? "Nothing playing · Last listened on " : "Last listened on "}<a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">Spotify ↗</a></span>
+      <span className="spotify-caption">{track.status === "playing" ? "Listening on " : track.status === "idle" ? "Nothing playing right now · Last listened on " : "Last listened on "}<a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">Spotify ↗</a></span>
       <a className="spotify-title" href={track.songUrl} target="_blank" rel="noreferrer">{track.title}</a>
       <span className="spotify-artist">{track.artist}</span>
       {track.status === "playing" && duration > 0 && <div className="spotify-timeline"><span>{time(progress)}</span><div className="spotify-progress" role="progressbar" aria-label="Track progress" aria-valuemin={0} aria-valuemax={Math.round(duration / 1000)} aria-valuenow={Math.round(progress / 1000)}><span style={{ width: `${progress / duration * 100}%` }} /></div><span>{time(duration)}</span></div>}
     </div>
   </aside>
 }
+
 
 
 

@@ -186,3 +186,29 @@
 .portfolio-footer .email-address { width: 100%; margin: 0; font-size: 11px; color: #8a9084; }
 .portfolio-footer { row-gap: 14px; }
 
+.project-writeup { min-height: 100vh; background: #fff; color: #333631; font: 13px/1.95 var(--font-jetbrains-mono), 'Courier New', monospace; }
+.writeup-content { width: min(100% - 48px, 650px); margin-inline: auto; padding: 60px 0 64px; }
+.project-writeup a { text-decoration: underline; text-decoration-color: #b4bcb0; text-underline-offset: 4px; }
+.project-writeup a:hover { color: #526d88; }
+.project-writeup a:focus-visible { outline: 1px solid #63758b; outline-offset: 5px; }
+.writeup-back { font-size: 11px; color: #8a9084; }
+.project-writeup header { margin-top: 36px; }
+.writeup-theme { color: #8a9084; font-size: 10px; margin-bottom: 12px; }
+.project-writeup h1 { font-size: clamp(24px, 4vw, 30px); font-weight: 600; line-height: 1.4; letter-spacing: -1px; color: #232621; margin-bottom: 20px; }
+.project-writeup header > a { display: inline-block; margin-top: 16px; font-size: 11px; color: #63758b; }
+.project-writeup section { margin-top: 36px; }
+.project-writeup h2 { font-size: 14px; font-weight: 600; color: #3d4339; margin-bottom: 14px; }
+.project-writeup p + p { margin-top: 14px; }
+.project-writeup ul { list-style: disc; padding-left: 19px; margin: 14px 0; }
+.project-writeup li { margin: 8px 0; padding-left: 3px; }
+.project-writeup li::marker { color: #8a9084; }
+.writeup-equation { font: 12px/1.9 var(--font-jetbrains-mono), monospace; white-space: pre; overflow-x: auto; border-left: 1px solid #d9e0e5; padding: 12px 0 12px 18px; margin: 20px 0; color: #63758b; }
+.writeup-table-wrap { overflow-x: auto; margin-top: 20px; }
+.project-writeup table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+.project-writeup caption { text-align: left; font-size: 10px; color: #8a9084; padding-bottom: 10px; }
+.project-writeup th, .project-writeup td { padding: 9px 12px 9px 0; border-bottom: 1px solid #e8ebe5; white-space: nowrap; }
+.project-writeup th { font-weight: 500; color: #8a9084; }
+.project-writeup td:last-child, .project-writeup th:last-child { text-align: right; padding-right: 0; }
+.project-writeup footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid #e5e8e1; margin-top: 44px; padding-top: 22px; color: #8a9084; font-size: 11px; }
+@media (max-width: 600px) { .writeup-content { padding-top: 35px; } .project-writeup { font-size: 12px; } .writeup-equation { font-size: 10px; } }
+
