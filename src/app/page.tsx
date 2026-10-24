@@ -9,7 +9,7 @@ export default function Home() {
     <div className="portfolio-home">
       <AsciiEvolution key="content-anchored-digivolution" />
       <main className="portfolio-content">
-        <header><h1>Sebastian Valencia</h1><p className="nickname">/sebo / seb/</p></header>
+        <header><h1>Sebastian Valencia</h1><p className="nickname">/seb / sebo/</p></header>
         <section className="intro" aria-label="About">
           <p>I work at <a href="https://ramp.com" target="_blank" rel="noreferrer"><Image src="/logos/ramp.png" alt="" width={15} height={15} className="company-logo full-color-logo" />Ramp</a>.</p>
           <p>Previously Data Scientist @ <a href="https://www.shopify.com" target="_blank" rel="noreferrer"><Image src="/logos/shopify.JPG" alt="" width={15} height={15} className="company-logo" />Shopify</a>.</p>
@@ -39,6 +39,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 
