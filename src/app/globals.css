@@ -279,3 +279,16 @@
 .report-evidence img { border: 1px solid #e6e9eb; border-radius: 3px; }
 .report-evidence figcaption { text-align: center; color: #8f9ca5; }
 
+/* Homepage is a single viewport; long-form project routes keep normal scrolling. */
+body:has(.portfolio-home) { overflow: hidden; }
+.portfolio-home { position: fixed; inset: 0; height: 100dvh; min-height: 0; overflow: clip; }
+.portfolio-content { padding-top: clamp(24px, 6vh, 60px); padding-bottom: 24px; transform: scale(var(--home-scale, 1)); transform-origin: top center; }
+@media (max-height: 850px) {
+  .portfolio-home .intro { margin-top: 22px; }
+  .portfolio-home .intro p + p { margin-top: 10px; }
+  .portfolio-home .portfolio-section { margin-top: 22px; }
+  .portfolio-home .project-entries li { margin-top: 12px; }
+  .portfolio-home .spotify-player, .portfolio-home .spotify-line { margin-top: 24px; }
+  .portfolio-home .portfolio-footer { margin-top: 25px; padding-top: 16px; row-gap: 10px; }
+}
+

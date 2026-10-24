@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { HomeViewport } from "@/components/home-viewport"
 import Image from "next/image"
 import { SpotifyNowPlaying } from "@/components/spotify-now-playing"
 
@@ -6,7 +7,7 @@ import { AsciiEvolution } from "@/components/ascii-evolution"
 
 export default function Home() {
   return (
-    <div className="portfolio-home">
+    <HomeViewport>
       <AsciiEvolution key="content-anchored-digivolution" />
       <main className="portfolio-content">
         <header><h1>Sebastian Valencia</h1><p className="nickname">/seb / sebo/</p></header>
@@ -36,9 +37,10 @@ export default function Home() {
           <p className="email-address">email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
         </footer>
       </main>
-    </div>
+    </HomeViewport>
   )
 }
+
 
 
 
