@@ -389,29 +389,29 @@ body:has(.portfolio-home) { overflow: hidden; }
   .soccer-ascii-backdrop { width: 220px; max-height: 240px; opacity: .30; }
 }
 
-/* Distribute artwork over the full report instead of clustering short opening sections. */
+/* An irregular trail of archive photographs, with quieter gaps between clusters. */
 .article-body { position: relative; isolation: isolate; }
 .soccer-art-trail {
   position: absolute;
   z-index: -1;
-  inset: 700px -120px 120px -180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  inset: 700px -120px 450px -180px;
   pointer-events: none;
 }
+.soccer-art-placement { position: absolute; }
 .soccer-art-trail .soccer-ascii-backdrop {
   position: static;
-  flex: 0 0 auto;
-  max-height: 280px;
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
 }
-.soccer-art-trail .soccer-art-left { align-self: flex-start; }
-.soccer-art-trail .soccer-art-right { align-self: flex-end; }
 @media (max-width: 1050px) {
   .soccer-art-trail { left: -100px; right: -90px; }
+  .soccer-art-placement { max-width: 34vw; }
 }
 @media (max-width: 600px) {
-  .soccer-art-trail { left: -65px; right: -65px; top: 850px; }
+  .soccer-art-trail { left: -65px; right: -35px; top: 850px; bottom: 350px; }
+  .soccer-art-placement { max-width: 46vw; }
   .soccer-art-trail .soccer-ascii-backdrop { max-height: 240px; }
 }
 

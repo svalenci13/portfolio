@@ -25,9 +25,22 @@ export function SoccerArtCredits() {
 }
 
 export function SoccerArtTrail() {
-  const order: Player[] = ["ronaldinho", "neymar", "r9", "kaka", "pele", "adriano", "messi", "maradona"]
+  const placements: { player: Player; top: string; left: string; width: number; tilt: string }[] = [
+    { player: "ronaldinho", top: "0%", left: "-3%", width: 245, tilt: "-3deg" },
+    { player: "neymar", top: "12%", left: "72%", width: 210, tilt: "2deg" },
+    { player: "r9", top: "27%", left: "61%", width: 250, tilt: "-2deg" },
+    { player: "kaka", top: "39%", left: "-8%", width: 310, tilt: "1deg" },
+    { player: "pele", top: "53%", left: "4%", width: 330, tilt: "-2deg" },
+    { player: "adriano", top: "67%", left: "69%", width: 290, tilt: "3deg" },
+    { player: "messi", top: "80%", left: "52%", width: 265, tilt: "-1deg" },
+    { player: "maradona", top: "95%", left: "-1%", width: 240, tilt: "2deg" },
+  ]
   return <div className="soccer-art-trail" aria-hidden="true">
-    {order.map((player, index) => <SoccerBackdrop key={player} player={player} side={index % 2 ? "right" : "left"} />)}
+    {placements.map(({ player, top, left, width, tilt }) => (
+      <div className="soccer-art-placement" key={player} style={{ top, left, width, transform: `rotate(${tilt})` }}>
+        <SoccerBackdrop player={player} />
+      </div>
+    ))}
   </div>
 }
 
