@@ -367,12 +367,12 @@ body:has(.portfolio-home) { overflow: hidden; }
   top: 90px;
   width: 320px;
   height: auto;
-  color: #718da8;
-  opacity: .24;
-  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 73%);
+  color: #587998;
+  opacity: .52;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
-.soccer-art-right { right: -210px; }
-.soccer-art-left { left: -260px; }
+.soccer-art-right { right: -120px; }
+.soccer-art-left { left: -200px; }
 .soccer-art-credits { margin: 0 0 30px; font-size: 10px; color: #8795a0; }
 .soccer-art-credits summary { cursor: pointer; }
 .soccer-art-credits ul { margin-top: 12px; }
@@ -380,11 +380,11 @@ body:has(.portfolio-home) { overflow: hidden; }
 @media (max-width: 1050px) {
   .soccer-art-right { right: -90px; }
   .soccer-art-left { left: -100px; }
-  .soccer-ascii-backdrop { opacity: .16; width: 270px; }
+  .soccer-ascii-backdrop { opacity: .36; width: 270px; }
 }
 @media (max-width: 600px) {
   .soccer-art-right { right: -65px; }
   .soccer-art-left { left: -65px; }
-  .soccer-ascii-backdrop { width: 220px; opacity: .14; }
+  .soccer-ascii-backdrop { width: 220px; opacity: .30; }
 }
 
