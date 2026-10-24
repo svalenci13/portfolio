@@ -24,3 +24,10 @@ export function SoccerArtCredits() {
   </details>
 }
 
+export function SoccerArtTrail() {
+  const order: Player[] = ["ronaldinho", "neymar", "r9", "kaka", "pele", "adriano", "messi", "maradona"]
+  return <div className="soccer-art-trail" aria-hidden="true">
+    {order.map((player, index) => <SoccerBackdrop key={player} player={player} side={index % 2 ? "right" : "left"} />)}
+  </div>
+}
+

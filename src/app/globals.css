@@ -389,3 +389,29 @@ body:has(.portfolio-home) { overflow: hidden; }
   .soccer-ascii-backdrop { width: 220px; max-height: 240px; opacity: .30; }
 }
 
+/* Distribute artwork over the full report instead of clustering short opening sections. */
+.article-body { position: relative; isolation: isolate; }
+.soccer-art-trail {
+  position: absolute;
+  z-index: -1;
+  inset: 700px -120px 120px -180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.soccer-art-trail .soccer-ascii-backdrop {
+  position: static;
+  flex: 0 0 auto;
+  max-height: 280px;
+}
+.soccer-art-trail .soccer-art-left { align-self: flex-start; }
+.soccer-art-trail .soccer-art-right { align-self: flex-end; }
+@media (max-width: 1050px) {
+  .soccer-art-trail { left: -100px; right: -90px; }
+}
+@media (max-width: 600px) {
+  .soccer-art-trail { left: -65px; right: -65px; top: 850px; }
+  .soccer-art-trail .soccer-ascii-backdrop { max-height: 240px; }
+}
+
