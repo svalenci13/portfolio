@@ -41,15 +41,15 @@ export function AsciiEvolution() {
         ]
         for (const creature of creatures) {
           // Translate the intact silhouette; avoid rotating individual glyphs.
-          const offsetX = Math.sin(t * .085 + creature.seed) * 30 + Math.sin(t * .037 + creature.seed * 2) * 18
-          const offsetY = Math.sin(t * .065 + creature.seed * .7) * 22
+          const offsetX = Math.sin(t * .075 + creature.seed) * 24 + Math.sin(t * .033 + creature.seed * 2) * 14
+          const offsetY = Math.sin(t * .058 + creature.seed * .7) * 18
           const clock = Math.max(0, Number.isFinite(t) ? t : 0) + (creature.seed === 7 ? 0 : 3)
-          const cycle = Math.floor(clock / 8)
+          const cycle = Math.floor(clock / 11)
           const stage = cycle % frames.length
           const current = frames[stage] ?? frames[0]
           const next = frames[(stage + 1) % frames.length] ?? current
           if (!current?.rows || !next?.rows) continue
-          const progress = Math.max(0, Math.min(1, (clock % 8 - 5.5) / 2.5))
+          const progress = Math.max(0, Math.min(1, (clock % 11 - 8.5) / 2.5))
           const pulse = Math.sin(progress * Math.PI)
           if (progress > 0) {
             const cx = creature.x + offsetX + 48 * creature.size
@@ -105,6 +105,7 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
 
