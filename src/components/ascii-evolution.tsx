@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import allFrames from "@/lib/digimon-frames.json"
+import gabumonFrames from "@/lib/gabumon-frames.json"
 
 const frames = allFrames.filter(frame => !["Botamon", "Koromon"].includes(frame.name))
 
@@ -36,18 +37,19 @@ export function AsciiEvolution() {
         ctx.clearRect(0, 0, width, height)
         ctx.textBaseline = "top"
         const creatures = [
-          { x: anchorX + 485, y: anchorY + 445, size: 3.7, opacity: .65, seed: 7, speed: 11 },
-          { x: anchorX - 205, y: anchorY + 110, size: 3.3, opacity: .40, seed: 31, speed: 17 },
+          { x: anchorX + 485, y: anchorY + 445, size: 3.7, opacity: .65, seed: 7, chain: gabumonFrames },
+          { x: anchorX - 205, y: anchorY + 110, size: 3.3, opacity: .40, seed: 31, chain: frames },
         ]
         for (const creature of creatures) {
+          const chain = creature.chain
           // Translate the intact silhouette; avoid rotating individual glyphs.
           const offsetX = Math.sin(t * .05 + creature.seed) * 12 + Math.sin(t * .025 + creature.seed * 2) * 7
           const offsetY = Math.sin(t * .04 + creature.seed * .7) * 9
-          const clock = Math.max(0, Number.isFinite(t) ? t : 0) + (creature.seed === 7 ? 0 : 3)
+          const clock = Math.max(0, Number.isFinite(t) ? t : 0)
           const cycle = Math.floor(clock / 11)
-          const stage = cycle % frames.length
-          const current = frames[stage] ?? frames[0]
-          const next = frames[(stage + 1) % frames.length] ?? current
+          const stage = cycle % chain.length
+          const current = chain[stage] ?? chain[0]
+          const next = chain[(stage + 1) % chain.length] ?? current
           if (!current?.rows || !next?.rows) continue
           const progress = Math.max(0, Math.min(1, (clock % 11 - 8.5) / 2.5))
           const size = creature.size
@@ -55,10 +57,10 @@ export function AsciiEvolution() {
           const originY = creature.y
           // Sample both forms at their own final size throughout the scan.
           const sample = (index: number, x: number, y: number) => {
-            const scale = frames[index]?.name === "Agumon" ? .75 : 1
+            const scale = ["Agumon", "Gabumon"].includes(chain[index]?.name) ? .75 : 1
             const sx = Math.floor(48 + (x - 48) / scale)
             const sy = Math.floor(64 + (y - 64) / scale)
-            return sx >= 0 && sx < 96 && sy >= 0 && sy < 64 ? frames[index]?.rows[sy]?.[sx] ?? " " : " "
+            return sx >= 0 && sx < 96 && sy >= 0 && sy < 64 ? chain[index]?.rows[sy]?.[sx] ?? " " : " "
           }
           const pulse = Math.sin(progress * Math.PI)
           if (progress > 0) {
@@ -86,7 +88,7 @@ export function AsciiEvolution() {
           ctx.font = `${size * 1.6}px monospace`
           for (let y = 0; y < 64; y++) for (let x = 0; x < 96; x++) {
             const oldChar = sample(stage, x, y)
-            const newChar = sample((stage + 1) % frames.length, x, y)
+            const newChar = sample((stage + 1) % chain.length, x, y)
             // A gently staggered scan reconstructs the next form in place.
             const stagger = ((x * 17 + y * 31) % 29) / 29
             const threshold = .12 + y / 64 * .62 + stagger * .16
@@ -115,6 +117,7 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
 
