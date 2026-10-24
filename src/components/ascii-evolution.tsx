@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type Point = [number, number]
 // Filled pixel silhouettes, sampled into character cells rather than outline art.
@@ -21,12 +21,13 @@ function inside(x: number, y: number, polygon: Point[]) {
 
 export function AsciiEvolution() {
   const ref = useRef<HTMLCanvasElement>(null)
+  const [paused, setPaused] = useState(false)
   useEffect(() => {
     const canvas = ref.current
     if (!canvas) return
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)")
+    // Animation is explicitly requested; keep a visible pause control available.
     let frame = 0, last = -100, start = performance.now()
     let width = 0, height = 0
     function resize() {
@@ -37,25 +38,25 @@ export function AsciiEvolution() {
     }
     function draw(now: number) {
       if (!ctx) return
-      if (now - last > 90) {
+      if (now - last > 50) {
         last = now
-        const t = motion.matches ? 32 : (now - start) / 1000
+        const t = paused ? 32 : (now - start) / 1000
         const stage = Math.floor(t / 12) % 3
         const phase = (t % 12) / 12
-        const fade = motion.matches ? 1 : Math.min(1, phase * 12, (1 - phase) * 12)
+        const fade = paused ? 1 : Math.min(1, phase * 12, (1 - phase) * 12)
         ctx.clearRect(0, 0, width, height)
         ctx.font = "10px monospace"
         ctx.textBaseline = "top"
         // Multiple floating silhouettes, with the reading column kept clear.
         const creatures = [
-          { x: -85 + Math.sin(t * .16) * 48, y: height * .13 + Math.cos(t * .24) * 22, size: 5.3, flip: false },
-          { x: width - 250 + Math.sin(t * .12 + 2) * 65, y: height * .60 + Math.sin(t * .21) * 32, size: 5.8, flip: true },
+          { x: -85 + Math.sin(t * .48) * 70, y: height * .13 + Math.cos(t * .65) * 32, size: 5.3, flip: false },
+          { x: width - 250 + Math.sin(t * .4 + 2) * 85, y: height * .60 + Math.sin(t * .6) * 40, size: 5.8, flip: true },
           { x: width * .34 + Math.sin(t * .10) * 65, y: height * .83, size: 3.2, flip: false },
         ]
         for (const creature of creatures) {
           for (let y = 0; y < 58; y += 2) for (let x = 0; x < 58; x++) {
-            const sway = Math.sin(t * 1.4 + y * .1)
-            const px = x + (y > 36 ? sway * 1.6 : 0)
+            const sway = Math.sin(t * 2.3 + y * .1)
+            const px = x + (y > 36 ? sway * 3 : 0)
             const shapes = [body, leg, arm, tail]
             if (stage > 0) shapes.push(horn)
             if (stage === 2) shapes.push(wing)
@@ -80,7 +81,8 @@ export function AsciiEvolution() {
     resize(); frame = requestAnimationFrame(draw)
     window.addEventListener("resize", resize)
     return () => { cancelAnimationFrame(frame); window.removeEventListener("resize", resize) }
-  }, [])
-  return <canvas ref={ref} className="ascii-evolution" aria-hidden="true" />
+  }, [paused])
+  return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 

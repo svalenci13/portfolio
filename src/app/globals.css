@@ -154,3 +154,6 @@
 @media (max-width: 600px) { .portfolio-content { padding-top: 42px; } .portfolio-home { font-size: 12px; } .portfolio-section li { margin-top: 13px; } }
 @media (prefers-reduced-motion: reduce) { .portfolio-home a { transition: none; } }
 
+.background-toggle { position: fixed; bottom: 14px; right: 18px; z-index: 2; font: 10px monospace; color: #7b8490; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.background-toggle:hover { color: #33475e; }
+
