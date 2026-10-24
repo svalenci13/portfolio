@@ -183,3 +183,6 @@
 
 .company-logo.full-color-logo { filter: none; opacity: 1; }
 
+.portfolio-footer .email-address { width: 100%; margin: 0; font-size: 11px; color: #8a9084; }
+.portfolio-footer { row-gap: 14px; }
+

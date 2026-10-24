@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic"
 type Track = { album?: { name?: string; images?: { url: string }[] }; duration_ms?: number; name: string; type?: string; artists?: { name: string }[]; external_urls?: { spotify?: string } }
 let tokenCache: { value: string; until: number } | undefined
 let snapshot: { value: object; until: number } | undefined
+let lastTrack: Record<string, unknown> | undefined
 
 const reply = (body: object, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store" } })
 
@@ -28,12 +29,13 @@ export async function GET() {
     const response = await fetch("https://api.spotify.com/v1/me/player/currently-playing", { headers: { Authorization: `Bearer ${tokenCache.value}` }, cache: "no-store", signal: AbortSignal.timeout(8000) })
     if (response.status === 401) tokenCache = undefined
     if (response.status !== 204 && !response.ok) return reply({ status: "unavailable", isPlaying: false }, 503)
-    let result: object = { status: "idle", isPlaying: false }
+    let result: object = { ...lastTrack, status: "idle", isPlaying: false }
     if (response.status !== 204) {
       const playback = await response.json()
       const item = playback.item as Track | null
-      if (playback.is_playing && item?.name && item.type === "track" && item.external_urls?.spotify) {
-        result = { status: "playing", isPlaying: true, title: item.name, artist: item.artists?.map(artist => artist.name).join(", ") || "", songUrl: item.external_urls.spotify, album: item.album?.name, albumImageUrl: item.album?.images?.[0]?.url, durationMs: item.duration_ms ?? 0, progressMs: playback.progress_ms ?? 0, fetchedAt: Date.now() }
+      if (item?.name && item.type === "track" && item.external_urls?.spotify) {
+        lastTrack = { title: item.name, artist: item.artists?.map(artist => artist.name).join(", ") || "", songUrl: item.external_urls.spotify, album: item.album?.name, albumImageUrl: item.album?.images?.[0]?.url, durationMs: item.duration_ms ?? 0, progressMs: playback.progress_ms ?? 0, fetchedAt: Date.now() }
+        result = { ...lastTrack, status: playback.is_playing ? "playing" : "idle", isPlaying: Boolean(playback.is_playing) }
       }
     }
     snapshot = { value: result, until: Date.now() + 20000 }
@@ -42,5 +44,6 @@ export async function GET() {
     return reply({ status: "unavailable", isPlaying: false }, 503)
   }
 }
+
 
 

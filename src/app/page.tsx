@@ -32,12 +32,14 @@ export default function Home() {
         <footer className="portfolio-footer">
           <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
           <a href="https://linkedin.com/in/svalenci" target="_blank" rel="noreferrer">linkedin</a>
-          <a href="mailto:svalenci@uwaterloo.ca">email</a>
+
+          <p className="email-address">email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
         </footer>
       </main>
     </div>
   )
 }
+
 
 
 
