@@ -74,11 +74,12 @@ export function SpotifyNowPlaying() {
       {track.albumImageUrl ? <AsciiCover url={track.albumImageUrl} album={track.album} /> : <span className="ascii-cover cover-placeholder">♫</span>}
     </a>
     <div className="spotify-details">
-      <span className="spotify-caption">Listening on Spotify ↗</span>
+      <span className="spotify-caption">Listening on <a href="https://open.spotify.com/user/sbstnvlncia" target="_blank" rel="noreferrer">Spotify ↗</a></span>
       <a className="spotify-title" href={track.songUrl} target="_blank" rel="noreferrer">{track.title}</a>
       <span className="spotify-artist">{track.artist}</span>
       {duration > 0 && <div className="spotify-timeline"><span>{time(progress)}</span><div className="spotify-progress" role="progressbar" aria-label="Track progress" aria-valuemin={0} aria-valuemax={Math.round(duration / 1000)} aria-valuenow={Math.round(progress / 1000)}><span style={{ width: `${progress / duration * 100}%` }} /></div><span>{time(duration)}</span></div>}
     </div>
   </aside>
 }
+
 

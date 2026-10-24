@@ -181,3 +181,5 @@
 .spotify-progress { height: 2px; flex: 1; background: #e5eaf0; overflow: hidden; }
 .spotify-progress > span { display: block; height: 100%; background: #8397ae; }
 
+.company-logo.full-color-logo { filter: none; opacity: 1; }
+
