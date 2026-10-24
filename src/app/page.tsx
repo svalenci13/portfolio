@@ -14,7 +14,7 @@ export default function Home() {
           <p>I work at <a href="https://ramp.com" target="_blank" rel="noreferrer"><Image src="/logos/ramp.png" alt="" width={15} height={15} className="company-logo full-color-logo" />Ramp</a>.</p>
           <p>Previously Data Scientist @ <a href="https://www.shopify.com" target="_blank" rel="noreferrer"><Image src="/logos/shopify.JPG" alt="" width={15} height={15} className="company-logo" />Shopify</a>.</p>
           <p className="muted earlier">Earlier @ <a href="https://1password.com" target="_blank" rel="noreferrer"><Image src="/logos/1password.png" alt="" width={12} height={12} className="company-logo small-logo" />1Password</a>, <a href="https://www.thescore.com" target="_blank" rel="noreferrer"><Image src="/logos/thescore.jpg" alt="" width={12} height={12} className="company-logo small-logo" />theScore</a>, <a href="https://www.loblawdigital.co" target="_blank" rel="noreferrer"><Image src="/logos/loblaw-digital.jpg" alt="" width={12} height={12} className="company-logo small-logo" />Loblaw Digital</a>.</p>
-          <p>Studied Math at <a href="https://uwaterloo.ca" target="_blank" rel="noreferrer"><Image src="/logos/uwaterloo.svg" alt="" width={15} height={15} className="company-logo full-color-logo" />UWaterloo</a>.</p>
+          <p>Studied Math at <a href="https://uwaterloo.ca" target="_blank" rel="noreferrer"><Image src="/logos/uwaterloo.svg" alt="" width={15} height={15} className="company-logo full-color-logo" />University of Waterloo</a>.</p>
           <p>I like shaping products, with and without data.</p>
         </section>
         <section className="portfolio-section" id="projects" aria-labelledby="projects-heading">
@@ -39,6 +39,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 

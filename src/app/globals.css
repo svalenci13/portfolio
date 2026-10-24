@@ -212,3 +212,26 @@
 .project-writeup footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid #e5e8e1; margin-top: 44px; padding-top: 22px; color: #8a9084; font-size: 11px; }
 @media (max-width: 600px) { .writeup-content { padding-top: 35px; } .project-writeup { font-size: 12px; } .writeup-equation { font-size: 10px; } }
 
+/* Preserve the original detailed project, with the portfolio's restrained presentation. */
+.restored-writeup { padding-top: 34px; }
+.restored-writeup :where(header nav, main, footer > div, .max-w-2xl) { max-width: 698px; }
+.restored-writeup :where([class*="bg-"]) { background: transparent; background-image: none; }
+.restored-writeup :where([class*="text-blue"], [class*="text-green"], [class*="text-purple"], [class*="text-red"], [class*="text-orange"], [class*="text-gray"], [class*="text-white"]) { color: #63758b; }
+.restored-writeup :where([class*="border-"]) { border-color: #e1e6e9; }
+.restored-writeup :where([class*="rounded"]) { border-radius: 0; }
+.restored-writeup :where([class*="shadow"]) { box-shadow: none; }
+.restored-writeup :where(.border-l-4) { border-left-width: 1px; }
+.restored-writeup h1 { font-size: clamp(24px, 4vw, 30px); margin-bottom: 20px; }
+.restored-writeup h2 { font-size: 14px; margin-bottom: 16px; text-transform: none; letter-spacing: 0; }
+.restored-writeup h3, .restored-writeup h4 { text-transform: none; letter-spacing: 0; }
+.restored-writeup p { font-size: 13px; line-height: 1.9; }
+.restored-writeup .font-mono { font-family: inherit; }
+.restored-writeup .text-base, .restored-writeup .text-sm { font-size: 13px; }
+.restored-writeup .text-xs { font-size: 11px; }
+.restored-writeup .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.restored-writeup section { margin-top: 0; margin-bottom: 38px; }
+.restored-writeup ul { list-style: none; padding-left: 0; }
+.restored-writeup .text-center.text-xl { overflow-x: auto; }
+.restored-writeup footer { display: block; margin-top: 0; }
+@media (max-width: 600px) { .restored-writeup { padding-top: 10px; } .restored-writeup .p-6 { padding: 14px; } .restored-writeup .text-lg { font-size: 13px; overflow-wrap: anywhere; } .restored-writeup header nav > div { display: none; } }
+
