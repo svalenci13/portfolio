@@ -6,9 +6,9 @@ import { AsciiEvolution } from "@/components/ascii-evolution"
 export default function Home() {
   return (
     <div className="portfolio-home">
-      <AsciiEvolution />
+      <AsciiEvolution key="content-anchored-digivolution" />
       <main className="portfolio-content">
-        <header><h1>Sebastian Valencia</h1><p className="nickname">/sebo/</p></header>
+        <header><h1>Sebastian Valencia</h1><p className="nickname">/sebo / seb/</p></header>
         <section className="intro" aria-label="About">
           <p>I work at <a href="https://ramp.com" target="_blank" rel="noreferrer"><Image src="/logos/ramp.png" alt="" width={15} height={15} className="company-logo" />Ramp</a>.</p>
           <p>Previously Data Scientist @ <a href="https://www.shopify.com" target="_blank" rel="noreferrer"><Image src="/logos/shopify.JPG" alt="" width={15} height={15} className="company-logo" />Shopify</a>.</p>
@@ -19,13 +19,13 @@ export default function Home() {
         <section className="portfolio-section" aria-labelledby="projects-heading">
           <h2 id="projects-heading">Projects</h2>
           <ul className="project-entries">
-            <li><a href="https://www.kalshivspolymarket.com" target="_blank" rel="noreferrer">Kalshi vs. Polymarket</a><span className="project-theme">Dashboard</span></li>
             <li><Link href="/projects/soccer-optimization">Building the Best Value Soccer Team</Link><span className="project-theme">Optimization / Operations Research</span></li>
+            <li><a href="https://www.kalshivspolymarket.com" target="_blank" rel="noreferrer">Kalshi vs. Polymarket</a><span className="project-theme">Dashboard</span></li>
           </ul>
         </section>
         <section className="portfolio-section" aria-labelledby="writing-heading">
           <h2 id="writing-heading">Writing</h2>
-          <ul><li><a href="https://1sebstack.substack.com/p/how-linearization-fixes-the-ratio" target="_blank" rel="noreferrer">Why Ratio Metrics Break A/B Tests and How Linearization Fixes It</a></li></ul>
+          <ul><li><a href="https://1sebstack.substack.com/p/how-linearization-fixes-the-ratio" target="_blank" rel="noreferrer">Why Ratio Metrics Break A/B Tests and How Linearization Fixes It</a><span className="project-theme">Experimentation / Statistics</span></li></ul>
         </section>
         <footer className="portfolio-footer">
           <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
@@ -36,6 +36,8 @@ export default function Home() {
     </div>
   )
 }
+
+
 
 
 
