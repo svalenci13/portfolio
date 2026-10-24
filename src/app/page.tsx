@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import { SpotifyNowPlaying } from "@/components/spotify-now-playing"
 
 import { AsciiEvolution } from "@/components/ascii-evolution"
 
@@ -27,6 +28,7 @@ export default function Home() {
           <h2 id="writing-heading">Writing</h2>
           <ul><li><a href="https://1sebstack.substack.com/p/how-linearization-fixes-the-ratio" target="_blank" rel="noreferrer">Why Ratio Metrics Break A/B Tests and How Linearization Fixes It</a><span className="project-theme">Experimentation, Statistics</span></li></ul>
         </section>
+        <SpotifyNowPlaying />
         <footer className="portfolio-footer">
           <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
           <a href="https://linkedin.com/in/svalenci" target="_blank" rel="noreferrer">linkedin</a>
@@ -36,6 +38,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 

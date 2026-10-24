@@ -1,77 +1,45 @@
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!
-const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!
-const SPOTIFY_REFRESH_TOKEN = process.env.SPOTIFY_REFRESH_TOKEN!
+export const dynamic = "force-dynamic"
 
-const basic = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64')
+type Track = { name: string; type?: string; artists?: { name: string }[]; external_urls?: { spotify?: string } }
+let tokenCache: { value: string; until: number } | undefined
+let snapshot: { value: object; until: number } | undefined
 
-async function getAccessToken() {
-  const response = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${basic}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: SPOTIFY_REFRESH_TOKEN,
-    }),
-  })
-
-  return response.json()
-}
+const reply = (body: object, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store" } })
 
 export async function GET() {
+  const clientId = process.env.SPOTIFY_CLIENT_ID
+  const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN
+  if (!clientId || !refreshToken) return reply({ status: "unavailable", isPlaying: false }, 503)
+  if (snapshot && snapshot.until > Date.now()) return reply(snapshot.value)
   try {
-    const tokenResponse = await getAccessToken()
-    const { access_token } = tokenResponse
-    
-    console.log('Access token obtained:', access_token ? 'Yes' : 'No')
-
-    const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
-
-    console.log('Spotify API response status:', response.status)
-
-    if (response.status === 204) {
-      console.log('No content - user not playing anything')
-      return Response.json({ isPlaying: false, debug: 'No content from Spotify' })
+    if (!tokenCache || tokenCache.until <= Date.now()) {
+      const secret = process.env.SPOTIFY_CLIENT_SECRET
+      const body = new URLSearchParams({ grant_type: "refresh_token", refresh_token: refreshToken })
+      const headers: Record<string, string> = { "Content-Type": "application/x-www-form-urlencoded" }
+      // PKCE credentials need no client secret. Existing confidential-client tokens remain supported.
+      if (secret) headers.Authorization = `Basic ${Buffer.from(`${clientId}:${secret}`).toString("base64")}`
+      else body.set("client_id", clientId)
+      const response = await fetch("https://accounts.spotify.com/api/token", { method: "POST", headers, body, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      if (!response.ok) return reply({ status: "unavailable", isPlaying: false }, 503)
+      const token = await response.json()
+      if (typeof token.access_token !== "string") return reply({ status: "unavailable", isPlaying: false }, 503)
+      tokenCache = { value: token.access_token, until: Date.now() + Math.max(0, Number(token.expires_in || 3600) - 60) * 1000 }
     }
-
-    if (response.status > 400) {
-      console.log('Error response from Spotify:', response.status)
-      return Response.json({ isPlaying: false, debug: `Error: ${response.status}` })
+    const response = await fetch("https://api.spotify.com/v1/me/player/currently-playing", { headers: { Authorization: `Bearer ${tokenCache.value}` }, cache: "no-store", signal: AbortSignal.timeout(8000) })
+    if (response.status === 401) tokenCache = undefined
+    if (response.status !== 204 && !response.ok) return reply({ status: "unavailable", isPlaying: false }, 503)
+    let result: object = { status: "idle", isPlaying: false }
+    if (response.status !== 204) {
+      const playback = await response.json()
+      const item = playback.item as Track | null
+      if (playback.is_playing && item?.name && item.type === "track" && item.external_urls?.spotify) {
+        result = { status: "playing", isPlaying: true, title: item.name, artist: item.artists?.map(artist => artist.name).join(", ") || "", songUrl: item.external_urls.spotify }
+      }
     }
-
-    const song = await response.json()
-    console.log('Spotify API response:', JSON.stringify(song, null, 2))
-
-    if (!song.item) {
-      console.log('No song item in response')
-      return Response.json({ isPlaying: false, debug: 'No song item' })
-    }
-
-    const isPlaying = song.is_playing
-    const title = song.item.name
-    const artist = song.item.artists.map((_artist: { name: string }) => _artist.name).join(', ')
-    const album = song.item.album.name
-    const albumImageUrl = song.item.album.images[0]?.url
-    const songUrl = song.item.external_urls.spotify
-
-    console.log('Song found:', { title, artist, isPlaying })
-
-    return Response.json({
-      isPlaying,
-      title,
-      artist,
-      album,
-      albumImageUrl,
-      songUrl,
-    })
-  } catch (error) {
-    console.error('Error fetching Spotify data:', error)
-    return Response.json({ isPlaying: false, debug: `Error: ${error instanceof Error ? error.message : 'Unknown error'}` })
+    snapshot = { value: result, until: Date.now() + 20000 }
+    return reply(result)
+  } catch {
+    return reply({ status: "unavailable", isPlaying: false }, 503)
   }
-} 
+}
+

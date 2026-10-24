@@ -1,72 +1,28 @@
-# Spotify Integration Setup
+# Spotify listening line
 
-To enable the "Currently Listening" Spotify feature, you'll need to set up Spotify API credentials.
+The homepage displays the currently playing track, linking to Spotify, or a quiet Spotify profile link when unavailable. It does not play music or fetch listening history.
 
-## Important: Spotify Redirect URI Requirements
+## Connect locally
 
-According to [Spotify's documentation](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri), you must follow these rules:
+1. Register exactly `http://127.0.0.1:3000` as a redirect URI in the Spotify developer dashboard.
+2. Stop the local Next.js server to free port 3000.
+3. Run `node scripts/connect-spotify.mjs YOUR_CLIENT_ID` from this repository.
+4. Open the printed Spotify authorization link and approve read-only access to currently playing content.
+5. The helper validates OAuth state, exchanges the code using PKCE, and saves the client ID and refresh token to ignored `.env.local`. It never needs or prints a client secret.
+6. Restart the portfolio server.
 
-- ✅ Use HTTPS for production redirect URIs
-- ✅ For local development, use explicit IPv4 (`http://127.0.0.1:PORT`) or IPv6 (`http://[::1]:PORT`)
-- ❌ `localhost` is NOT allowed as a redirect URI
-- ✅ You can register multiple redirect URIs for the same app
+The callback is a temporary local server, not a publicly deployed authentication endpoint. It closes after authorization or after 15 minutes.
 
-## Step 1: Create a Spotify App
+## Deployment
 
-1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/)
-2. Click "Create an App"
-3. Fill in the details:
-   - App name: "Portfolio Website"
-   - App description: "Personal website Spotify integration"
-4. Set the Redirect URIs to:
-   - For local development: `http://127.0.0.1:3000`
-   - For production: `https://yourdomain.com` (your actual website URL)
-5. Save your `Client ID` and `Client Secret`
+Add `SPOTIFY_CLIENT_ID` and `SPOTIFY_REFRESH_TOKEN` to the hosting provider's server environment, then redeploy. Keep these out of source control and `NEXT_PUBLIC_*` variables. PKCE tokens do not need `SPOTIFY_CLIENT_SECRET`; remove that variable when migrating from the old flow. Existing confidential-client tokens still work when their corresponding secret is provided.
 
-## Step 2: Get a Refresh Token
+Refresh tokens expire after six months; reconnect when needed. Development-mode apps require the app owner to have Premium, and the authorizing Spotify account must have app access. See [Spotify quota modes](https://developer.spotify.com/documentation/web-api/concepts/quota-modes) and [refreshing tokens](https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens).
 
-You'll need to get a refresh token using the authorization code flow. Here's a simple way:
+## Behavior
 
-1. Replace `YOUR_CLIENT_ID` in this URL and visit it:
-```
-https://accounts.spotify.com/authorize?client_id=YOUR_CLIENT_ID&response_type=code&redirect_uri=http://127.0.0.1:3000&scope=user-read-currently-playing
-```
+- Polls every 45 seconds while the page is visible and refreshes when returning to it.
+- Reuses the access token until shortly before expiry and caches successful playback results for 20 seconds.
+- Distinguishes unavailable/authentication errors from genuine idle playback internally.
+- Never returns access tokens, refresh tokens, API error bodies, or private playback metadata to the browser.
 
-2. After authorizing, you'll be redirected to `http://127.0.0.1:3000/?code=AUTHORIZATION_CODE`
-3. Copy the `code` parameter from the URL
-
-4. Exchange the code for a refresh token using this curl command (replace the values):
-```bash
-curl -X POST https://accounts.spotify.com/api/token \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=authorization_code&code=AUTHORIZATION_CODE&redirect_uri=http://127.0.0.1:3000&client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET"
-```
-
-5. The response will include a `refresh_token` - save this!
-
-## Step 3: Environment Variables
-
-Create a `.env.local` file in your project root with:
-
-```
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-SPOTIFY_REFRESH_TOKEN=your_spotify_refresh_token
-```
-
-## Step 4: Test
-
-Start your development server and the Spotify integration should work! The component will:
-- Show a loading state initially
-- Display "Not currently listening" if you're not playing music
-- Show the current track with album art, title, and artist if you are playing music
-- Update automatically every 30 seconds
-
-## Features
-
-- ✅ Real-time currently playing track
-- ✅ Album artwork display
-- ✅ Clickable song links to Spotify
-- ✅ Loading and empty states
-- ✅ Auto-refresh every 30 seconds
-- ✅ Graceful error handling 
