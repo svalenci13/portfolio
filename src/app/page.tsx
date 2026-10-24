@@ -30,8 +30,8 @@ export default function Home() {
         </section>
         <SpotifyNowPlaying />
         <footer className="portfolio-footer">
-          <a href="https://linkedin.com/in/svalenci" target="_blank" rel="noreferrer">linkedin</a>
-          <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">github</a>
+          <a href="https://linkedin.com/in/svalenci" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="https://github.com/svalenci13" target="_blank" rel="noreferrer">GitHub</a>
 
           <p className="email-address">email: <a href="mailto:svalenci@uwaterloo.ca">svalenci [at] uwaterloo [dot] ca</a></p>
         </footer>
@@ -39,6 +39,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 
