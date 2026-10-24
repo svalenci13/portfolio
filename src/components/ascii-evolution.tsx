@@ -50,11 +50,10 @@ export function AsciiEvolution() {
           const next = frames[(stage + 1) % frames.length] ?? current
           if (!current?.rows || !next?.rows) continue
           const progress = Math.max(0, Math.min(1, (clock % 11 - 8.5) / 2.5))
-          const scales = [.52, .72, .88, 1]
-          const blend = progress * progress * (3 - 2 * progress)
-          const scale = scales[stage] * (1 - blend) + scales[(stage + 1) % scales.length] * blend
+          const scales = [.75, 1, 1, 1]
+          const scale = scales[stage]
           const size = creature.size * scale
-          // Grow around the same center and baseline so evolution does not shift position.
+          // Keep each form fixed in size; only Agumon is reduced.
           const originX = creature.x + 48 * (creature.size - size)
           const originY = creature.y + 96 * (creature.size - size)
           const pulse = Math.sin(progress * Math.PI)
@@ -112,6 +111,7 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
+
 
 
 
