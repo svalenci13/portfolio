@@ -16,6 +16,7 @@ const players = [
 export default function SoccerOptimization() {
   return <div className="soccer-article report-informed"><SoccerBackdrop />
     <div className="article-shell">
+      <Link href="/" className="article-back-home">← Back to home</Link>
       <header className="article-report-title"><h1>Building the Best Value Soccer Team</h1><figure className="article-banner"><AsciiBanner /></figure></header>
       <div className="article-layout">
         <aside className="article-contents"><span>On this page</span><a href="#question">The question</a><a href="#data">The data</a><a href="#model">The model</a><a href="#player-index">Player scores</a><a href="#lineup">The lineup</a><a href="#budgets">Changing the budget</a><a href="#results">Time to Let EA FC Decide</a><a href="#limitations">What we learned</a></aside>
@@ -119,6 +120,7 @@ while the model is feasible:
     </div>
   </div>
 }
+
 
 
 
