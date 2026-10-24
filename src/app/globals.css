@@ -130,3 +130,36 @@
 .animate-blink {
   animation: blink 2s infinite;
 }
+
+/* Homepage: quiet typography and a decorative ASCII field. */
+.portfolio-home { min-height: 100vh; position: relative; isolation: isolate; background: #fdfdfb; color: #292a28; font-size: 14px; line-height: 1.75; }
+.portfolio-content { width: min(100% - 48px, 570px); margin-inline: auto; padding-block: 85px 60px; position: relative; }
+.ascii-background { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; background-image: linear-gradient(#62788a08 1px, transparent 1px), linear-gradient(90deg, #62788a08 1px, transparent 1px); background-size: 16px 16px; }
+.ascii-background pre { position: absolute; top: 5%; left: 50%; transform: translateX(-50%); margin: 0; font: 12px/16px monospace; letter-spacing: 3px; color: #647a91; opacity: .23; mask-image: linear-gradient(90deg, #000 0%, #000 13%, transparent 33%, transparent 67%, #000 87%, #000 100%); }
+.portfolio-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(32px, 6vw, 40px); font-weight: 400; letter-spacing: -1.2px; line-height: 1.2; }
+.portfolio-subtitle { margin-top: 9px; color: #85857e; font-family: Georgia, serif; font-size: 16px; }
+.portfolio-header nav { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 23px; font-family: Georgia, serif; font-size: 16px; color: #777970; }
+.portfolio-home a { text-underline-offset: 4px; text-decoration-thickness: 1px; transition: color .15s; }
+.portfolio-home a:hover { color: #547088; }
+.portfolio-home a:focus-visible { outline: 2px solid #547088; outline-offset: 5px; border-radius: 1px; }
+.portfolio-intro { border-top: 1px solid #e8e9e3; margin-top: 24px; padding-top: 28px; }
+.portfolio-intro p + p { margin-top: 12px; color: #686b63; }
+.portfolio-intro a, .experience-list a, .portfolio-aside a, .portfolio-footer a { text-decoration: underline; text-decoration-color: #bcbfb5; }
+.portfolio-section { margin-top: 32px; scroll-margin-top: 28px; }
+.portfolio-section h2 { font-family: Georgia, serif; font-size: 17px; font-weight: 400; color: #81837b; margin-bottom: 14px; }
+.experience-list { border-left: 1px solid #d9ddd4; padding-left: 17px; }
+.experience-list p + p { margin-top: 7px; }
+.experience-note { display: block; font-size: 12px; color: #8b8e84; }
+.portfolio-aside { color: #777a71; font-size: 12px; margin-top: 17px; }
+.simple-project { display: block; padding: 15px 0; border-bottom: 1px solid #e8e9e3; }
+.simple-project:first-child { padding-top: 0; }
+.project-title { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.project-title h3 { font-size: 14px; font-weight: 500; }
+.project-title > span { color: #91968a; font-size: 16px; }
+.simple-project p { margin-top: 3px; color: #7d8076; font-size: 12px; max-width: 460px; }
+.project-label { display: block; margin-top: 6px; color: #94998d; font-family: var(--font-jetbrains-mono), monospace; font-size: 10px; }
+.portfolio-footer { padding-top: 29px; color: #777b70; font-size: 12px; }
+.portfolio-footer > div { display: flex; gap: 23px; }
+.email-address { display: inline-block; margin-top: 14px; color: #969b8e; }
+@media (max-width: 600px) { .portfolio-content { padding-block: 44px 40px; } .ascii-background pre { opacity: .12; mask-image: linear-gradient(90deg, #000, transparent 25%, transparent 75%, #000); } .portfolio-header nav { gap: 20px; } }
+
