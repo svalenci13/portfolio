@@ -4,11 +4,13 @@ import Image from "next/image"
 import { SpotifyNowPlaying } from "@/components/spotify-now-playing"
 
 import { AsciiEvolution } from "@/components/ascii-evolution"
+import { AimTrainer } from "@/components/aim-trainer"
 
 export default function Home() {
   return (
     <HomeViewport>
       <AsciiEvolution key="content-anchored-digivolution" />
+      <AimTrainer />
       <main className="portfolio-content">
         <header><h1>Sebastian Valencia</h1><p className="nickname">/seb / sebo/</p></header>
         <section className="intro" aria-label="About">
@@ -41,21 +43,4 @@ export default function Home() {
     </HomeViewport>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

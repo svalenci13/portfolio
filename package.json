@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--no-experimental-webstorage' next dev",
+    "dev": "node --no-experimental-webstorage ./node_modules/next/dist/bin/next dev --webpack",
     "build": "NODE_OPTIONS='--no-experimental-webstorage' next build",
     "start": "NODE_OPTIONS='--no-experimental-webstorage' next start",
     "lint": "next lint"
@@ -20,6 +20,7 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-shape-layout": "^0.0.0-development",
+    "redis": "^6.3.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7"
   },
