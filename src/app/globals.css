@@ -1617,3 +1617,23 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
  .soccer-game .soccer-launch > .mobile-nav-category { font-size: 9px; }
  .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { font-size: 9px; padding-left: 6px; white-space: nowrap; }
 }
+
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+ .soccer-game .soccer-launch > span.kickabout-label, .aim-trainer[data-status="idle"] .aim-play > .aim-play-label, .peak-launch { font-size: 11px; line-height: 1.5; }
+ .soccer-game .soccer-launch > span.kickabout-label, .peak-launch { font-weight: 400; }
+ .aim-trainer[data-status="idle"] .aim-play > .aim-play-label { font-weight: 500; }
+ .aim-hud .aim-launcher .aim-leaderboard-link, .aim-hud .aim-launcher .aim-leaderboard-label { font-size: 10px; font-weight: 400; line-height: 1.5; }
+}
+
+/* Exact production desktop typography and button palette. */
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+ .soccer-game .soccer-launch, .peak-videos .peak-launch, .aim-hud .aim-launcher .aim-play { font: 400 11px/1.5 var(--font-jetbrains-mono), monospace; background: #fbfcfe; border-color: #dce3eb; color: #405773; }
+ .soccer-game .soccer-launch > span.kickabout-label { font: inherit; color: inherit; }
+ .aim-trainer[data-status="idle"] .aim-play > .aim-play-label { font-size: 11px; line-height: 1.5; font-weight: 500; color: #405773; }
+ .soccer-game .soccer-launch > .mobile-nav-category, .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { color: #8293a3; border-color: #e4e9ef; }
+ .soccer-game .soccer-launch:hover, .peak-videos .peak-launch:hover { background: #f5f8fc; border-color: #a9b9cb; }
+ .aim-hud .aim-launcher .aim-play:hover { background: #f2f6fa; }
+ .aim-hud .aim-launcher .aim-leaderboard-link { background: #fffffff2; border-color: #dce3eb; color: #71859d; font: 400 10px/1.5 var(--font-jetbrains-mono), monospace; }
+ .aim-hud .aim-launcher .aim-leaderboard-label { font: inherit; color: inherit; }
+ .aim-hud .aim-launcher .aim-leaderboard-link:hover { background: #f7f9fc; color: #405773; border-color: #dce3eb; }
+}
