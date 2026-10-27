@@ -1663,3 +1663,9 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 @media (max-width: 1099px), (hover: none), (pointer: coarse) {
  .soccer-game.soccer-persistent-nav { position: fixed; inset: auto; left: 15px; bottom: calc(15px + env(safe-area-inset-bottom,0px)); width: calc((100vw - 30px) / 3); z-index: 30; }
 }
+
+/* Lift the dock above the iPhone home-indicator area. */
+@media (max-width: 1099px), (hover: none), (pointer: coarse) {
+ .mobile-tools-dock { bottom: calc(24px + env(safe-area-inset-bottom,0px)); }
+ .soccer-game:not([data-open="true"]), .soccer-game.soccer-persistent-nav, .peak-videos, .aim-trainer[data-status="idle"] .aim-hud, .aim-trainer.aim-persistent-nav .aim-hud { bottom: calc(25px + env(safe-area-inset-bottom,0px)); }
+}
