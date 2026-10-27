@@ -1655,3 +1655,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
  .peak-launch::before, .peak-launch::after { background: #e4e9ef; }
  .aim-trainer[data-status="idle"] .aim-launcher .aim-leaderboard-link { background: #fff; border-color: #dce3eb; color: #71859d; }
 }
+
+@media (max-width: 1099px), (hover: none), (pointer: coarse) {
+ .peak-videos .peak-launch > span.peak-desktop-category:last-child { font-size: 10px; line-height: 15px; font-weight: 400; color: #8293a3; }
+}
