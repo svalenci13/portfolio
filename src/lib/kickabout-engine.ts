@@ -1,16 +1,16 @@
 export type Point = { x: number; y: number }
 export type Phase = "setup" | "simulation" | "teammate" | "aim" | "strike" | "flight" | "dribble" | "result" | "halftime" | "fulltime"
 export type ChanceKind = "pass" | "shot" | "dribble" | "corner" | "header" | "free-kick"
-export type Layout = "central" | "left-channel" | "right-channel" | "touchline-left" | "touchline-right" | "corner-run" | "short-corner" | "inswinger" | "deep-cross"
+export type Layout = "central" | "left-channel" | "right-channel" | "touchline-left" | "touchline-right" | "corner-run" | "short-corner" | "inswinger" | "deep-cross" | "slalom"
 export type Incoming = "still" | "left" | "right" | "drop" | "rise" | "bounce-in" | "bounce-left" | "bounce-right" | "centre-left" | "centre-right"
-export type Player = Point & { id: number; team: "home" | "away"; calling?: boolean; pace?: number; anchor?: Point; run: number }
-export type Ball = Point & { z: number; vx: number; vy: number; vz: number }
+export type Player = Point & { id: number; team: "home" | "away"; calling?: boolean; pace?: number; anchor?: Point; anticipation?: number; run: number }
+export type Ball = Point & { z: number; vx: number; vy: number; vz: number; bounces?: number }
 export type Match = {
   phase: Phase; minute: number; speed: number; paused: boolean;
   home: number; away: number; goals: number; assists: number; passes: number; dribbles: number;
   elapsed: number; phaseTime: number; message: string; log: string[]; logTeams: ("home" | "away" | "neutral")[]; seed: number; rating: number; zone: "defence" | "midfield" | "attack"; difficulty: "open" | "crowded" | "wall";
   viewPoints: Point[]; deck: ChanceKind[]; layout: Layout; gate: {left: number; right: number; y: number}; bounds: {left: number; right: number}; counterThreat: number; nextChance: number; halfPlayed: boolean; kind: ChanceKind; incoming: Incoming; incomingDuration: number; bounceHeight: number; rotation: number; celebration: {kind: "goal" | "assist" | "opponent"; until: number} | null;
-  players: Player[]; keeper: Point; keeperReaction: number; grace: number; ball: Ball; origin: Point; aim: Point; contact: Point;
+  players: Player[]; keeper: Point; keeperReaction: number; grace: number; ball: Ball; you: Point; origin: Point; aim: Point; contact: Point;
   dribbleTarget: Point; carrying: boolean; curve: number; landing: Point | null;
   pending: "shot" | "header" | null; pressure: number; attempt: number; wind: number; assistShot: boolean;
 }
@@ -27,9 +27,11 @@ function chanceDeck(seed: number): ChanceKind[] {
 const schedule = [5, 12, 20, 28, 36, 43, 51, 59, 67, 75, 83, 88]
 const blankBall = (x = 150, y = 290): Ball => ({ x, y, z: 0, vx: 0, vy: 0, vz: 0 })
 const random = (m: Match) => { m.seed = (Math.imul(m.seed, 1664525) + 1013904223) >>> 0; return m.seed / 4294967296 }
+const commentaryKey=(text:string)=>text.toLowerCase().replace(/\{home\}|\{away\}/g,"team").replace(/[^a-z ]/g,"").trim()
 const note = (m: Match, text: string, side: "home" | "away" | "neutral" = "home") => {
-  m.logTeams = [side, ...m.logTeams].slice(0, 10)
-  m.message = text; m.log = [`${Math.floor(m.minute)}′ ${text}`, ...m.log].slice(0, 10)
+  if(m.log.length && commentaryKey(text)===commentaryKey(m.message) && !/Goal!|score/.test(text))return
+  m.logTeams = [side, ...m.logTeams].slice(0, 40)
+  m.message = text; m.log = [`${Math.floor(m.minute)}′ ${text}`, ...m.log].slice(0, 40)
 }
 const changePhase = (m: Match, phase: Phase) => { m.phase = phase; m.phaseTime = 0 }
 function move(player: Point, target: Point, amount: number) {
@@ -42,7 +44,7 @@ export function createMatch(seed = Date.now()): Match {
     home: 0, away: 0, goals: 0, assists: 0, passes: 0, dribbles: 0, elapsed: 0, phaseTime: 0,
     message: "Kick-off.", log: [], logTeams: [], rating: 6.5, zone: "midfield", difficulty: "open", seed: seed >>> 0, viewPoints: [], deck: chanceDeck(seed), layout: "central", gate: {left: 20, right: 280, y: 65}, bounds: {left: 16, right: 284}, counterThreat: 0, nextChance: 0, halfPlayed: false,
     kind: "pass", incoming: "still", incomingDuration: 3, bounceHeight: 55, rotation: 0, celebration: null, players: [], keeper: { x: 150, y: 66 }, keeperReaction: .28, grace: 1.5, ball: blankBall(),
-    origin: { x: 150, y: 290 }, aim: { x: 0, y: -75 }, contact: { x: 0, y: 0 },
+    you: { x: 150, y: 290 }, origin: { x: 150, y: 290 }, aim: { x: 0, y: -75 }, contact: { x: 0, y: 0 },
     dribbleTarget: { x: 150, y: 290 }, carrying: false, curve: 0, landing: null, pending: null,
     pressure: 0, attempt: 0, wind: 0, assistShot: false,
   }
@@ -51,10 +53,10 @@ export function beginChance(m: Match, kind?: ChanceKind, incoming?: Incoming) {
   m.kind = kind ?? m.deck[m.nextChance % m.deck.length]
   const pick = <T,>(items: T[]): T => items[Math.floor(random(m) * items.length)]
   m.layout = m.kind === "corner" ? pick<Layout>(["short-corner", "inswinger", "deep-cross"])
-    : m.kind === "dribble" ? pick<Layout>(["central", "touchline-left", "touchline-right", "corner-run"])
+    : m.kind === "dribble" ? pick<Layout>(["central", "touchline-left", "touchline-right", "corner-run", "slalom"])
     : pick<Layout>(["central", "left-channel", "right-channel"])
   m.incoming = incoming ?? (m.kind === "header" ? "drop" : pick<Incoming>(["left", "right", "bounce-left", "bounce-right", "centre-left", "centre-right", "bounce-in", "still"]))
-  m.rotation = m.kind === "corner" ? pick([90,270]) : 0
+  m.rotation = 0
   m.incomingDuration = m.incoming === "drop" ? 3.3 : m.incoming === "still" ? 5.8 : 2.5 + random(m)*.65
   m.bounceHeight = 38 + random(m)*38
   m.zone = m.kind === "pass" ? (m.deck.slice(0,m.nextChance).filter(kind=>kind==="pass").length % 2 === 0 ? "midfield" : "defence") : "attack"
@@ -64,22 +66,23 @@ export function beginChance(m: Match, kind?: ChanceKind, incoming?: Incoming) {
   let x = m.layout === "left-channel" ? 55 + random(m) * 30 : m.layout === "right-channel" ? 215 + random(m) * 30 : 110 + random(m) * 80
   let y = m.kind === "pass" ? 290 : m.kind === "header" ? 170 + random(m)*55 : 220 + random(m)*55
   if (m.kind === "free-kick") {x=-55+random(m)*410;y=190+random(m)*165}
-  if (m.kind === "corner") { x = random(m) > .5 ? -182 : 482; y = 53; m.incoming = "still"; m.incomingDuration=5.8 }
+  if (m.kind === "corner") { x = random(m) > .5 ? -182 : 482; y = 53; m.rotation=x<150?270:90; m.incoming = "still"; m.incomingDuration=5.8 }
   if (m.kind === "dribble") {
-    y = 320; m.bounds={left:0,right:300}
+    y = 300+random(m)*50; m.bounds={left:0,right:300}
     if (m.layout === "touchline-left") {x=-115; m.bounds={left:-182,right:-30}; m.gate={left:-160,right:-85,y:80}}
     else if (m.layout === "touchline-right") {x=415; m.bounds={left:330,right:482}; m.gate={left:385,right:460,y:80}}
-    else if (m.layout === "corner-run") {x=255; y=300; m.gate={left:90,right:170,y:105}}
+    else if (m.layout === "corner-run") {x=random(m)>.5?270:30; y=300+random(m)*35; m.gate={left:90,right:200,y:105}}
+    else if(m.layout==="slalom"){const side=random(m)>.5;x=side?245:55;m.bounds={left:-20,right:320};m.gate={left:side?25:165,right:side?135:275,y:65}}
     m.zone = m.layout === "corner-run" ? "attack" : "midfield"
   }
   m.ball = blankBall(x,y); m.origin = {x,y}; m.dribbleTarget = {x,y}; m.carrying = false
   m.aim = m.kind === "corner" ? {x:(150-x)*.55,y:35} : {x:0,y:-65}
   m.contact = {x:0,y:0}; m.landing = null
   m.keeper = {x:clamp(150+(x-150)*.18+(random(m)-.5)*28,120,180),y:66}
-  m.keeperReaction = .24+random(m)*.16; m.grace = m.kind === "header" ? 2 : 1.5
+  m.keeperReaction = .24+random(m)*.16; m.grace = m.kind === "header" ? 2 : m.kind === "dribble" ? .25 : 1.5
   m.wind = 0
   const home = (id:number, px:number, py:number, calling=false): Player => ({id,team:"home",x:clamp(px,-160,460),y:clamp(py,85,850),calling,run:id%2?1:-1})
-  const away = (id:number, px:number, py:number): Player => ({id,team:"away",x:clamp(px,-170,470),y:clamp(py,65,850),pace:.8+random(m)*.45,run:0})
+  const away = (id:number, px:number, py:number): Player => ({id,team:"away",x:clamp(px,-170,470),y:clamp(py,65,850),pace:.7+random(m)*.6,anticipation:random(m)<.35?6+random(m)*8:0,run:0})
   if (m.kind === "dribble") {
     const width = m.bounds.right-m.bounds.left
     const count=m.layout.startsWith("touchline")?2+Math.floor(random(m)*2):m.layout==="central"?4+Math.floor(random(m)*3):3+Math.floor(random(m)*2)
@@ -107,8 +110,9 @@ export function beginChance(m: Match, kind?: ChanceKind, incoming?: Incoming) {
     if(m.difficulty==="crowded") m.players=[m.players[0],away(4,95,110),away(5,175,120),away(6,225,95),away(7,155,y-100),away(8,x<150?x+85:x-85,y-25)]
   }
   if(m.kind==="dribble" && m.layout!=="corner-run"){
-    m.ball.y+=400;m.origin.y+=400;m.dribbleTarget.y+=400;m.gate.y+=400;y+=400
-    for(const player of m.players)player.y+=400
+    const offset=340+random(m)*120
+    m.ball.y+=offset;m.origin.y+=offset;m.dribbleTarget.y+=offset;m.gate.y+=offset;y+=offset
+    for(const player of m.players)player.y+=offset
   }
   if(m.kind==="dribble"){
     // Stagger the screen along the run rather than lining both flanks.
@@ -129,6 +133,7 @@ export function beginChance(m: Match, kind?: ChanceKind, incoming?: Incoming) {
     p.x=clamp(x+dx/len*90,m.bounds.left+8,m.bounds.right-8);p.y=clamp(y+dy/len*90,55,1000)
     if(distance(p,m.ball)<80)p.y=clamp(y-92,55,1000)
   }
+  m.you={x:m.ball.x,y:m.ball.y}
   m.viewPoints=[{...m.origin},...m.players.map(p=>({x:p.x,y:p.y}))]
   if(m.kind!=="pass" && m.kind!=="dribble" || m.layout==="corner-run")m.viewPoints.push({x:65,y:15},{x:235,y:210})
   if(m.kind==="dribble")m.viewPoints.push({x:m.bounds.left,y:m.gate.y-35},{x:m.bounds.right,y:m.origin.y+35})
@@ -173,7 +178,10 @@ function stepBall(ball: Ball, dt: number, curve: number, wind: number) {
   ball.vy += oldX/speed*curve*dt
   ball.z = Math.max(0, ball.z + ball.vz * dt)
   ball.vz -= 160 * dt
-  if (ball.z === 0 && ball.vz < 0) ball.vz = 0
+  if(ball.z===0 && ball.vz<0){
+    if(ball.vz < -70 && (ball.bounces??0)<1){ball.vz=-ball.vz*.28;ball.bounces=(ball.bounces??0)+1;ball.vx*=.92;ball.vy*=.92}
+    else ball.vz=0
+  }
   const friction = Math.exp(-(airborne ? .18 : .85) * dt)
   ball.vx *= friction; ball.vy *= friction
 }
@@ -245,7 +253,7 @@ export function continueMatch(m: Match) {
   changePhase(m, "simulation")
 }
 export function tickMatch(m: Match, dt: number) {
-  if (m.paused || m.phase === "setup" || m.phase === "halftime" || m.phase === "fulltime") return
+  if (m.paused || m.phase === "setup" || m.phase === "fulltime") return
   dt = Math.max(0, Math.min(dt, .05))
   m.elapsed += dt
   if(m.celebration){
@@ -255,7 +263,8 @@ export function tickMatch(m: Match, dt: number) {
     if(completedGoal){continueMatch(m);return}
   }
   m.phaseTime += dt
-  if (m.phase === "result") { if (m.phaseTime > 2.2) continueMatch(m); return }
+  if (m.phase === "halftime") { if(m.phaseTime>=1.5)continueMatch(m);return }
+  if (m.phase === "result") { if (m.phaseTime > .9) continueMatch(m); return }
   if (m.phase === "teammate") {
     if (m.phaseTime >= .65) {
       const distanceToGoal = distance(m.ball, { x: 150, y: 45 })
@@ -291,9 +300,8 @@ export function tickMatch(m: Match, dt: number) {
         const shortLines=side==="home"
           ? ["{home} keep the ball.","A quick one-two.","A run down the left.","A run down the right.","The cross is blocked.","Offside.","A loose touch.","{home} switch play.","The keeper collects.","A shot goes wide.","{home} win a corner.","A through ball is cut out.","Space opens out wide.","{home} build again.","A dangerous low cross.","The defence clears."]
           : ["{away} push forward.","A cross from the left.","A cross from the right.","The shot is blocked.","Our keeper gathers.","{away} press high.","A dangerous counter.","The defence holds.","{away} win a free kick.","A header goes over.","{away} keep possession.","A late tackle.","The flag goes up.","{away} switch play.","A chance goes begging.","The ball runs out."]
-        const index=Math.floor(random(m)*shortLines.length)
-        const text=shortLines[index]
-        note(m,text===m.message?shortLines[(index+1)%shortLines.length]:text,side)
+        const choices=shortLines.filter(text=>commentaryKey(text)!==commentaryKey(m.message))
+        note(m,choices[Math.floor(random(m)*choices.length)],side)
       }
     }
     return
@@ -301,10 +309,12 @@ export function tickMatch(m: Match, dt: number) {
   if (m.phase === "aim" || m.phase === "dribble" || m.phase === "flight") {
     for (const player of m.players) {
       if (player.team === "away") {
-        const pace = m.phase === "dribble" ? (m.layout.startsWith("touchline") ? 25 : 30) : m.phase === "aim" ? ((m.kind === "corner" || m.kind === "free-kick") ? 0 : 6 + (player.id === 6 ? 3 : 0)) : m.difficulty === "crowded" ? 27 : 23
+        const pace = m.phase === "dribble" ? (m.layout.startsWith("touchline") ? 22 : 28) : m.phase === "aim" ? ((m.kind === "corner" || m.kind === "free-kick") ? 0 : 6 + (player.id === 6 ? 3 : 0)) : m.difficulty === "crowded" ? 27 : 23
         const protectedWindow = (m.phase === "aim" || m.phase === "dribble") && m.phaseTime < m.grace
         if (!protectedWindow) {
-          const target=player.anchor && m.phase==="dribble" ? {x:clamp(m.ball.x,player.anchor.x-35,player.anchor.x+35),y:clamp(m.ball.y,player.anchor.y-30,player.anchor.y+30)} : m.ball
+          const lead=(player.anticipation??0)/Math.max(1,distance(m.ball,m.dribbleTarget))
+          const intercept=m.phase==="dribble"?{x:m.ball.x+(m.dribbleTarget.x-m.ball.x)*lead,y:m.ball.y+(m.dribbleTarget.y-m.ball.y)*lead}:m.ball
+          const target=player.anchor && m.phase==="dribble" ? {x:clamp(m.ball.x,player.anchor.x-35,player.anchor.x+35),y:clamp(m.ball.y,player.anchor.y-30,player.anchor.y+30)} : intercept
           move(player,target,dt*pace*(player.pace??1))
         }
         if (!protectedWindow && m.phase !== "flight" && distance(player, m.ball) < 13) { finishAction(m, "Tackled. They win it back."); return }
@@ -319,6 +329,7 @@ export function tickMatch(m: Match, dt: number) {
   if (m.phase === "dribble") {
     if (m.carrying) {
       move(m.ball, m.dribbleTarget, dt * 78)
+      m.you={x:m.ball.x,y:m.ball.y}
       if (m.ball.y <= m.gate.y && m.ball.x >= m.gate.left && m.ball.x <= m.gate.right) { m.dribbles++; finishAction(m, "You beat the press. Into the attack.", "shot"); return }
     }
     if (m.phaseTime > 14) finishAction(m, "Possession turns over.")

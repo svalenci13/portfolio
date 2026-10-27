@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useMobileGame } from "@/components/use-mobile-game"
 import { AimLeaderboard } from "@/components/aim-leaderboard"
 
+const ROUND_SECONDS = 15
+
 type Target = { id: number; side: number; x: number; y: number; revision: number }
 const initialTargets: Target[] = [
   { id: 3, side: 1, x: 65, y: 28, revision: 0 },
@@ -16,7 +18,7 @@ export function AimTrainer() {
   const [hits, setHits] = useState(0)
   const [misses, setMisses] = useState(0)
   const [status, setStatus] = useState<"idle" | "running" | "finished" | "board">("idle")
-  const [remaining, setRemaining] = useState(60)
+  const [remaining, setRemaining] = useState(ROUND_SECONDS)
   const [muted, setMuted] = useState(false)
   const sound = useRef<{ context: AudioContext; buffer?: AudioBuffer; loading?: Promise<void> } | null>(null)
   const launcherRef = useRef<HTMLButtonElement>(null)
@@ -76,8 +78,8 @@ export function AimTrainer() {
     setTargets(initialTargets)
     setHits(0)
     setMisses(0)
-    setRemaining(60)
-    deadline.current = performance.now() + 60_000
+    setRemaining(ROUND_SECONDS)
+    deadline.current = performance.now() + ROUND_SECONDS * 1000
     setStatus("running")
   }
 
@@ -122,7 +124,10 @@ export function AimTrainer() {
   }
 
   return (
-    <aside className="aim-trainer" data-open={status !== "idle"} data-status={status} aria-label="Warm-up game">
+    <>
+    <aside className="aim-trainer" data-game="warmup" data-open={status !== "idle"} data-status={status} aria-label="Aim game">
+      {mobile && status !== "idle" && <button className="game-backdrop" type="button" aria-label="Close aim game modal" tabIndex={-1} onClick={closePanel}/> }
+      <div className="aim-game-surface" data-running={status === "running"}>
       {status === "running" && [1].map(side => <div ref={laneRef} key={side} className={`aim-lane aim-lane-${side}`} onPointerDown={event => {
         if (event.target === event.currentTarget && active()) setMisses(value => value + 1)
       }}>
@@ -138,19 +143,24 @@ export function AimTrainer() {
       </div>)}
       {(status === "idle" || status === "running") && <div ref={hudRef} className="aim-hud">
         {status === "idle" ? <div className="aim-launcher">
-          <button ref={launcherRef} className="aim-play" type="button" onClick={start} aria-label="Warm up: start a 60-second aim challenge"><span className="aim-play-icon" aria-hidden="true" /><span className="aim-play-label">Warm up</span><span className="aim-play-time">60s</span></button>
-          <button className="aim-leaderboard-link" aria-label="View warm-up leaderboard" type="button" onClick={() => setStatus("board")}><span className="aim-leaderboard-label"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><path d="M2 14V8h4v6M6 14V3h4v11M10 14V10h4v4M1 14h14" /></svg>Leaderboard</span><span aria-hidden="true">↗</span></button>
+          <button ref={launcherRef} className="aim-play" type="button" onClick={start} aria-label="Aim game: start a 15-second challenge"><span className="aim-play-icon" aria-hidden="true" /><span className="mobile-nav-category">Game<span className="aim-category-duration"> · 15s</span></span><span className="aim-play-label"><span className="aim-label-desktop">Aim game</span><span className="aim-label-mobile">Aim</span></span><span className="aim-play-time">15s</span></button>
+          <button className="aim-leaderboard-link" aria-label="View aim game leaderboard" title="Aim game leaderboard" type="button" onClick={() => setStatus("board")}><span className="aim-leaderboard-label"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><path d="M2 14V8h4v6M6 14V3h4v11M10 14V10h4v4M1 14h14" /></svg>Leaderboard</span><span aria-hidden="true">↗</span></button>
         </div> : <div className="aim-session">
-          <div className="aim-session-heading"><span>Session</span><button className="aim-sound-toggle" type="button" aria-label={muted ? "Unmute hit sound" : "Mute hit sound"} aria-pressed={muted} onClick={() => { if (muted) prepareSound(); setMuted(value => !value) }}><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2V6Z" />{muted ? <path d="m11 6 3 4m0-4-3 4" /> : <path d="M11 5c2 1.5 2 4.5 0 6" />}</svg></button></div>
+          <div className="aim-session-heading"><span>Aim game</span><div className="aim-session-tools"><button className="aim-session-close" type="button" onClick={closePanel} aria-label="Close aim game">×</button></div></div>
           <div className="aim-clock" role="timer" aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</div>
-          <div className="aim-time-track" aria-hidden="true"><div style={{ transform: `scaleX(${remaining / 60})` }} /></div>
+          <div className="aim-time-track" aria-hidden="true"><div style={{ transform: `scaleX(${remaining / ROUND_SECONDS})` }} /></div>
           <dl className="aim-session-stats"><div><dt>Hits</dt><dd>{hits}</dd></div><div><dt>Accuracy</dt><dd>{hits + misses ? `${Math.round(hits / (hits + misses) * 100)}%` : "—"}</dd></div></dl>
-          <div className="aim-actions"><button type="button" onClick={closePanel}>Exit</button></div>
         </div>}
       </div>}
       {(status === "finished" || status === "board") && <div className="aim-result-position">
         <AimLeaderboard result={status === "finished" ? { hits, accuracy: hits + misses ? Math.round(hits / (hits + misses) * 100) : 0 } : undefined} onClose={closePanel} onPlayAgain={start} />
       </div>}
+      </div>
     </aside>
+    {status !== "idle" && <aside className="aim-trainer aim-persistent-nav" data-status="idle"><div className="aim-hud"><div className="aim-launcher">
+          <button className="aim-play" type="button" onClick={start} aria-label="Aim game: start a 15-second challenge"><span className="aim-play-icon" aria-hidden="true" /><span className="mobile-nav-category">Game<span className="aim-category-duration"> · 15s</span></span><span className="aim-play-label"><span className="aim-label-desktop">Aim game</span><span className="aim-label-mobile">Aim</span></span><span className="aim-play-time">15s</span></button>
+          <button className="aim-leaderboard-link" aria-label="View aim game leaderboard" title="Aim game leaderboard" type="button" onClick={() => setStatus("board")}><span className="aim-leaderboard-label"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><path d="M2 14V8h4v6M6 14V3h4v11M10 14V10h4v4M1 14h14" /></svg>Leaderboard</span><span aria-hidden="true">↗</span></button>
+        </div></div></aside>}
+    </>
   )
 }
