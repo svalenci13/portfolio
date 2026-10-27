@@ -1639,3 +1639,10 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 }
 
 @media (min-width: 1100px) and (hover: hover) and (pointer: fine) { .peak-launch .peak-desktop-category { font-size: 9px; line-height: 14px; color: #8293a3; } }
+
+@media (max-width: 1099px), (hover: none), (pointer: coarse) {
+ .peak-videos .peak-launch { display: grid; grid-template-columns: 15px auto; grid-template-rows: 15px 20px; align-content: center; justify-content: center; column-gap: 7px; row-gap: 1px; }
+ .peak-videos .peak-launch > svg { grid-column: 1; grid-row: 1 / 3; }
+ .peak-videos .peak-launch > .peak-desktop-category { display: block; grid-column: 2; grid-row: 1; margin: 0; padding: 0; border: 0; font-size: 10px; line-height: 15px; color: #73869d; text-align: left; }
+ .peak-videos .peak-launch > span:not(.peak-desktop-category) { grid-column: 2; grid-row: 2; font-size: 12px; line-height: 20px; text-align: left; }
+}
