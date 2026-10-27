@@ -1607,3 +1607,13 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
  .soccer-game .soccer-launch > .kickabout-label, .aim-trainer[data-status="idle"] .aim-play > .aim-play-label, .peak-launch, .aim-leaderboard-label { font-size: 11px; line-height: 16px; }
  .soccer-game .soccer-launch > .mobile-nav-category, .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { font-size: 10px; line-height: 15px; padding-left: 6px; }
 }
+
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+ .soccer-game .soccer-launch, .peak-launch { width: 154px; min-height: 0; padding: 9px 11px; }
+ .aim-launcher { width: 140px; }
+ .aim-hud .aim-launcher .aim-play { width: 100%; min-height: 0; padding: 9px 11px; font-size: 11px; }
+ .aim-hud .aim-launcher .aim-leaderboard-link { min-height: 0; padding: 8px 11px; font-size: 10px; }
+ .aim-leaderboard-label { font-size: 10px; }
+ .soccer-game .soccer-launch > .mobile-nav-category { font-size: 9px; }
+ .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { font-size: 9px; padding-left: 6px; white-space: nowrap; }
+}
