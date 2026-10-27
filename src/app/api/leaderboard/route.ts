@@ -5,8 +5,8 @@ import { createClient } from "redis"
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 type Entry = { id: string; nickname: string; xHandle?: string; hits: number; accuracy: number; createdAt: string }
-const key = "portfolio:warmup:v1"
-const localFile = path.join(process.cwd(), ".next", "cache", "warmup-leaderboard.json")
+const key = "portfolio:aim:15s:v2"
+const localFile = path.join(process.cwd(), ".next", "cache", "aim-15s-leaderboard.json")
 let localQueue: Promise<unknown> = Promise.resolve()
 const newClient = () => createClient({ url: process.env.REDIS_URL, socket: { connectTimeout: 5000, reconnectStrategy: false }, disableOfflineQueue: true })
 let connection: Promise<ReturnType<typeof newClient>> | undefined

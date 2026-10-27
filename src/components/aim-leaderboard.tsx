@@ -51,7 +51,7 @@ export function AimLeaderboard({ result, onClose, onPlayAgain }: { result?: Resu
   }
 
   return <div className="aim-result-panel" role="dialog" aria-labelledby="aim-result-title" onKeyDown={event => { if (event.key === "Escape" && !saving) onClose() }}>
-    {view === "submit" && <div className="aim-result-topline"><span>Round complete</span></div>}
+    <div className="aim-result-topline"><span>{view === "submit" ? "Round complete" : "Aim · 15s"}</span></div>
     <div className="aim-result-title-row"><h2 id="aim-result-title" ref={headingRef} tabIndex={-1}>{view === "submit" ? "Your score" : "Leaderboard"}</h2><button className="aim-panel-close" type="button" aria-label="Close leaderboard" onClick={onClose} disabled={saving}>×</button></div>
     {view === "submit" && result ? <>
       <div className="aim-final-score"><strong>{result.hits}</strong><span>hits<span>{result.accuracy}% accuracy</span></span></div>
@@ -65,7 +65,7 @@ export function AimLeaderboard({ result, onClose, onPlayAgain }: { result?: Resu
       </form>
       <button className="aim-skip" type="button" disabled={saving} onClick={() => { setError(""); setView("board") }}>Just show the leaderboard</button>
     </> : <>
-      <div className="aim-board-caption"><span>Top 10 · ranked by hits</span>{local && <span>Local preview</span>}</div>
+      <div className="aim-board-caption"><span>15-second rounds · Top 10</span>{local && <span>Local preview</span>}</div>
       {submittedId && <p className="aim-save-note" role="status">Score posted.</p>}
       {error && <p role="alert" className="aim-save-note">{error}</p>}
       {loading ? <p className="aim-board-empty">Loading…</p> : entries.length ? <div className="aim-board-scroll"><table><thead><tr><th scope="col">Player</th><th scope="col">Hits</th><th scope="col">Acc.</th></tr></thead><tbody>{entries.map((entry, index) => <tr key={entry.id} data-own={entry.id === submittedId}><td><span className="aim-rank">{String(index + 1).padStart(2, "0")}</span><div className="aim-player"><span title={entry.nickname}>{entry.nickname}</span>{entry.xHandle && <a href={`https://x.com/${encodeURIComponent(entry.xHandle)}`} target="_blank" rel="noreferrer">@{entry.xHandle}</a>}</div></td><td>{entry.hits}</td><td>{entry.accuracy}%</td></tr>)}</tbody></table></div> : !error && <p className="aim-board-empty">No scores yet.</p>}

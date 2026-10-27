@@ -6,14 +6,17 @@ import { SpotifyNowPlaying } from "@/components/spotify-now-playing"
 import { AsciiEvolution } from "@/components/ascii-evolution"
 import { AimTrainer } from "@/components/aim-trainer"
 import { ShopifyLink } from "@/components/shopify-link"
+import { FavouriteVideos } from "@/components/favourite-videos"
 import { SoccerGame } from "@/components/soccer-game"
 
 export default function Home() {
   return (
     <HomeViewport>
       <AsciiEvolution key="content-anchored-digivolution" />
+      <div className="mobile-tools-dock" aria-hidden="true" />
       <AimTrainer />
       <SoccerGame />
+      <FavouriteVideos />
       <main className="portfolio-content">
         <header><h1>Sebastian Valencia</h1><p className="nickname">/seb / sebo/</p></header>
         <section className="intro" aria-label="About">

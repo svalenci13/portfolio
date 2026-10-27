@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {chanceView,rotatePoint} from '../src/lib/kickabout-camera.ts';
+import {chanceView,rotatePoint,strikeFrame} from '../src/lib/kickabout-camera.ts';
 import {createMatch,beginChance,tickMatch,continueMatch,prepareStrike,strike,strikePosition,setAim,finishAction} from '../src/lib/kickabout-engine.ts';
 const advance=(m,seconds)=>{for(let i=0;i<seconds*100;i++)tickMatch(m,.01)};
 test('full match reaches half time and full time with every chance type',()=>{
@@ -121,7 +121,7 @@ test('every match includes an early corner and layout variants span the field',(
   const m=createMatch(seed*997);decks.add(m.deck.join(','));assert.equal(m.deck[1],'corner');assert.equal(m.deck.filter(k=>k==='corner').length,2);
   for(const kind of ['dribble','corner','free-kick']){beginChance(m,kind);(kind==='dribble'?dribbles:kind==='corner'?corners:freeKicks).add(m.layout)}
  }
- assert.equal(dribbles.size,4);assert.equal(corners.size,3);assert.equal(freeKicks.size,3);assert.ok(decks.size>50);
+ assert.equal(dribbles.size,5);assert.equal(corners.size,3);assert.equal(freeKicks.size,3);assert.ok(decks.size>50);
 });
 test('a bad turnover creates counter risk and conceding is possible',()=>{
  let conceded=0;
@@ -142,10 +142,10 @@ test('teammates can chip and still resolve the play',()=>{
 test('harder dribbling layouts retain an achievable route through their gate',()=>{
  for(let seed=1;seed<=120;seed++){
   let won=false;
-  for(const edge of [.1,.25,.5,.75,.9])for(const pivot of [100,160,220]){
+  for(const edge of [-.4,.1,.25,.5,.75,.9,1.4])for(const middle of [-.4,.1,.3,.5,.7,.9,1.4])for(const pivot of [.2,.5,.75]){
    if(won)break;
-   const m=createMatch(seed*997);beginChance(m,'dribble');const lane=m.bounds.left+(m.bounds.right-m.bounds.left)*edge;
-   const route=[{x:lane,y:280},{x:lane,y:Math.max(m.gate.y+15,pivot)},{x:(m.gate.left+m.gate.right)/2,y:m.gate.y-10}];let stage=0;m.carrying=true;
+   const m=createMatch(seed*997);beginChance(m,'dribble');const lane=Math.max(-180,Math.min(480,m.bounds.left+(m.bounds.right-m.bounds.left)*edge));
+   const route=[{x:lane,y:m.origin.y-35},{x:Math.max(-180,Math.min(480,m.bounds.left+(m.bounds.right-m.bounds.left)*middle)),y:m.gate.y+(m.origin.y-m.gate.y)*pivot},{x:(m.gate.left+m.gate.right)/2,y:m.gate.y-10}];let stage=0;m.carrying=true;
    for(let frame=0;frame<1500&&m.phase==='dribble';frame++){
     m.dribbleTarget=route[stage];tickMatch(m,.01);if(Math.hypot(m.ball.x-route[stage].x,m.ball.y-route[stage].y)<6&&stage<2)stage++;
    }
@@ -214,5 +214,50 @@ test('simulation commentary stays concise',()=>{
   if(['aim','dribble'].includes(m.phase))finishAction(m,'Chance over.');
   tickMatch(m,.05);
   for(const text of m.log){assert.ok(text.length<85,`Overlong line: ${text}`);assert.ok((text.match(/[.!?]/g)||[]).length<=1,`Multiple sentences: ${text}`)}
+ }
+});
+test('camera fills different frame shapes without cropping playable positions',()=>{
+ for(const kind of ['corner','shot','pass','dribble'])for(const aspect of [.65,1,1.3,1.8]){
+  const m=createMatch(71);beginChance(m,kind);const [left,top,width,height]=chanceView(m,aspect).split(' ').map(Number);assert.ok(Math.abs(width/height-aspect)<.00001);
+  for(const p of m.viewPoints){const rotated=rotatePoint(p,m.rotation);assert.ok(rotated.x>=left&&rotated.x<=left+width&&rotated.y>=top&&rotated.y<=top+height)}
+ }
+});
+
+test('contact ball stays round and hit coordinates track wide and tall frames',()=>{
+ for(const frame of [{width:440,height:340},{width:300,height:500},{width:680,height:240}]){
+  const ball=strikeFrame({x:150,y:300},frame);assert.equal(ball.x,frame.width/2);assert.equal(ball.y,300*frame.height/380);assert.equal(ball.radius,44*Math.min(frame.width/300,frame.height/380));
+  assert.ok(Math.abs(((ball.x+ball.radius*.5)-ball.x)/ball.radius-.5)<.000001);
+ }
+});
+test('your player stays at the original position through a teammate finish',()=>{
+ const m=createMatch(9);beginChance(m,'shot','still');const you={...m.you};m.players=[{id:2,team:'home',x:m.ball.x,y:m.ball.y-40,run:0}];m.aim={x:0,y:-30};prepareStrike(m);strike(m,{x:0,y:0});advance(m,.3);
+ assert.equal(m.phase,'teammate');assert.deepEqual(m.you,you);assert.notDeepEqual(m.origin,you);advance(m,.7);assert.deepEqual(m.you,you);
+});
+test('half-time and result screens resume without manual input',()=>{
+ const m=createMatch(5);m.minute=44.99;m.nextChance=6;tickMatch(m,.05);assert.equal(m.phase,'halftime');advance(m,1.6);assert.equal(m.phase,'simulation');assert.ok(m.minute>=45);
+ beginChance(m,'shot');finishAction(m,'Just wide.');advance(m,1);assert.notEqual(m.phase,'result');
+});
+test('dribbling defenders move promptly and vary their pace',()=>{
+ const m=createMatch(321);beginChance(m,'dribble');const initial=m.players.map(p=>({...p}));advance(m,.45);assert.equal(m.phase,'dribble');assert.ok(m.players.some((p,i)=>Math.hypot(p.x-initial[i].x,p.y-initial[i].y)>.5));assert.ok(new Set(m.players.map(p=>Math.round(p.pace*10))).size>2);
+});
+test('commentary does not repeat consecutive lines across a whole match',()=>{
+ const m=createMatch(17);m.speed=4;
+ for(let i=0;i<30000&&m.phase!=='fulltime';i++){
+  if(['aim','dribble'].includes(m.phase))finishAction(m,'Chance over.');tickMatch(m,.05);
+  const lines=m.log.map(line=>line.replace(/^.*?′ /,'').toLowerCase().replace(/\{home\}|\{away\}/g,'team'));
+  for(let j=1;j<lines.length;j++)assert.notEqual(lines[j],lines[j-1]);
+ }
+ assert.equal(m.phase,'fulltime');
+});
+test('a lofted ball rebounds once with reduced vertical speed',()=>{
+ const m=createMatch(11);beginChance(m,'pass','still');m.players=[];m.origin={x:150,y:700};m.aim={x:0,y:10};prepareStrike(m);strike(m,{x:0,y:1});
+ for(let i=0;i<310&&!m.ball.bounces;i++)tickMatch(m,.01);
+ assert.equal(m.ball.bounces,1);assert.ok(m.ball.vz>0&&m.ball.vz<80);advance(m,.3);assert.equal(m.ball.bounces,1);
+});
+
+test('corners always put the taker below the goal in the framed view',()=>{
+ for(let seed=1;seed<=100;seed++){
+  const m=createMatch(seed*997);beginChance(m,'corner');const taker=rotatePoint(m.origin,m.rotation),goal=rotatePoint({x:150,y:45},m.rotation);
+  assert.ok(taker.y>goal.y+200);assert.ok([90,270].includes(m.rotation));
  }
 });

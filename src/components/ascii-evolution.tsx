@@ -36,10 +36,13 @@ export function AsciiEvolution() {
         const t = elapsed.current
         ctx.clearRect(0, 0, width, height)
         ctx.textBaseline = "top"
-        const mobile = width < 700
+        // Keep the same artwork and visual treatment at every width.
+        // Only pull the desktop anchors inward as the viewport narrows.
+        const inset = -36
+        const fitX = (desktopX: number, size: number) => Math.max(inset, Math.min(desktopX, width - 96 * size - inset))
         const creatures = [
-          { x: anchorX + (mobile ? 65 : 485), y: anchorY + (mobile ? 440 : 445), size: mobile ? 2.4 : 3.7, opacity: mobile ? .30 : .65, seed: 7, chain: gabumonFrames },
-          { x: anchorX + (mobile ? 75 : -205), y: anchorY + (mobile ? 140 : 110), size: mobile ? 2.2 : 3.3, opacity: mobile ? .27 : .40, seed: 31, chain: frames },
+          { x: fitX(anchorX + 485, 3.7), y: anchorY + 445, size: 3.7, opacity: .65, seed: 7, chain: gabumonFrames },
+          { x: fitX(anchorX - 205, 3.3), y: anchorY + 110, size: 3.3, opacity: .40, seed: 31, chain: frames },
         ]
         for (const creature of creatures) {
           const chain = creature.chain
@@ -101,7 +104,7 @@ export function AsciiEvolution() {
             const screenX = originX + offsetX + x * size
             const screenY = originY + offsetY + y * size * 1.5
             const centerDistance = Math.abs(screenX - (anchorX + 325))
-            const readingFade = mobile ? .58 : .30 + Math.min(.70, Math.max(0, (centerDistance - 260) / 140))
+            const readingFade = .42 + Math.min(.58, Math.max(0, (centerDistance - 260) / 140))
             const alpha = creature.opacity * readingFade * (scan ? .55 : 1 - pulse * .12)
             ctx.fillStyle = `rgba(106,125,148,${alpha * .14})`
             ctx.fillRect(screenX, screenY, size, size * 1.5)
@@ -118,7 +121,6 @@ export function AsciiEvolution() {
   }, [paused])
   return <><canvas ref={ref} className="ascii-evolution" aria-hidden="true" /><button className="background-toggle" onClick={() => setPaused(value => !value)} aria-pressed={paused}>{paused ? "animate background" : "pause background"}</button></>
 }
-
 
 
 
