@@ -4,7 +4,7 @@ import { createClient } from "redis"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
-type Entry = { id: string; nickname: string; hits: number; accuracy: number; createdAt: string }
+type Entry = { id: string; nickname: string; xHandle?: string; hits: number; accuracy: number; createdAt: string }
 const key = "portfolio:warmup:v1"
 const localFile = path.join(process.cwd(), ".next", "cache", "warmup-leaderboard.json")
 let localQueue: Promise<unknown> = Promise.resolve()
@@ -83,8 +83,10 @@ export async function POST(request: Request) {
   if (!body || typeof body.nickname !== "string" || !body.nickname.trim() || body.nickname.trim().length > 16 || !Number.isSafeInteger(body.hits) || body.hits < 0 || typeof body.accuracy !== "number" || !Number.isFinite(body.accuracy) || body.accuracy < 0 || body.accuracy > 100) {
     return reply({ error: "Enter a nickname of up to 16 characters." }, 400)
   }
+  const xHandle = typeof body.xHandle === "string" ? body.xHandle.trim().replace(/^@/, "") : ""
+  if (xHandle && !/^[A-Za-z0-9_]{1,15}$/.test(xHandle)) return reply({ error: "Use an X username, up to 15 letters, numbers or underscores." }, 400)
   try {
-    return reply(await leaderboard({ id: crypto.randomUUID(), nickname: body.nickname.trim(), hits: body.hits, accuracy: Math.round(body.accuracy), createdAt: new Date().toISOString() }))
+    const entry: Entry = { id: crypto.randomUUID(), nickname: body.nickname.trim(), ...(xHandle ? { xHandle } : {}), hits: body.hits, accuracy: Math.round(body.accuracy), createdAt: new Date().toISOString() }
+    return reply({ ...await leaderboard(entry), submittedId: entry.id })
   } catch { return reply({ error: "Couldn’t save your score. Try again." }, 503) }
 }
-
