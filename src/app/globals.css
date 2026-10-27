@@ -1600,3 +1600,10 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
  .soccer-game .soccer-launch:hover, .peak-launch:hover, .aim-hud .aim-launcher .aim-play:hover, .aim-hud .aim-launcher .aim-leaderboard-link:hover { background: #edf3fa; border-color: #aebfd3; }
  .soccer-game .soccer-launch > .mobile-nav-category, .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { color: #8193a9; }
 }
+
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+ .soccer-game .soccer-launch, .peak-launch, .aim-launcher { width: 164px; }
+ .soccer-game .soccer-launch, .peak-launch, .aim-hud .aim-launcher .aim-play, .aim-hud .aim-launcher .aim-leaderboard-link { min-height: 34px; padding: 8px 10px; }
+ .soccer-game .soccer-launch > .kickabout-label, .aim-trainer[data-status="idle"] .aim-play > .aim-play-label, .peak-launch, .aim-leaderboard-label { font-size: 11px; line-height: 16px; }
+ .soccer-game .soccer-launch > .mobile-nav-category, .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { font-size: 10px; line-height: 15px; padding-left: 6px; }
+}
