@@ -67,7 +67,7 @@ export function FavouriteVideos() {
   const [current, setCurrent] = useState(0)
   const id = useId()
   const [visible, setVisible] = useState(false)
-  const [desktopTop, setDesktopTop] = useState(78)
+  const [desktopTop, setDesktopTop] = useState(66)
   const launch = useRef<HTMLButtonElement>(null)
   const dialog = useRef<HTMLDialogElement>(null)
   useEffect(() => {
@@ -77,7 +77,7 @@ export function FavouriteVideos() {
   useEffect(() => {
     const soccer = document.querySelector<HTMLElement>(".soccer-game")
     if (!soccer) return
-    const update = () => setDesktopTop(soccer.dataset.open === "true" ? soccer.getBoundingClientRect().bottom + 12 : 78)
+    const update = () => setDesktopTop(soccer.getBoundingClientRect().bottom + 6)
     const size = new ResizeObserver(update)
     const attributes = new MutationObserver(update)
     size.observe(soccer)
@@ -89,7 +89,7 @@ export function FavouriteVideos() {
   const close = () => { setVisible(false); launch.current?.focus() }
   const video = videos[current]
   return <div className="peak-videos" style={{ "--peak-desktop-top": `${desktopTop}px` } as import("react").CSSProperties}>
-    <button ref={launch} type="button" className="peak-launch" onClick={() => { setCurrent(Math.floor(Math.random() * videos.length)); setVisible(true) }} aria-haspopup="dialog"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><rect x="1.5" y="3.5" width="9" height="9" rx="1.5"/><path d="m10.5 6 4-2v8l-4-2Z"/></svg><span>Peak</span></button>
+    <button ref={launch} type="button" className="peak-launch" onClick={() => { setCurrent(Math.floor(Math.random() * videos.length)); setVisible(true) }} aria-haspopup="dialog"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><rect x="1.5" y="3.5" width="9" height="9" rx="1.5"/><path d="m10.5 6 4-2v8l-4-2Z"/></svg><span>Peak</span><span className="peak-desktop-category">Watch</span></button>
     <dialog ref={dialog} className="peak-dialog peak-player-dialog" aria-labelledby={`${id}-heading`} onCancel={close} onClick={event => { if (event.target === event.currentTarget) { const box = event.currentTarget.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) close() } }}>
       <header><div className="peak-title"><h2 id={`${id}-heading`}>Peak<svg className="peak-header-mark" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><rect x="1.5" y="3.5" width="9" height="9" rx="1.5"/><path d="m10.5 6 4-2v8l-4-2Z"/></svg></h2><span>A few favourites</span></div><button type="button" onClick={close} aria-label="Close videos">×</button></header>
       <div className="peak-main-player">

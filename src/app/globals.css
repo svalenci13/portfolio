@@ -1637,3 +1637,5 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
  .aim-hud .aim-launcher .aim-leaderboard-label { font: inherit; color: inherit; }
  .aim-hud .aim-launcher .aim-leaderboard-link:hover { background: #f7f9fc; color: #405773; border-color: #dce3eb; }
 }
+
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) { .peak-launch .peak-desktop-category { font-size: 9px; line-height: 14px; color: #8293a3; } }
