@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type PointerEvent, type KeyboardEvent, type CSSProperties } from "react"
 import { CLUBS, ClubCrest, Football, StrikeScene } from "@/components/soccer-visuals"
+import { useMobileGame } from "@/components/use-mobile-game"
 import { chanceView, rotatePoint } from "@/lib/kickabout-camera"
 import { clamp, continueMatch, createMatch, distance, finishAction, prepareStrike, setAim, strike, strikePosition, strikeLimit, tickMatch, type Point, type Player, type Match } from "@/lib/kickabout-engine"
 
@@ -44,6 +45,7 @@ export function SoccerGame() {
   const dragging = useRef(false)
   const m = match.current
   const refresh = () => render(value => value + 1)
+  const mobile = useMobileGame(open, "kickabout", () => setOpen(false))
 
   useEffect(() => {
     if (!open) return
@@ -78,20 +80,22 @@ export function SoccerGame() {
     return {x:mapped.x,y:mapped.y}
   }
   function pointerDown(event: PointerEvent<SVGSVGElement>) {
+    if (!event.isPrimary || event.button > 0) return
     if (m.paused || (m.celebration && m.elapsed<m.celebration.until)) return
     const p = point(event)
     if (m.phase === "strike") {
       const center = strikePosition(m)
       if (distance(center, p) <= 44) strike(m, { x: (p.x - center.x) / 44, y: (p.y - center.y) / 44 })
       else finishAction(m, "Missed the ball.")
-    } else if ((m.phase === "aim" || m.phase === "dribble") && distance(p, m.ball) < 25) {
+    } else if (m.phase === "dribble" || (m.phase === "aim" && distance(p, m.ball) < (event.pointerType === "touch" ? 65 : 25))) {
       dragging.current = true
       event.currentTarget.setPointerCapture(event.pointerId)
-      if (m.phase === "dribble") { m.carrying = true; m.dribbleTarget = p }
+      if (m.phase === "dribble") { m.carrying = true; m.dribbleTarget = {x:clamp(p.x,-180,480),y:clamp(p.y,m.gate.y-20,m.origin.y+40)} }
     }
     refresh()
   }
   function pointerMove(event: PointerEvent<SVGSVGElement>) {
+    if (!event.isPrimary) return
     if (m.paused || (m.celebration && m.elapsed<m.celebration.until) || (!dragging.current && m.phase !== "dribble")) return
     const p = point(event)
     if (m.phase === "aim") setAim(m, p)
@@ -100,7 +104,7 @@ export function SoccerGame() {
   }
   function pointerUp(event: PointerEvent<SVGSVGElement>) {
     if (!dragging.current) return
-    dragging.current = false; if (m.phase !== "dribble") m.carrying = false
+    dragging.current = false; if (m.phase !== "dribble" || event.pointerType === "touch") m.carrying = false
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
     if (m.phase === "aim" && !m.paused) prepareStrike(m)
     refresh()
@@ -128,9 +132,9 @@ export function SoccerGame() {
   const camera = chanceView(m)
   const contact = strikePosition(m)
   const lift = rotatePoint({x:0,y:-m.ball.z*.6},-m.rotation)
-  const instructions = m.phase === "teammate" ? "Your teammate takes a touch…" : m.paused ? "Paused. Take your time." : m.phase === "aim" ? "Drag back from the ball. Release to pick your contact." : m.phase === "strike" ? m.incoming === "drop" ? "Meet the dropping ball. Tap the spot you want to head." : "Tap the moving ball. Lower contact chips; off-centre adds curl." : m.phase === "dribble" ? "Move your mouse to steer. Find space between the defenders and reach the two markers." : m.phase === "flight" ? (m.landing ? "The X marks where your chip will land." : "Watch the run…") : m.message
+  const instructions = m.phase === "teammate" ? "Your teammate takes a touch…" : m.paused ? "Paused. Take your time." : m.phase === "aim" ? "Drag back from the ball. Release to pick your contact." : m.phase === "strike" ? m.incoming === "drop" ? "Meet the dropping ball. Tap the spot you want to head." : "Tap the moving ball. Lower contact chips; off-centre adds curl." : m.phase === "dribble" ? (mobile ? "Drag your finger to steer. Lift to stop. Reach the two markers." : "Move your mouse to steer. Find space between the defenders and reach the two markers.") : m.phase === "flight" ? (m.landing ? "The X marks where your chip will land." : "Watch the run…") : m.message
   const title = m.phase === "dribble" ? (m.layout.startsWith("touchline") ? "Touchline run" : m.layout === "corner-run" ? "Cut inside" : "Beat the press") : m.kind === "corner" ? "Corner kick" : m.kind === "free-kick" ? "Free kick" : m.kind === "header" ? "Meet the cross" : m.kind === "pass" ? (m.zone === "defence" ? "Playing out" : "Midfield") : m.difficulty === "crowded" ? "Crowded box" : "In the final third"
-  return <aside className="soccer-game" aria-label="Single-match football game">
+  return <aside className="soccer-game" data-open={open} aria-label="Single-match football game">
     {!open ? <button ref={launchRef} className="soccer-launch" type="button" onClick={setup}><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><circle cx="8" cy="8" r="6" /><path d="m8 5 3 2-1 3H6L5 7l3-2ZM8 2v3M2 7h3M4 13l2-3m4 0 2 3m-1-6h3" /></svg><span>Kickabout</span><span>Match</span></button> : <section className="soccer-panel soccer-match-panel" style={{"--home-color": CLUBS[homeClub].accent, "--away-color": CLUBS[awayClub].accent} as CSSProperties}>
       <header><span>Kickabout</span><button type="button" onClick={close} aria-label="Close football game">×</button></header>
       {m.phase === "setup" ? <div className="soccer-setup">
@@ -157,7 +161,7 @@ export function SoccerGame() {
           const rowStyle = {"--event-color": side === "neutral" ? "#8091a5" : team.accent, "--event-bg": side === "neutral" ? "#eaf0f5" : team.score, "--event-ink": side === "neutral" ? "#61768e" : team.crest === "barcelona" ? "#fff" : "#243c59"} as CSSProperties
           return <div key={`${i}-${line}`} style={rowStyle} className="soccer-feed-row"><span>{line.slice(0, split + 1)}</span><p>{text}</p></div>
         })}
-      </div> : <svg ref={pitchRef} className="soccer-pitch" viewBox="0 0 300 380" tabIndex={0} role="application" aria-label="Football match. Arrow keys and Enter control actions. P pauses." aria-describedby="soccer-instructions" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerLeave={() => { if (m.phase === "dribble") m.carrying = false }} onPointerCancel={() => { dragging.current = false; if (m.phase !== "dribble") m.carrying = false }} onKeyDown={keyboard}>
+      </div> : <svg ref={pitchRef} className="soccer-pitch" viewBox="0 0 300 380" tabIndex={0} role="application" aria-label="Football match. Arrow keys and Enter control actions. P pauses." aria-describedby="soccer-instructions" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerLeave={() => { if (m.phase === "dribble") m.carrying = false }} onPointerCancel={() => { dragging.current = false; m.carrying = false }} onKeyDown={keyboard}>
         <rect width="300" height="380" rx="3" fill="#d3e2d5"/>
         {m.phase !== "strike" && <svg width="300" height="380" viewBox={camera} overflow="hidden">
         <g ref={worldRef} transform={`rotate(${m.rotation})`}>
