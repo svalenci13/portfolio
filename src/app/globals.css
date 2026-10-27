@@ -143,7 +143,7 @@
 
 .aim-trainer { display: none; }
 .soccer-game { display: none; }
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-game { display: block; position: fixed; left: 28px; top: 24px; z-index: 3; color: #52667c; font: 11px/1.5 var(--font-jetbrains-mono), monospace; }
   .soccer-launch { display: flex; align-items: center; gap: 8px; width: 154px; padding: 9px 11px; border: 1px solid #dce3eb; border-radius: 4px; background: #fbfcfe; color: #405773; }
   .soccer-launch > span:last-child { margin-left: auto; padding-left: 8px; border-left: 1px solid #e4e9ef; font-size: 9px; color: #8293a3; white-space: nowrap; }
@@ -164,7 +164,7 @@
   .soccer-next { display: flex; justify-content: space-between; width: 100%; padding: 9px 10px; margin-top: 10px; border: 1px solid #dce3eb; border-radius: 3px; background: #f5f8fc; color: #405773; font: inherit; }
   .soccer-next:hover { background: #edf3f9; }
 }
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .aim-trainer { display: block; }
   .aim-lane { position: fixed; top: 24px; bottom: 54px; width: calc((100vw - 650px) / 2 - 48px); z-index: 1; }
   .aim-lane-0 { left: 20px; }
@@ -708,7 +708,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 }
 
 /* One-match Kickabout: a compact match console beside the portfolio. */
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-panel.soccer-match-panel { width: clamp(190px, calc((100vw - 650px)/2 - 56px), 300px); padding: 12px; }
   .soccer-match-score { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px; font-size: 10px; }
   .soccer-match-score strong { display: flex; gap: 12px; font-size: 23px; line-height: 1; font-weight: 500; font-variant-numeric: tabular-nums; color: #4b6482; }
@@ -739,7 +739,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
   .soccer-match-panel button:focus-visible { outline: 1px solid #8ca5c0; outline-offset: 3px; }
 }
 
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-match-feed { margin: 5px 0 14px; border: 1px solid #e1e7ed; border-radius: 3px; overflow: hidden; background: #fafbfd; min-height: 234px; }
   .soccer-feed-heading { display: flex; justify-content: space-between; padding: 9px 10px; color: #71859d; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; border-bottom: 1px solid #e1e7ed; }
   .soccer-feed-row { display: grid; grid-template-columns: 26px 1fr; align-items: baseline; padding: 9px 9px; border-bottom: 1px solid #e8edf2; color: #8d9cac; font-size: 10px; line-height: 1.65; }
@@ -752,7 +752,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
   .soccer-match-panel .soccer-pitch { border-radius: 3px; overflow: hidden; }
 }
 
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-match-panel .soccer-match-score { margin: 10px 0; gap: 5px; }
   .soccer-match-score select { appearance: none; background: transparent; border: 0; border-bottom: 1px solid #dce4ec; border-radius: 0; padding: 3px 0; min-width: 0; width: 32%; font: inherit; font-size: 9px; color: #5b728d; cursor: pointer; text-overflow: ellipsis; }
   .soccer-match-score select:last-child { text-align: right; }
@@ -767,7 +767,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
   .soccer-match-panel .soccer-chance-label { margin: 9px 0 3px; font-size: 9px; }
 }
 
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-setup { padding-top: 10px; }
   .soccer-setup > p { margin: 2px 0 16px; color: #8b9aad; font-size: 10px; }
   .soccer-setup label { display: grid; gap: 5px; margin-bottom: 13px; color: #8b9aad; font-size: 9px; }
@@ -781,7 +781,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 }
 
 /* Kickabout match console: club strips, compact controls, illustrated strike scene. */
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-panel.soccer-match-panel { padding: 11px; border-radius: 5px; box-shadow: 0 5px 20px #34506a08; }
   .soccer-match-panel > header { margin-bottom: 7px; }
   .soccer-crest { display: block; object-fit: contain; flex: none; image-rendering: auto; }
@@ -818,7 +818,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
   .soccer-match-panel .soccer-next { margin-top: 9px; }
 }
 
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-match-panel .soccer-feed-row, .soccer-match-panel .soccer-feed-row:not(.is-current) { opacity: 1; font-weight: 400; }
   .soccer-player-stats { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; padding: 9px 0; margin: 0 0 3px; border-bottom: 1px solid #e2e8ef; }
   .soccer-player-stats .soccer-stat-label { display: flex; align-items: center; justify-content: space-between; color: #6c8098; font-size: 10px; gap: 5px; }
@@ -858,7 +858,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 @keyframes soccer-result-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .soccer-result-card { animation: none; } }
 
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-match-panel { position: relative; }
   .soccer-celebration { position: absolute; left: 9px; right: 9px; top: 48%; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 9px; padding: 13px 10px; pointer-events: none; background: color-mix(in srgb, var(--home-color) 90%, #263f59); color: #fff; border: 1px solid #ffffff99; box-shadow: 0 5px 0 #e7eef280, 0 -3px 0 #e7eef280; transform: rotate(-4deg); animation: soccer-celebrate 2.1s ease both; }
   .soccer-celebration.is-opponent { background: color-mix(in srgb, var(--away-color) 90%, #263f59); }
@@ -869,7 +869,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 @media (prefers-reduced-motion: reduce) { .soccer-celebration { animation-name: soccer-celebrate-still; } }
 @keyframes soccer-celebrate-still { 0%,80% { opacity: 1; } 100% { opacity: 0; } }
 
-@media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 0px) {
   .soccer-panel.soccer-match-panel { width: clamp(190px, calc((100vw - 650px)/2 - 56px), 350px); }
   .soccer-celebration { left: 0; right: 0; top: 44%; padding: 15px 13px; border-width: 2px 0; border-radius: 0; transform: none; box-shadow: 0 5px 18px #243f5918; animation: soccer-banner-in .18s ease-out both; }
   .soccer-celebration strong { font-style: normal; font-size: 25px; }
@@ -877,3 +877,67 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 }
 @keyframes soccer-banner-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .soccer-celebration { animation: none; } }
+
+/* Touch/tablet games use the viewport rather than the desktop side gutters. */
+@media (max-width: 1099px), (hover: none), (pointer: coarse) {
+  .portfolio-content { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+  .soccer-game { position: fixed; top: auto; left: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 30; width: calc(50vw - 21px); }
+  .soccer-launch { width: 100%; min-height: 46px; justify-content: center; background: #fffffff5; font-size: 11px; box-shadow: 0 3px 14px #344f6c0c; }
+  .soccer-launch > span:last-child { display: none; }
+  .aim-hud { top: auto; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); right: 14px; width: calc(50vw - 21px); z-index: 30; }
+  .aim-launcher { width: 100%; display: grid; grid-template-columns: 1fr 42px; gap: 5px; }
+  .aim-hud .aim-launcher .aim-play { width: 100%; min-height: 46px; padding: 8px; justify-content: center; background: #fffffff5; }
+  .aim-hud .aim-play-time { display: none; }
+  .aim-hud .aim-leaderboard-link { min-height: 46px; justify-content: center; padding: 8px; background: #fffffff5; }
+  .aim-leaderboard-label { font-size: 0; gap: 0; }
+  .aim-leaderboard-label svg { width: 17px; height: 17px; }
+  .aim-leaderboard-link > span:last-child { display: none; }
+  .soccer-game[data-open="true"], .aim-trainer[data-open="true"] { position: fixed; inset: 0; z-index: 100; display: block; width: 100%; height: 100dvh; background: #fff; overscroll-behavior: none; }
+  .soccer-panel.soccer-match-panel { display: flex; flex-direction: column; width: 100%; height: 100%; max-height: none; overflow: auto; padding: calc(8px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); border: 0; border-radius: 0; box-shadow: none; }
+  .soccer-panel > header { min-height: 40px; flex-shrink: 0; font-size: 12px; }
+  .soccer-panel header button { width: 44px; height: 40px; font-size: 25px; }
+  .soccer-scoreboard { flex-shrink: 0; min-height: 43px; margin: 5px 0 3px; }
+  .soccer-score-team > span { font-size: 11px; }
+  .soccer-player-stats { flex-shrink: 0; padding: 8px 0; }
+  .soccer-match-controls { flex-shrink: 0; margin: 5px 0; }
+  .soccer-match-controls button { min-height: 38px; padding: 7px 10px; font-size: 11px; }
+  .soccer-chance-label { flex-shrink: 0; margin: 5px 0; }
+  .soccer-pitch { flex: 1 1 auto; min-height: 150px; height: 0; width: 100%; touch-action: none; }
+  .soccer-instruction-panel { flex-shrink: 0; margin-top: 5px; padding-top: 7px; }
+  .soccer-instruction-panel > strong { font-size: 11px; }
+  .soccer-instruction-panel p { font-size: 10px; }
+  .soccer-match-feed { flex: 1; max-height: none; min-height: 140px; margin-top: 6px; overflow: auto; }
+  .soccer-match-panel .soccer-feed-row { padding: 12px 10px; font-size: 11px; }
+  .soccer-setup, .soccer-result-card { width: min(100%, 460px); margin: auto; flex-shrink: 0; padding-bottom: 10px; }
+  .soccer-team-picker button { min-height: 70px; font-size: 10px; }
+  .soccer-team-picker > span { font-size: 11px; }
+  .soccer-kickoff, .soccer-next, .soccer-change-teams { min-height: 46px; font-size: 12px; }
+  .soccer-celebration { top: 45%; }
+  .aim-trainer[data-open="true"] { background: #fff; background-image: linear-gradient(#90a5bf0b 1px, transparent 1px), linear-gradient(90deg, #90a5bf0b 1px, transparent 1px); background-size: 14px 14px; }
+  .aim-trainer[data-status="running"] .aim-hud { top: calc(8px + env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); left: max(12px, env(safe-area-inset-left, 0px)); bottom: auto; width: auto; align-items: stretch; }
+  .aim-session { display: grid; grid-template-columns: 1fr 1fr; align-items: center; width: 100%; padding: 10px 12px; }
+  .aim-session-heading { grid-column: 1; font-size: 11px; }
+  .aim-clock { grid-column: 1; font-size: 27px; margin: 6px 0; }
+  .aim-session-stats { grid-column: 2; grid-row: 1 / span 2; gap: 8px; margin-left: 18px; font-size: 11px; }
+  .aim-time-track { display: none; }
+  .aim-actions { grid-column: 1 / -1; margin-top: 6px; padding-top: 2px; }
+  .aim-actions button { min-height: 32px; font-size: 12px; }
+  .aim-sound-toggle { min-width: 36px; min-height: 30px; justify-content: center; align-items: center; }
+  .aim-lane.aim-lane-1 { left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); width: auto; touch-action: none; }
+  .aim-target { width: 44px; height: 44px; opacity: .9; touch-action: none; }
+  .aim-result-position { inset: 0; width: 100%; height: 100dvh; max-height: none; transform: none; overflow: auto; border: 0; border-radius: 0; background: #fff; }
+  .aim-result-panel { width: min(100%, 520px); margin: auto; padding: calc(20px + env(safe-area-inset-top, 0px)) 22px calc(24px + env(safe-area-inset-bottom, 0px)); font-size: 13px; }
+  .aim-panel-close { min-width: 44px; min-height: 44px; font-size: 25px; }
+  .aim-entry-form input { min-height: 46px; font-size: 16px; }
+  .aim-handle-input input { font-size: 16px; }
+  .aim-primary-action, .aim-skip { min-height: 46px; font-size: 12px; }
+  .aim-board-scroll { max-height: none; }
+  .aim-result-panel td { padding: 15px 0; font-size: 13px; }
+  .aim-result-panel th { font-size: 11px; }
+  .aim-player > a { font-size: 11px; }
+}
+@media (max-height: 500px) and (orientation: landscape) and (pointer: coarse) {
+  .soccer-panel.soccer-match-panel { display: block; overflow: auto; }
+  .soccer-pitch { height: 60dvh; min-height: 210px; }
+  .soccer-setup, .soccer-result-card { max-width: 500px; }
+}

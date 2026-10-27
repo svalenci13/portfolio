@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useMobileGame } from "@/components/use-mobile-game"
 import { AimLeaderboard } from "@/components/aim-leaderboard"
 
 type Target = { id: number; side: number; x: number; y: number; revision: number }
@@ -22,6 +23,7 @@ export function AimTrainer() {
   const laneRef = useRef<HTMLDivElement>(null)
   const hudRef = useRef<HTMLDivElement>(null)
   const deadline = useRef(0)
+  const mobile = useMobileGame(status !== "idle", "warmup", () => setStatus("idle"))
   function closePanel() { setStatus("idle"); requestAnimationFrame(() => launcherRef.current?.focus()) }
 
   function prepareSound() {
@@ -66,10 +68,7 @@ export function AimTrainer() {
       if (seconds === 0) setStatus("finished")
     }
     const timer = window.setInterval(tick, 100)
-    const desktop = window.matchMedia("(min-width: 1100px) and (hover: hover) and (pointer: fine)")
-    const resize = () => { if (!desktop.matches) setStatus("idle") }
-    desktop.addEventListener("change", resize)
-    return () => { window.clearInterval(timer); desktop.removeEventListener("change", resize) }
+    return () => window.clearInterval(timer)
   }, [status])
 
   function start() {
@@ -107,11 +106,14 @@ export function AimTrainer() {
     setHits(value => value + 1)
     setTargets(current => {
       let x = target.x, y = target.y
+      const lane=laneRef.current?.getBoundingClientRect()
+      const separation=(a: {x:number;y:number},b: {x:number;y:number})=>mobile&&lane ? Math.hypot((a.x-b.x)*lane.width/100,(a.y-b.y)*lane.height/100) : Math.hypot((a.x-b.x)*.6,a.y-b.y)
+      const gap=mobile?58:19
       for (let attempt = 0; attempt < 40; attempt++) {
         const nextX = 15 + Math.random() * 70
         const nextY = 12 + Math.random() * 74
-        const clear = current.every(other => other.side !== target.side || other.id === target.id || Math.hypot((other.x - nextX) * .6, other.y - nextY) > 19)
-        if (clear && Math.hypot((target.x - nextX) * .6, target.y - nextY) > 20) {
+        const clear = current.every(other => other.side !== target.side || other.id === target.id || separation(other,{x:nextX,y:nextY}) > gap)
+        if (clear && separation(target,{x:nextX,y:nextY}) > gap) {
           x = nextX; y = nextY; break
         }
       }
@@ -120,8 +122,8 @@ export function AimTrainer() {
   }
 
   return (
-    <aside className="aim-trainer" aria-label="Side aim trainer">
-      {status === "running" && [1].map(side => <div ref={laneRef} key={side} className={`aim-lane aim-lane-${side}`} onClick={event => {
+    <aside className="aim-trainer" data-open={status !== "idle"} data-status={status} aria-label="Warm-up game">
+      {status === "running" && [1].map(side => <div ref={laneRef} key={side} className={`aim-lane aim-lane-${side}`} onPointerDown={event => {
         if (event.target === event.currentTarget && active()) setMisses(value => value + 1)
       }}>
         {targets.filter(target => target.side === side).map(target => <button
@@ -130,13 +132,14 @@ export function AimTrainer() {
           className="aim-target"
           style={{ left: `${target.x}%`, top: `${target.y}%` }}
           aria-label={`Hit target ${target.id + 1}`}
-          onClick={() => hit(target)}
+          onPointerDown={event => { event.preventDefault(); event.stopPropagation(); hit(target) }}
+          onClick={event => { if (event.detail === 0) hit(target) }}
         />)}
       </div>)}
       {(status === "idle" || status === "running") && <div ref={hudRef} className="aim-hud">
         {status === "idle" ? <div className="aim-launcher">
           <button ref={launcherRef} className="aim-play" type="button" onClick={start} aria-label="Warm up: start a 60-second aim challenge"><span className="aim-play-icon" aria-hidden="true" /><span className="aim-play-label">Warm up</span><span className="aim-play-time">60s</span></button>
-          <button className="aim-leaderboard-link" type="button" onClick={() => setStatus("board")}><span className="aim-leaderboard-label"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><path d="M2 14V8h4v6M6 14V3h4v11M10 14V10h4v4M1 14h14" /></svg>Leaderboard</span><span aria-hidden="true">↗</span></button>
+          <button className="aim-leaderboard-link" aria-label="View warm-up leaderboard" type="button" onClick={() => setStatus("board")}><span className="aim-leaderboard-label"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><path d="M2 14V8h4v6M6 14V3h4v11M10 14V10h4v4M1 14h14" /></svg>Leaderboard</span><span aria-hidden="true">↗</span></button>
         </div> : <div className="aim-session">
           <div className="aim-session-heading"><span>Session</span><button className="aim-sound-toggle" type="button" aria-label={muted ? "Unmute hit sound" : "Mute hit sound"} aria-pressed={muted} onClick={() => { if (muted) prepareSound(); setMuted(value => !value) }}><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2V6Z" />{muted ? <path d="m11 6 3 4m0-4-3 4" /> : <path d="M11 5c2 1.5 2 4.5 0 6" />}</svg></button></div>
           <div className="aim-clock" role="timer" aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</div>
