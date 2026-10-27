@@ -1646,3 +1646,12 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
  .peak-videos .peak-launch > .peak-desktop-category { display: block; grid-column: 2; grid-row: 1; margin: 0; padding: 0; border: 0; font-size: 10px; line-height: 15px; color: #73869d; text-align: left; }
  .peak-videos .peak-launch > span:not(.peak-desktop-category) { grid-column: 2; grid-row: 2; font-size: 12px; line-height: 20px; text-align: left; }
 }
+
+@media (max-width: 1099px), (hover: none), (pointer: coarse) {
+ .mobile-tools-dock { background: #fbfcfe; border-color: #dce3eb; backdrop-filter: none; }
+ .soccer-game .soccer-launch, .peak-videos .peak-launch, .aim-trainer[data-status="idle"] .aim-launcher .aim-play { background: transparent; color: #405773; }
+ .soccer-game .soccer-launch > span.kickabout-label, .peak-videos .peak-launch > span:not(.peak-desktop-category), .aim-trainer[data-status="idle"] .aim-play > .aim-play-label { color: #405773; }
+ .soccer-game .soccer-launch > .mobile-nav-category, .peak-videos .peak-launch > .peak-desktop-category, .aim-trainer[data-status="idle"] .aim-play > .mobile-nav-category { color: #8293a3; }
+ .peak-launch::before, .peak-launch::after { background: #e4e9ef; }
+ .aim-trainer[data-status="idle"] .aim-launcher .aim-leaderboard-link { background: #fff; border-color: #dce3eb; color: #71859d; }
+}
