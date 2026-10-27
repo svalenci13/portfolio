@@ -161,7 +161,7 @@ export function SoccerGame() {
   const lift = rotatePoint({x:0,y:-m.ball.z*.6},-m.rotation)
   const instructions = m.phase === "teammate" ? "Your teammate takes a touch…" : m.paused ? "Paused. Take your time." : m.phase === "aim" ? "Drag back from the ball. Release to pick your contact." : m.phase === "strike" ? m.incoming === "drop" ? "Meet the dropping ball. Tap the spot you want to head." : "Tap the moving ball. Lower contact chips; off-centre adds curl." : m.phase === "dribble" ? (mobile ? "Drag your finger to steer. Lift to stop. Reach the two markers." : "Move your mouse to steer. Find space between the defenders and reach the two markers.") : m.phase === "flight" ? (m.landing ? "The X marks where your chip will land." : "Watch the run…") : m.message
   const title = m.phase === "dribble" ? (m.layout.startsWith("touchline") ? "Touchline run" : m.layout === "corner-run" ? "Cut inside" : "Beat the press") : m.kind === "corner" ? "Corner kick" : m.kind === "free-kick" ? "Free kick" : m.kind === "header" ? "Meet the cross" : m.kind === "pass" ? (m.zone === "defence" ? "Playing out" : "Midfield") : m.difficulty === "crowded" ? "Crowded box" : "In the final third"
-  return <aside className="soccer-game" data-game="kickabout" data-open={open} aria-label="Single-match football game">
+  return <><aside className="soccer-game" data-game="kickabout" data-open={open} aria-label="Single-match football game">
     {mobile && open && <button className="game-backdrop" type="button" aria-label="Close Kickabout modal" tabIndex={-1} onClick={close}/> }
     {!open ? <button ref={launchRef} className="soccer-launch" type="button" onClick={setup}><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><circle cx="8" cy="8" r="6" /><path d="m8 5 3 2-1 3H6L5 7l3-2ZM8 2v3M2 7h3M4 13l2-3m4 0 2 3m-1-6h3" /></svg><span className="mobile-nav-category">Game</span><span className="kickabout-label">Kickabout</span><span className="kickabout-match-tag">Match</span></button> : <section className="soccer-panel soccer-match-panel" role={mobile ? "dialog" : undefined} aria-modal={mobile || undefined} aria-label="Kickabout" style={{"--home-color": CLUBS[homeClub].accent, "--away-color": CLUBS[awayClub].accent} as CSSProperties}>
       <header><span>Kickabout</span><button type="button" onClick={close} aria-label="Close football game">×</button></header>
@@ -223,4 +223,6 @@ export function SoccerGame() {
       </>}
     </section>}
   </aside>
+  {mobile && open && <div className="soccer-game soccer-persistent-nav"><button className="soccer-launch" type="button" onClick={() => {}}><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><circle cx="8" cy="8" r="6" /><path d="m8 5 3 2-1 3H6L5 7l3-2ZM8 2v3M2 7h3M4 13l2-3m4 0 2 3m-1-6h3" /></svg><span className="mobile-nav-category">Game</span><span className="kickabout-label">Kickabout</span><span className="kickabout-match-tag">Match</span></button></div>}
+  </>
 }

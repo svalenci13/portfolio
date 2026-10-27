@@ -1659,3 +1659,7 @@ body:has(.portfolio-home) { overflow-x: clip; overflow-y: auto; }
 @media (max-width: 1099px), (hover: none), (pointer: coarse) {
  .peak-videos .peak-launch > span.peak-desktop-category:last-child { font-size: 10px; line-height: 15px; font-weight: 400; color: #8293a3; }
 }
+
+@media (max-width: 1099px), (hover: none), (pointer: coarse) {
+ .soccer-game.soccer-persistent-nav { position: fixed; inset: auto; left: 15px; bottom: calc(15px + env(safe-area-inset-bottom,0px)); width: calc((100vw - 30px) / 3); z-index: 30; }
+}
